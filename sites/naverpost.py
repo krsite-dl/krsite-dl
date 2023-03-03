@@ -2,7 +2,7 @@ import time
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from down.directory import dir_handler_naver
+import down.directory as dir
 
 def from_naverpost(hd):
     def naverpost_topic(hd):
@@ -71,7 +71,7 @@ def from_naverpost(hd):
 
         print("Found %s image(s)" % len(img_list))
 
-        dir_handler_naver(img_list, post_title, post_date, post_writer)
+        dir.dir_handler_naver(img_list, post_title, post_date, post_writer)
 
 
     if 'my.naver' in hd:

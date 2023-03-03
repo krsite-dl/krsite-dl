@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from down.directory import dir_handler_alt
-
+import down.directory as dir
 def from_dispatch(hd):
     r = requests.get(hd)
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -21,4 +20,4 @@ def from_dispatch(hd):
     print("Date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
     
-    dir_handler_alt(img_list, post_title, post_date)
+    dir.dir_handler_alt(img_list, post_title, post_date)
