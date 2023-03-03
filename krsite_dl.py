@@ -49,10 +49,9 @@ def main():
                         continue
                     elif line != '\n':
                         check_site(line)
-        except Exception:
-            print("The provided file is invalid.")
+        except FileNotFoundError:
+            print("File not found: %s" % args.a)
     else:
-        # check_site(args.url)
         try:
             check_site(args.url)
         except AttributeError:
