@@ -57,10 +57,10 @@ def from_dispatch(hd):
             img_list.append(temp)
     
     print("Title: %s" % post_title)
-    print("Date: %s" % post_date[2:])
+    print("Date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
     
-    dir_handler_alt(img_list, post_title, post_date[2:])
+    dir_handler_alt(img_list, post_title, post_date)
     
     
 def from_imbcnews(hd):
@@ -187,22 +187,34 @@ def from_naverpost(hd):
         w = wd.Chrome(options=opt)
         w.get(hd)
 
-        post_title = w.find_element(By.CLASS_NAME, 'se_textarea').text.replace('\n', ' ')
-        post_date = w.find_element(By.CLASS_NAME, 'se_publishDate').text.replace('.', '')[:8]
+        
+        try:
+            post_writer = w.find_element(By.CLASS_NAME, 'se_author').text
+            post_title = w.find_element(By.CLASS_NAME, 'se_textarea').text.replace('\n', ' ')
+            post_date = w.find_element(By.CLASS_NAME, 'se_publishDate').text.replace('.', '')[:8]
+        except Exception:
+            post_writer = w.find_element(By.CLASS_NAME, 'writer').text
+            post_title = w.find_element(By.CLASS_NAME, 'title').text.replace('\n', ' ')
+            post_date = w.find_element(By.CLASS_NAME, 'post_date').text.replace('.', '')[:8]
+
 
         img_list = []
 
+        print("Writer: %s" % post_writer)
         print("Title: %s" % post_title)
         print("Date: %s" % post_date)
 
         for i in w.find_elements(By.CLASS_NAME, 'se_mediaImage'):
             img_list.append(str(i.get_attribute('src').split('?')[0]))
 
+        for i in w.find_elements(By.CLASS_NAME, 'img_attachedfile'):
+            img_list.append(str(i.get_attribute('src').split('?')[0]))
+
         w.quit()
 
         print("Found %s image(s)" % len(img_list))
 
-        dir_handler(img_list, post_title, post_date)
+        dir_handler_naver(img_list, post_title, post_date, post_writer)
 
 
     if 'my.naver' in hd:
@@ -231,7 +243,7 @@ def from_generic(hd):
   
 def dir_handler(img_list, title = None, date = None):
     if title != None and date != None:
-        dirs = args.destination + '/' + date + ' ' + title
+        dirs = args.destination + '/' + date[2:] + ' ' + title
         if not os.path.exists(dirs):
             os.makedirs(dirs)
     else:
@@ -244,7 +256,7 @@ def dir_handler(img_list, title = None, date = None):
 
 def dir_handler_alt(img_list, title = None, date = None):
     if title != None and date != None:
-        dirs = args.destination + '/' + date
+        dirs = args.destination + '/' + date[2:]
         subdirs = dirs + '/' + title
         if not os.path.exists(dirs):
             os.makedirs(dirs)
@@ -260,6 +272,19 @@ def dir_handler_alt(img_list, title = None, date = None):
 
     download_handler(img_list, subdirs)
     
+
+def dir_handler_naver(img_list, title = None, date = None, writer = None):
+    if title != None and date != None and writer != None:
+        dirs = args.destination + '/' + writer + '/' + date[2:] + ' ' + title
+        if not os.path.exists(dirs):
+            os.makedirs(dirs)
+    else:
+        dirs = args.destination
+        if not os.path.exists(dirs):
+            os.makedirs(dirs)
+
+    download_handler(img_list, dirs)
+
 
 def download_handler(img_list, dirs, chunk_size = 128):
     print("Downloading image(s) to folder: ", dirs)
