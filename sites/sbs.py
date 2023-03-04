@@ -1,10 +1,11 @@
+import time
 import requests
 import json
 import down.directory as dir
 
 def from_sbs(hd):
-    board_id = hd.split('=')[-1]
-    print("Board no: %s" % board_id)
+    board_no = hd.split('board_no=')[-1].split('&')[0]
+    print("Board no: %s" % board_no)
 
     code = ''
 
@@ -25,11 +26,12 @@ def from_sbs(hd):
     # add more to your liking. (elif 'board_id' in hd: code = 'board_code')
 
     ###########TOKEN############
-    token = '1676983404524'
+    current_milli_time = int(round(time.time() * 1000))
+    token = str(current_milli_time)
     ############################
 
     api = 'https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/'
-    params = '%s?callback=boardViewCallback_%s&action_type=callback&board_code=%s&jwt-token=&_=%s' % (board_id, code, code, token)
+    params = '%s?callback=boardViewCallback_%s&action_type=callback&board_code=%s&jwt-token=&_=%s' % (board_no, code, code, token)
 
     r = requests.get(api + params)
     json_data = r.text
