@@ -1,4 +1,5 @@
 import argparse
+import sys
 import sites.dispatch as dispatch
 import sites.imbcnews as imbcnews
 import sites.newsjamm as newsjamm
@@ -71,6 +72,10 @@ def main():
             print("Type 'krsite-dl -h' for more information.")
         except IndexError:
             print("No pictures found")
+        except KeyboardInterrupt:
+            print("\r", end="")
+            print("KeyboardInterrupt detected. Exiting gracefully.")
+            sys.exit(0)
 
 if __name__ == '__main__':
     main()
