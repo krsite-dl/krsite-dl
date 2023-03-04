@@ -4,18 +4,18 @@ import sites.imbcnews as imbcnews
 import sites.newsjamm as newsjamm
 import sites.sbs as sbs
 import sites.naverpost as naverpost
-import sites.generic as generic
-
+import sites.generic as generic     
 
 parser = argparse.ArgumentParser()
 parser.add_argument("url", nargs='?',type=str, help="valid news/blog url")
 parser.add_argument("-a", type=str, help="text file containing site urls")
 parser.add_argument("-ai", type=str, help="text file containing image urls")
+parser.add_argument("--windows-filenames", action="store_true", help="Remove windows reserved characters from the title (enabled by default in Windows)")
 # parser.add_argument("--board-no", type=int, help="The board number from a site (SBS). For example (https://programs.sbs.co.kr/enter/gayo/visualboard/54795?cmd=view&page=1&board_no=438994) will have a board no of 438994")
 parser.add_argument("-d", "--destination", type=str, default=".",help="The destination path for the downloaded file")
 args = parser.parse_args()
 
-        
+
 def check_site(url):
     url = url.strip()
     
@@ -58,6 +58,8 @@ def main():
             print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
             print("You must provide at least one URL.")
             print("Type 'krsite-dl -h' for more information.")
+        except Exception:
+            print("Error: Invalid URL.")
 
 if __name__ == '__main__':
     main()
