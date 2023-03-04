@@ -2,6 +2,7 @@ import argparse
 import sites.dispatch as dispatch
 import sites.imbcnews as imbcnews
 import sites.newsjamm as newsjamm
+import sites.osen as osen
 import sites.sbs as sbs
 import sites.naverpost as naverpost
 import sites.generic as generic     
@@ -22,22 +23,32 @@ def check_site(url):
     if 'dispatch.co.kr' in url:
         print("Site name 'Dispatch'")
         dispatch.from_dispatch(url)
-    elif 'enews.imbc.com' in url:
+        return
+    if 'enews.imbc.com' in url:
         print("Site name 'iMBC News'")
         imbcnews.from_imbcnews(url)
-    elif 'newsjamm.co.kr' in url:
+        return
+    if 'newsjamm.co.kr' in url:
         print("Site name 'News Jamm'")
         newsjamm.from_newsjamm(url)
-    elif 'sbs.co.kr' in url:
+        return
+    if 'osen.mt.co.kr' in url:
+        print("Site name 'OSEN'")
+        osen.from_osen(url)
+        return
+    if 'sbs.co.kr' in url:
         print("Site name 'SBS'")
         sbs.from_sbs(url)
-    elif 'post.naver.com' in url:
+        return
+    if 'post.naver.com' in url:
         print("Site name 'Naver 포스트'")
         naverpost.from_naverpost(url)
+        return
     else:
         # print("URL invalid / Site not supported. [%s]" % url)
         print("Generic Sites %s *may not work" % url.split('/')[2])
         generic.from_generic(url)
+        pass
 
 
 def main():
@@ -58,8 +69,8 @@ def main():
             print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
             print("You must provide at least one URL.")
             print("Type 'krsite-dl -h' for more information.")
-        except Exception:
-            print("Error: Invalid URL.")
+        except IndexError:
+            print("No pictures found")
 
 if __name__ == '__main__':
     main()
