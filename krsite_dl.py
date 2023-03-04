@@ -49,7 +49,7 @@ def check_site(url):
         # print("URL invalid / Site not supported. [%s]" % url)
         print("Generic Sites %s *may not work" % url.split('/')[2])
         generic.from_generic(url)
-        pass
+        return
 
 
 def main():
