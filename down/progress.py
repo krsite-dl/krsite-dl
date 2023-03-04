@@ -2,10 +2,16 @@ import time
 
 def progress_handler(current_size, content_length, start):
     elapsed_time = time.time() - start
-    bandwidth = 0 and current_size / elapsed_time
-    percent = (current_size / content_length) * 100
-    eta = 0 and (content_length - current_size) / bandwidth
-    
+    bandwidth = 0
+    percent = 0
+    eta = 0
+    try:
+        bandwidth = current_size / elapsed_time
+        percent = (current_size / content_length) * 100
+        eta = (content_length - current_size) / bandwidth
+    except ArithmeticError:
+        pass
+
     if bandwidth >= 1024**2:
         bandwidth_str = f"{bandwidth/1024**2:.2f}MB/s"
     else:
