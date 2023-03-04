@@ -2,13 +2,43 @@ import time
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException
 import down.directory as dir
 
 def from_naverpost(hd):
-    def naverpost_topic(hd):
-        opt = Options()
-        opt.add_argument('--headless')
-        w = wd.Chrome(options=opt)
+    opt = Options()
+    opt.add_argument('--headless')
+    w = wd.Chrome(options=opt)
+
+    def naverpost_series(hd):
+        w.get(hd)
+
+        series_list = set()
+        
+        sender_name = w.find_element(By.CLASS_NAME, 'name').text
+        print("Sender: %s" % sender_name)
+
+        btn = w.find_element(By.CLASS_NAME, '_more')
+
+        stat = True
+        while stat == True:
+            try:
+                btn.click()
+                time.sleep(2)
+            except:
+                stat = False
+
+                for i in w.find_elements(By.CLASS_NAME, 'link'):
+                    series_list.add(i.get_attribute('href'))
+        
+        print("Found %s series" % len(series_list))
+        print("------------------\n")
+
+        for i in series_list:
+            naverpost_list(i)
+
+
+    def naverpost_list(hd):
         w.get(hd)
         
         post_list = set()
@@ -23,9 +53,7 @@ def from_naverpost(hd):
             except:
                 stat = False
                 for i in w.find_elements(By.CLASS_NAME, 'spot_post_area'):
-                    post_list.add('https://post.naver.com' + i.get_attribute('href'))
-
-        w.quit()
+                    post_list.add(i.get_attribute('href'))
 
         print("Found %s post(s)" % len(post_list))
         
@@ -39,25 +67,18 @@ def from_naverpost(hd):
         w = wd.Chrome(options=opt)
         w.get(hd)
 
-        
         try:
-            post_writer = w.find_element(By.CLASS_NAME, 'se_author').text
+            post_series = w.find_element(By.CLASS_NAME, 'se_series').text[3:]
             post_title = w.find_element(By.CLASS_NAME, 'se_textarea').text.replace('\n', ' ')
             post_date = w.find_element(By.CLASS_NAME, 'se_publishDate').text.replace('.', '')[:8]
-        except Exception:
-            post_writer = w.find_element(By.CLASS_NAME, 'writer').text
+        except NoSuchElementException:
+            post_series = w.find_element(By.CLASS_NAME, 'series ').text
             post_title = w.find_element(By.CLASS_NAME, 'title').text.replace('\n', ' ')
             post_date = w.find_element(By.CLASS_NAME, 'post_date').text.replace('.', '')[:8]
 
-
-        special_chars = r'\/:*?"<>|'
-
-        for i in special_chars:
-            post_title = post_title.replace(i, '')
-
         img_list = []
 
-        print("Writer: %s" % post_writer)
+        print("Series: %s" % post_series)
         print("Title: %s" % post_title)
         print("Date: %s" % post_date)
 
@@ -71,15 +92,15 @@ def from_naverpost(hd):
 
         print("Found %s image(s)" % len(img_list))
 
-        dir.dir_handler_naver(img_list, post_title, post_date, post_writer)
+        dir.dir_handler_naver(img_list, post_title, post_date, post_series)
 
 
-    if 'my.naver' in hd:
-        print("Post Dashboard")
-        # naverpost_agency(hd)
+    if 'series.naver' in hd:
+        print("Naver Post Series Page")
+        naverpost_series(hd)
     elif 'detail.naver' in hd:
-        print("Post Topic")
-        naverpost_topic(hd)
+        print("Naver Post Series List")
+        naverpost_list(hd)
     elif 'postView.naver' in hd:
-        print("Post")
+        print("Naver Post Page")
         naverpost_post(hd)
