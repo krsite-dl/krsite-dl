@@ -1,6 +1,7 @@
 import requests
 import os
 import time
+from urllib.parse import unquote
 from down.progress import progress_handler
 
 def download_handler(img_list, dirs, chunk_size = 128):
@@ -11,6 +12,20 @@ def download_handler(img_list, dirs, chunk_size = 128):
         content_length = int(response.headers.get('Content-Length', 0))
 
         img_name = img.split('/')[-1]
+
+        decoded = unquote(img_name)
+
+        if '%EC' in decoded or '%EB' in decoded:
+            korean_filename = decoded.encode('utf-8')
+        else:
+            try:
+                korean_filename = decoded.encode('euc-kr')
+            except UnicodeDecodeError:
+                korean_filename = decoded.encode('euc-kr', errors='ignore')
+        
+        img_name = korean_filename
+
+        img_name = img_name.decode('euc-kr')
 
         print("\n[Image] %s" % img_name)
 
