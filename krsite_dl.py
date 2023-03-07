@@ -5,6 +5,7 @@ import sites.imbcnews as imbcnews
 import sites.newsjamm as newsjamm
 import sites.osen as osen
 import sites.sbs as sbs
+import sites.mbc as mbc
 import sites.naverpost as naverpost
 import sites.generic as generic     
 
@@ -40,6 +41,10 @@ def check_site(url):
     if 'sbs.co.kr' in url:
         print("Site name 'SBS'")
         sbs.from_sbs(url)
+        return
+    if 'mbc.co.kr' in url:
+        print("Site name 'MBC와 함께'")
+        mbc.from_mbc(url)
         return
     if 'post.naver.com' in url:
         print("Site name 'Naver 포스트'")
