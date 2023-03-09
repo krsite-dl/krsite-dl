@@ -7,6 +7,7 @@ import sites.osen as osen
 import sites.sbs as sbs
 import sites.mbc as mbc
 import sites.naverpost as naverpost
+import sites.navernews as navernews
 import sites.generic as generic     
 
 parser = argparse.ArgumentParser()
@@ -49,6 +50,10 @@ def check_site(url):
     if 'post.naver.com' in url:
         print("Site name 'Naver 포스트'")
         naverpost.from_naverpost(url)
+        return
+    if 'entertain.naver.com' in url:
+        print("Site name 'Naver 뉴스'")
+        navernews.from_navernews(url)
         return
     else:
         # print("URL invalid / Site not supported. [%s]" % url)
