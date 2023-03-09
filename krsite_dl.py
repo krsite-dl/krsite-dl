@@ -8,7 +8,8 @@ import sites.sbs as sbs
 import sites.mbc as mbc
 import sites.naverpost as naverpost
 import sites.navernews as navernews
-import sites.generic as generic     
+import sites.generic as generic  
+import sites.direct as direct   
 
 parser = argparse.ArgumentParser()
 parser.add_argument("url", nargs='?',type=str, help="valid news/blog url")
@@ -73,6 +74,17 @@ def main():
                         check_site(line)
         except FileNotFoundError:
             print("File not found: %s" % args.a)
+    if args.ai:
+        print("*Direct image url mode")
+        try:
+            with open(args.ai, 'r') as f:
+                for line in f:
+                    if line[0] == '#' or line[0] == ';' or line[0] == ']':
+                        continue
+                    elif line != '\n':
+                        direct.from_direct(line)
+        except FileNotFoundError:
+            print("File not found: %s" % args.ai)
     else:
         try:
             check_site(args.url)
