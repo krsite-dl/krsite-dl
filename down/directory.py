@@ -1,7 +1,7 @@
 import os
 import re
 import platform
-from down.download import download_handler
+from down.download import download_handler, download_handler_alt
 import krsite_dl as kr
 
 # windows reserved characters
@@ -22,7 +22,10 @@ def dir_handler(img_list, title = None, date = None):
         if not os.path.exists(dirs):
             os.makedirs(dirs)
 
-    download_handler(img_list, dirs)
+    if kr.args.ai:
+        download_handler_alt(img_list, dirs)
+    else:
+        download_handler(img_list, dirs)
 
 
 def dir_handler_alt(img_list, title = None, date = None):
