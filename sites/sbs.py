@@ -19,6 +19,8 @@ def from_sbs(hd):
         code = 'inkigayo_pt02'
     elif '71656' in hd:
         code = 'inkigayo_pt05'
+    elif '76748' in hd:
+        code = 'inkigayo_pt06'
     elif '76371' in hd:
         code = '2022sbsgayo_pt'
     elif '58358' in hd:
