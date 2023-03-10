@@ -7,7 +7,11 @@ from down.progress import progress_handler
 def download_handler(img_list, dirs, chunk_size = 128):
     print("Downloading image(s) to folder: ", dirs)
     for img in img_list:
-        response = requests.head(img, timeout=5)
+        try:
+            response = requests.head(img, timeout=60)
+        except requests.exceptions.Timeout:
+            print("Request timeout. Skipping...")
+        
         content_length = int(response.headers.get('Content-Length', 0))
         
         img_name = img.split('/')[-1]
@@ -69,8 +73,10 @@ def download_handler(img_list, dirs, chunk_size = 128):
 
 def download_handler_alt(img, dirs, chunk_size = 128):
     print("Downloading image(s) to folder: ", dirs)
-
-    response = requests.head(img, timeout=5)
+    try:
+        response = requests.head(img, timeout=60)
+    except requests.exceptions.Timeout:
+        print("Request timeout. Skipping...")
     content_length = int(response.headers.get('Content-Length', 0))
     
     img_name = img.split('/')[-1]
