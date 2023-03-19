@@ -25,43 +25,42 @@ def check_site(url):
     url = url.strip()
     
     if 'dispatch.co.kr' in url:
-        print("Site name 'Dispatch'")
+        print("\nSite name 'Dispatch'")
         dispatch.from_dispatch(url)
         return
     if 'enews.imbc.com' in url:
-        print("Site name 'iMBC News'")
+        print("\nSite name 'iMBC News'")
         imbcnews.from_imbcnews(url)
         return
     if 'newsjamm.co.kr' in url:
-        print("Site name 'News Jamm'")
+        print("\nSite name 'News Jamm'")
         newsjamm.from_newsjamm(url)
         return
     if 'osen.mt.co.kr' in url:
-        print("Site name 'OSEN'")
+        print("\nSite name 'OSEN'")
         osen.from_osen(url)
         return
     if 'sbs.co.kr' in url:
-        print("Site name 'SBS'")
+        print("\nSite name 'SBS'")
         sbs.from_sbs(url)
         return
     if 'mbc.co.kr' in url:
-        print("Site name 'MBC와 함께'")
+        print("\nSite name 'MBC와 함께'")
         mbc.from_mbc(url)
         return
     if 'post.naver.com' in url:
-        print("Site name 'Naver 포스트'")
+        print("\nSite name 'Naver 포스트'")
         naverpost.from_naverpost(url)
         return
     if 'entertain.naver.com' in url:
-        print("Site name 'Naver 뉴스'")
+        print("\nSite name 'Naver 뉴스'")
         navernews.from_navernews(url)
         return
     else:
         # print("URL invalid / Site not supported. [%s]" % url)
-        print("Generic Sites %s *may not work" % url.split('/')[2])
+        print("\nGeneric Sites %s *may not work" % url.split('/')[2])
         generic.from_generic(url)
         return
-
 
 def main():
     if args.a:
