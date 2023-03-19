@@ -4,6 +4,7 @@ import json
 import down.directory as dir
 
 def from_sbs(hd):
+    print("Url: %s" % hd)
     board_no = hd.split('board_no=')[-1].split('&')[0]
     print("Board no: %s" % board_no)
 
