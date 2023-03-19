@@ -30,7 +30,8 @@ def download_handler(img_list, dirs, chunk_size = 128):
 
         img_name = img_name.decode('euc-kr')
 
-        print("\n[Image] %s" % img_name)
+        print("[Source URL] %s" % img)
+        print("[Image] %s" % img_name)
 
         print("[Metadata] extracting metadata...")
 
