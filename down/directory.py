@@ -7,10 +7,7 @@ import krsite_dl as kr
 # windows reserved characters
 reserved_pattern = r'[\\/:*?"<>|]'
 def dir_handler(img_list, title = None, date = None):
-    if platform.system() == 'Windows':
-        kr.args.windows_filenames = True
-
-    if kr.args.windows_filenames:
+    if not kr.args.no_windows_filenames:
         title = re.sub(reserved_pattern, '', title)
     
     if title != None and date != None:
@@ -29,10 +26,7 @@ def dir_handler(img_list, title = None, date = None):
 
 
 def dir_handler_alt(img_list, title = None, date = None):
-    if platform.system() == 'Windows':
-        kr.args.windows_filenames = True
-
-    if kr.args.windows_filenames:
+    if not kr.args.no_windows_filenames:
         title = re.sub(reserved_pattern, '', title)
 
     if title != None and date != None:
@@ -54,10 +48,7 @@ def dir_handler_alt(img_list, title = None, date = None):
     
 
 def dir_handler_naver(img_list, title = None, date = None, series = None):
-    if platform.system() == 'Windows':
-        kr.args.windows_filenames = True
-
-    if kr.args.windows_filenames:
+    if not kr.args.no_windows_filenames:
         title = re.sub(reserved_pattern, '', title)
 
     if title != None and date != None and series != None:
