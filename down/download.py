@@ -79,7 +79,7 @@ def download_handler_alt(img, dirs, chunk_size = 128):
     except requests.exceptions.Timeout:
         print("Request timeout. Skipping...")
     content_length = int(response.headers.get('Content-Length', 0))
-    
+    print(content_length)
     img_name = img.split('/')[-1]
 
     decoded = unquote(img_name).strip()

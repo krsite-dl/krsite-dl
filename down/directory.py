@@ -7,8 +7,9 @@ import krsite_dl as kr
 # windows reserved characters
 reserved_pattern = r'[\\/:*?"<>|]'
 def dir_handler(img_list, title = None, date = None):
-    if not kr.args.no_windows_filenames:
-        title = re.sub(reserved_pattern, '', title)
+    if not kr.args.ai:
+        if not kr.args.no_windows_filenames:
+            title = re.sub(reserved_pattern, '', title)
     
     if title != None and date != None:
         dirs = kr.args.destination + '/' + date[2:] + ' ' + title
