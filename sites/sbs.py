@@ -10,23 +10,28 @@ def from_sbs(hd):
 
     code = ''
 
-    if '69423' in hd:
-        code = 'runningman_photo'
-    elif '65942' in hd and 'pdnote_hotissue' in hd:
-        code = 'pdnote_hotissue'
-    elif '54795' in hd or '65942' in hd:
-        code = 'inkigayo_pt01'
-    elif '68458' in hd:
-        code = 'inkigayo_pt02'
-    elif '71656' in hd:
-        code = 'inkigayo_pt05'
-    elif '76748' in hd:
-        code = 'inkigayo_pt06'
-    elif '76371' in hd:
-        code = '2022sbsgayo_pt'
-    elif '58358' in hd:
-        code = 'theshow04_pt'
-    # add more to your liking. (elif 'board_id' in hd: code = 'board_code')
+    # ADD MORE KEY AND VALUE HERE
+    """
+    https://programs.sbs.co.kr/enter/gayo/visualboard/board_id?
+    board_code can be found in the api. look at response in the network tab.
+    FORMAT: 'board_id': 'board_code
+    """
+    code_dict = {
+        '69423': 'runningman_photo',
+        '65942': 'pdnote_hotissue',
+        '54795,65942': 'inkigayo_pt01',
+        '68458': 'inkigayo_pt02',
+        '71199': 'inkigayo_pt03',
+        '71656': 'inkigayo_pt05',
+        '76748': 'inkigayo_pt06',
+        '76371': '2022sbsgayo_pt',
+        '58358': 'theshow04_pt'
+    }
+
+    for key, value in code_dict.items():
+        if key in hd:
+            code = value
+            break
 
     ###########TOKEN############
     current_milli_time = int(round(time.time() * 1000))
