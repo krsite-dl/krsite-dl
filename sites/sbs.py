@@ -19,9 +19,11 @@ def from_sbs(hd):
     code_dict = {
         '69423': 'runningman_photo',
         '65942': 'pdnote_hotissue',
-        '54795,65942': 'inkigayo_pt01',
+        '54795': 'inkigayo_pt01',
+        '65942': 'inkigayo_pt01',
         '68458': 'inkigayo_pt02',
         '71199': 'inkigayo_pt03',
+        '71279': 'inkigayo_pt04',
         '71656': 'inkigayo_pt05',
         '76748': 'inkigayo_pt06',
         '76371': '2022sbsgayo_pt',
