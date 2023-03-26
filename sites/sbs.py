@@ -17,33 +17,40 @@ def from_sbs(hd):
     FORMAT: 'board_id': 'board_code
     """
     code_dict = {
-        '69423': 'runningman_photo',
-        '65942': 'pdnote_hotissue',
-        '54795': 'inkigayo_pt01',
-        '65942': 'inkigayo_pt01',
-        '68458': 'inkigayo_pt02',
-        '71199': 'inkigayo_pt03',
-        '71279': 'inkigayo_pt04',
-        '71656': 'inkigayo_pt05',
-        '76748': 'inkigayo_pt06',
-        '76371': '2022sbsgayo_pt',
-        '58358': 'theshow04_pt'
+        '69423': ['runningman_photo'],
+        '65942': ['pdnote_hotissue', 'inkigayo_pt01'],
+        '54795': ['inkigayo_pt01'],
+        '68458': ['inkigayo_pt02'],
+        '71199': ['inkigayo_pt03'],
+        '71279': ['inkigayo_pt04'],
+        '71656': ['inkigayo_pt05'],
+        '76748': ['inkigayo_pt06'],
+        '76371': ['2022sbsgayo_pt'],
+        '58358': ['theshow04_pt']
     }
+
+    code_temp = []
 
     for key, value in code_dict.items():
         if key in hd:
-            code = value
-            break
+            code_temp.extend(value)
 
     ###########TOKEN############
     current_milli_time = int(round(time.time() * 1000))
     token = str(current_milli_time)
     ############################
 
-    api = 'https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/'
-    params = '%s?callback=boardViewCallback_%s&action_type=callback&board_code=%s&jwt-token=&_=%s' % (board_no, code, code, token)
+    for i in code_temp:
+        print(i)
+        code = i
+        api = 'https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/'
+        params = '%s?callback=boardViewCallback_%s&action_type=callback&board_code=%s&jwt-token=&_=%s' % (board_no, code, code, token)
 
-    r = requests.get(api + params)
+        print(api + params)
+        r = requests.get(api + params)
+        if 'err_code' not in r.text:
+            break
+
     json_data = r.text
     json_data = json_data.split('boardViewCallback_%s(' % code)[1]
     json_data = json_data.replace(');', '')
