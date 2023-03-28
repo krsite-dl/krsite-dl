@@ -1,7 +1,7 @@
 import os
 import re
 import platform
-from down.download import download_handler, download_handler_alt
+from down.download import download_handler, download_handler_naver, download_handler_alt
 import krsite_dl as kr
 
 # windows reserved characters
@@ -48,12 +48,12 @@ def dir_handler_alt(img_list, title = None, date = None):
     download_handler(img_list, subdirs)
     
 
-def dir_handler_naver(img_list, title = None, date = None, series = None):
+def dir_handler_naver(img_list, title = None, post_date_short = None, series = None, post_date = None):
     if not kr.args.no_windows_filenames:
         title = re.sub(reserved_pattern, '', title)
 
-    if title != None and date != None and series != None:
-        dirs = kr.args.destination + '/' + series + '/' + date[2:] + ' ' + title
+    if title != None and post_date_short != None and series != None:
+        dirs = kr.args.destination + '/' + series + '/' + post_date_short[2:] + ' ' + title
         if not os.path.exists(dirs):
             os.makedirs(dirs)
     else:
@@ -61,4 +61,4 @@ def dir_handler_naver(img_list, title = None, date = None, series = None):
         if not os.path.exists(dirs):
             os.makedirs(dirs)
 
-    download_handler(img_list, dirs)
+    download_handler_naver(img_list, dirs, post_date)
