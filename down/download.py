@@ -6,7 +6,7 @@ import pytz
 from urllib.parse import unquote
 from down.progress import progress_handler
 
-def download_handler(img_list, dirs, chunk_size = 128):
+def download_handler(img_list, dirs, post_date, chunk_size = 128):
     print("Downloading image(s) to folder: ", dirs)
     for img in img_list:
         try:
@@ -40,8 +40,6 @@ def download_handler(img_list, dirs, chunk_size = 128):
         if os.path.exists(dirs + '/' + img_name):
             print("[Status] This file already exists. Skipping...")
             continue
-        
-        url_mod_time = response.headers.get('Last-Modified')
 
         try:
             current_size = os.path.getsize(dirs + "/" + img_name + '.part')
@@ -65,13 +63,16 @@ def download_handler(img_list, dirs, chunk_size = 128):
             print("\n[Status] Image %s downloaded" % img_name)
 
             # Set file and folders modification time
-            if url_mod_time:
-                print("[Metadata] Embedding metadata to %s" % img_name)
-                mod_time = time.strptime(url_mod_time, '%a, %d %b %Y %H:%M:%S %Z')
-                os.utime(dirs + '/' + img_name, (time.time(), time.mktime(mod_time)))
-        
-        if url_mod_time:
-            os.utime(dirs, (time.time(), time.mktime(mod_time)))
+            utc = pytz.timezone("Asia/Seoul")
+            dt = datetime.datetime.strptime(post_date, "%Y%m%d %H:%M")
+            dt = utc.localize(dt)
+            
+            timestamp = int(dt.timestamp())
+            # print(timestamp)
+            # print(dt)
+
+            os.utime(dirs + '/' + img_name, (timestamp, timestamp))
+        os.utime(dirs, (timestamp, timestamp))
 
 
 def download_handler_naver(img_list, dirs, post_date, chunk_size = 128):
