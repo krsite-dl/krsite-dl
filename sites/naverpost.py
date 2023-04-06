@@ -98,7 +98,7 @@ def from_naverpost(hd):
             post_date = w.find_element(By.CLASS_NAME, 'se_publishDate').text
             post_date_short = post_date.replace('.', '')[:8]
         except NoSuchElementException:
-            post_series = w.find_element(By.CLASS_NAME, 'series ').text
+            post_series = w.find_element(By.CLASS_NAME, 'series').text
             post_title = w.find_element(By.CLASS_NAME, 'title').text.replace('\n', ' ')
             post_date = w.find_element(By.CLASS_NAME, 'post_date').text
             post_date_short = post_date.replace('.', '')[:8]
