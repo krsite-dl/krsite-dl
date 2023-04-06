@@ -73,6 +73,12 @@ def main():
                         check_site(line)
         except FileNotFoundError:
             print("File not found: %s" % args.a)
+        except IndexError:
+            print("No pictures found")
+        except KeyboardInterrupt:
+            print("\r", end="")
+            print("KeyboardInterrupt detected. Exiting gracefully.")
+            sys.exit(0)
     if args.ai:
         print("*Direct image url mode")
         try:
@@ -84,6 +90,12 @@ def main():
                         direct.from_direct(line)
         except FileNotFoundError:
             print("File not found: %s" % args.ai)
+        except IndexError:
+            print("No pictures found")
+        except KeyboardInterrupt:
+            print("\r", end="")
+            print("KeyboardInterrupt detected. Exiting gracefully.")
+            sys.exit(0)
     else:
         try:
             check_site(args.url)
