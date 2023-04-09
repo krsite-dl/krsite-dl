@@ -1,4 +1,5 @@
 import requests
+import re
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -15,7 +16,8 @@ def from_mbc(hd):
         w.get(hd)
 
         post_title = w.find_element(By.TAG_NAME, 'h2').text
-        post_date = w.find_element(By.CLASS_NAME, 'date').text.replace('/', '')[:8]
+        post_date = w.find_element(By.CLASS_NAME, 'date').text
+        post_date_short = post_date.replace('/', '')[:8]
 
         img_list = []
 
@@ -28,8 +30,12 @@ def from_mbc(hd):
         w.quit()
 
         print("Found %s image(s)" % len(img_list))
+
+        post_date = post_date.replace('/', '')
+        post_date = re.sub(r'\([^)]*\)', '', post_date)
+        post_date = re.sub(r'\s+', ' ', post_date)
         
-        dir.dir_handler(img_list, post_title, post_date)
+        dir.dir_handler(img_list, post_title, post_date_short, post_date)
 
 
     mbc_post(hd)
