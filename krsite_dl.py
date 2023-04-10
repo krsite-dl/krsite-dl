@@ -1,15 +1,15 @@
 import argparse
 import sys
-import sites.dispatch as dispatch
-import sites.imbcnews as imbcnews
-import sites.newsjamm as newsjamm
-import sites.osen as osen
-import sites.sbs as sbs
-import sites.mbc as mbc
-import sites.naverpost as naverpost
-import sites.navernews as navernews
-import sites.generic as generic  
-import sites.direct as direct   
+import extractor.dispatch as dispatch
+import extractor.imbcnews as imbcnews
+import extractor.newsjamm as newsjamm
+import extractor.osen as osen
+import extractor.sbs as sbs
+import extractor.mbc as mbc
+import extractor.naverpost as naverpost
+import extractor.navernews as navernews
+import extractor.generic as generic  
+import extractor.direct as direct   
 
 parser = argparse.ArgumentParser()
 parser.add_argument("url", nargs='?',type=str, help="valid news/blog url")
