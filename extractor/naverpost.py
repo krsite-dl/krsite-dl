@@ -1,4 +1,5 @@
 import time
+import datetime
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -96,12 +97,14 @@ def from_naverpost(hd):
             post_series = w.find_element(By.CLASS_NAME, 'se_series').text[3:]
             post_title = w.find_element(By.CLASS_NAME, 'se_textarea').text.replace('\n', ' ')
             post_date = w.find_element(By.CLASS_NAME, 'se_publishDate').text
-            post_date_short = post_date.replace('.', '')[:8]
+            post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d. %H:%M')
+            post_date_short = post_date.strftime('%y%m%d')
         except NoSuchElementException:
             post_series = w.find_element(By.CLASS_NAME, 'series').text
             post_title = w.find_element(By.CLASS_NAME, 'title').text.replace('\n', ' ')
             post_date = w.find_element(By.CLASS_NAME, 'post_date').text
-            post_date_short = post_date.replace('.', '')[:8]
+            post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d. %H:%M')
+            post_date_short = post_date.strftime('%y%m%d')
 
         img_list = []
 

@@ -134,7 +134,7 @@ def download_handler_naver(img_list, dirs, post_date, chunk_size = 128):
 
             # Set file and folders modification time
             utc = pytz.timezone("Asia/Seoul")
-            dt = datetime.datetime.strptime(post_date, "%Y.%m.%d. %H:%M")
+            dt = post_date
             dt = utc.localize(dt)
             
             timestamp = int(dt.timestamp())
