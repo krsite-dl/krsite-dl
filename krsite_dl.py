@@ -5,9 +5,12 @@ import extractor.imbcnews as imbcnews
 import extractor.newsjamm as newsjamm
 import extractor.osen as osen
 import extractor.sbs as sbs
+import extractor.sbsnews as sbsnews
 import extractor.mbc as mbc
 import extractor.naverpost as naverpost
 import extractor.navernews as navernews
+import extractor.tvreport as tvreport
+import extractor.kodyssey as kodyssey
 import extractor.generic as generic  
 import extractor.direct as direct   
 
@@ -23,86 +26,73 @@ args = parser.parse_args()
 
 def check_site(url):
     url = url.strip()
-    
-    if 'dispatch.co.kr' in url:
-        print("\nSite name 'Dispatch'")
-        dispatch.from_dispatch(url)
-        return
-    if 'enews.imbc.com' in url:
-        print("\nSite name 'iMBC News'")
-        imbcnews.from_imbcnews(url)
-        return
-    if 'newsjamm.co.kr' in url:
-        print("\nSite name 'News Jamm'")
-        newsjamm.from_newsjamm(url)
-        return
-    if 'osen.mt.co.kr' in url:
-        print("\nSite name 'OSEN'")
-        osen.from_osen(url)
-        return
-    if 'sbs.co.kr' in url:
-        print("\nSite name 'SBS'")
-        sbs.from_sbs(url)
-        return
-    if 'mbc.co.kr' in url:
-        print("\nSite name 'MBC와 함께'")
-        mbc.from_mbc(url)
-        return
-    if 'post.naver.com' in url:
-        print("\nSite name 'Naver 포스트'")
-        naverpost.from_naverpost(url)
-        return
-    if 'entertain.naver.com' in url:
-        print("\nSite name 'Naver 뉴스'")
-        navernews.from_navernews(url)
-        return
+
+    site_dict = {
+        'dispatch.co.kr': ['Dispatch', dispatch.from_dispatch],
+        'enews.imbc.com': ['iMBC News', imbcnews.from_imbcnews],
+        'newsjamm.co.kr': ['News Jamm', newsjamm.from_newsjamm],
+        'osen.mt.co.kr': ['OSEN', osen.from_osen],
+        'programs.sbs.co.kr': ['SBS Program', sbs.from_sbs],
+        'ent.sbs.co.kr': ['SBS News', sbsnews.from_sbsnews],
+        'mbc.co.kr': ['MBC', mbc.from_mbc],
+        'post.naver.com': ['Naver Post', naverpost.from_naverpost],
+        'news.naver.com': ['Naver News', navernews.from_navernews],
+        'tvreport.co.kr': ['TV Report', tvreport.from_tvreport],
+        'k-odyssey.com': ['K-odyssey', kodyssey.from_kodyssey],
+        'generic': ['Generic', generic.from_generic]
+    }
+
+    for site in site_dict:
+        if site in url:
+            print("\nSite name '%s'" % site_dict[site][0])
+            site_dict[site][1](url)
+            return
     else:
-        # print("URL invalid / Site not supported. [%s]" % url)
-        print("\nGeneric Sites %s *may not work" % url.split('/')[2])
-        generic.from_generic(url)
+        print("\nSite name '%s'" % site_dict['generic'][0])
+        site_dict['generic'][1](url)
         return
 
+
 def main():
-    if args.a:
-        try:
+    try:
+        if args.a:
             with open(args.a, 'r') as f:
                 for line in f:
                     if line[0] == '#' or line[0] == ';' or line[0] == ']':
                         continue
                     elif line != '\n':
-                        check_site(line)
-        except FileNotFoundError:
-            print("File not found: %s" % args.a)
-        except IndexError:
-            print("No pictures found")
-        except KeyboardInterrupt:
-            print("\r", end="")
-            print("KeyboardInterrupt detected. Exiting gracefully.")
-            sys.exit(0)
+                        check_site(line)                        
+    except FileNotFoundError:
+        print("File not found: %s" % args.a)
+    except KeyboardInterrupt:
+        print("\r", end="")
+        print("KeyboardInterrupt detected. Exiting gracefully.")
+        sys.exit(0)
+
     if args.ai:
         print("*Direct image url mode")
-        try:
-            with open(args.ai, 'r') as f:
-                for line in f:
-                    if line[0] == '#' or line[0] == ';' or line[0] == ']':
-                        continue
-                    elif line != '\n':
+        with open(args.ai, 'r') as f:
+            for line in f:
+                if line[0] == '#' or line[0] == ';' or line[0] == ']':
+                    continue
+                elif line != '\n':
+                    try:
                         direct.from_direct(line)
-        except FileNotFoundError:
-            print("File not found: %s" % args.ai)
-        except IndexError:
-            print("No pictures found")
-        except KeyboardInterrupt:
-            print("\r", end="")
-            print("KeyboardInterrupt detected. Exiting gracefully.")
-            sys.exit(0)
-    else:
+                    except FileNotFoundError:
+                        print("File not found: %s" % args.ai)
+                    except IndexError:
+                        print("No pictures found")
+                    except KeyboardInterrupt:
+                        print("\r", end="")
+                        print("KeyboardInterrupt detected. Exiting gracefully.")
+                        sys.exit(0)
+    if not args.a or not args.ai:
         try:
             check_site(args.url)
-        except AttributeError:
-            print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
-            print("You must provide at least one URL.")
-            print("Type 'krsite-dl -h' for more information.")
+        # except AttributeError:
+        #     print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
+        #     print("You must provide at least one URL.")
+        #     print("Type 'krsite-dl -h' for more information.")
         except IndexError:
             print("No pictures found")
         except KeyboardInterrupt:

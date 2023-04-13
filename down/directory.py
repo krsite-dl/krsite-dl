@@ -31,7 +31,7 @@ def dir_handler_alt(img_list, title = None, post_date_short = None, post_date = 
         title = re.sub(reserved_pattern, '', title)
 
     if title != None and post_date_short != None:
-        dirs = kr.args.destination + '/' + post_date_short[2:]
+        dirs = kr.args.destination + '/' + post_date_short
         subdirs = dirs + '/' + title
         if not os.path.exists(dirs):
             os.makedirs(dirs)
