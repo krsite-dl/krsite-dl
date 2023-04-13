@@ -1,4 +1,5 @@
 import time
+import datetime
 import requests
 import json
 import down.directory as dir
@@ -58,7 +59,10 @@ def from_sbs(hd):
     
     data = json_data['Response_Data_For_Detail']
     post_title = data['TITLE'].strip()
-    post_date = data['REG_DATE'].replace('-', '')[:8].strip()
+    post_date = data['REG_DATE'].strip()
+    post_date = datetime.datetime.strptime(post_date, '%Y-%m-%d %H:%M:%S')
+    post_date_short = post_date.strftime('%y%m%d')
+
     img_list = []
 
     print("Title: %s" % post_title)
@@ -73,4 +77,4 @@ def from_sbs(hd):
     
     print("Found %s image(s)" % len(img_list))
 
-    dir.dir_handler(img_list, post_title, post_date)
+    dir.dir_handler(img_list, post_title, post_date_short, post_date)

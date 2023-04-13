@@ -12,7 +12,7 @@ def dir_handler(img_list, title = None, post_date_short = None, post_date = None
             title = re.sub(reserved_pattern, '', title)
     
     if title != None and post_date_short != None:
-        dirs = kr.args.destination + '/' + post_date_short[2:] + ' ' + title
+        dirs = kr.args.destination + '/' + post_date_short + ' ' + title
         if not os.path.exists(dirs):
             os.makedirs(dirs)
     else:
@@ -53,7 +53,7 @@ def dir_handler_naver(img_list, title = None, post_date_short = None, series = N
         title = re.sub(reserved_pattern, '', title)
 
     if title != None and post_date_short != None and series != None:
-        dirs = kr.args.destination + '/' + series + '/' + post_date_short[2:] + ' ' + title
+        dirs = kr.args.destination + '/' + series + '/' + post_date_short + ' ' + title
         if not os.path.exists(dirs):
             os.makedirs(dirs)
     else:
