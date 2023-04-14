@@ -76,8 +76,11 @@
 
 ## Usage
 ```python3 krsite-dl [OPTIONS] URL [URL...]```
+
 ```python3 krsite-dl https://example.com -d ~/Pictures/```
+
 ```python3 krsite-dl -a ~/Pictures/list.txt -d ~/Pictures```
+
 ```python3 krsite-dl -ai ~/Pictures/imagelist.txt -d ~/Pictures```
 
 ## Options
