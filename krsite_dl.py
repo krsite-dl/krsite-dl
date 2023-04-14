@@ -30,11 +30,11 @@ def check_site(url):
     site_dict = {
         'dispatch.co.kr': ['Dispatch', dispatch.from_dispatch],
         'enews.imbc.com': ['iMBC News', imbcnews.from_imbcnews],
+        'mbc.co.kr': ['MBC', mbc.from_mbc],
         'newsjamm.co.kr': ['News Jamm', newsjamm.from_newsjamm],
         'osen.mt.co.kr': ['OSEN', osen.from_osen],
         'programs.sbs.co.kr': ['SBS Program', sbs.from_sbs],
         'ent.sbs.co.kr': ['SBS News', sbsnews.from_sbsnews],
-        'mbc.co.kr': ['MBC', mbc.from_mbc],
         'post.naver.com': ['Naver Post', naverpost.from_naverpost],
         'news.naver.com': ['Naver News', navernews.from_navernews],
         'tvreport.co.kr': ['TV Report', tvreport.from_tvreport],
