@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 import down.directory as dir
 
 def from_imbcnews(hd):
-    print("Url: %s" % hd)
     r = requests.get(hd)
     soup = BeautifulSoup(r.text, 'html.parser')
     post_title = soup.find('h2').text.strip()
