@@ -25,8 +25,6 @@ args = parser.parse_args()
 
 
 def check_site(url):
-    url = url.strip()
-
     site_dict = {
         'dispatch.co.kr': ['Dispatch', dispatch.from_dispatch],
         'enews.imbc.com': ['iMBC News', imbcnews.from_imbcnews],
@@ -44,14 +42,16 @@ def check_site(url):
 
     for site in site_dict:
         if site in url:
-            print("\nSite name '%s'" % site_dict[site][0])
+            print("\n\033[1;31mSite name '%s'\033[0;0m" % site_dict[site][0])
+            print("\033[1;30;43mUrl: %s\033[0;0m" % url)
             site_dict[site][1](url)
             return
     else:
-        print("\nSite name '%s'" % site_dict['generic'][0])
+        print("\n\033[1;31mSite name '%s'\033[0;0m" % site_dict['generic'][0])
+        print("\030[1;30;43mUrl: %s\033[0;0m" % url)
         site_dict['generic'][1](url)
         return
-
+    
 
 def main():
     try:

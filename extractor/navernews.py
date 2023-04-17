@@ -4,7 +4,6 @@ import down.directory as dir
 
 
 def from_navernews(hd):
-    print("Url: %s" % hd)
     r = requests.get(hd)
     soup = BeautifulSoup(r.text, 'html.parser')
     

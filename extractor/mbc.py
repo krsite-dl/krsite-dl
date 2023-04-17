@@ -6,7 +6,6 @@ from selenium.common.exceptions import NoSuchElementException
 import down.directory as dir
 
 def from_mbc(hd):
-    print("Url: %s" % hd)
     opt = Options()
     opt.add_argument('--headless')
     w = wd.Chrome(options=opt)

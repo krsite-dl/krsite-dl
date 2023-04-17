@@ -7,7 +7,6 @@ from selenium.common.exceptions import NoSuchElementException
 import down.directory as dir
 
 def from_naverpost(hd):
-    print("Url: %s" % hd)
     opt = Options()
     opt.add_argument('--headless')
     w = wd.Chrome(options=opt)
@@ -127,17 +126,17 @@ def from_naverpost(hd):
         dir.dir_handler_naver(img_list, post_title, post_date_short, post_series, post_date)
 
     if 'my.naver' in hd:
-        print("Naver Post Main Page")
+        print("\033[1;32mNaver Post Main Page\033[0;0m")
         naverpost_search(hd)
     elif 'authorPost.naver' in hd:
-        print("Naver Post Search Result")
+        print("\033[1;32mNaver Post Search Result\033[0;0m")
         naverpost_search(hd)
     elif 'series.naver' in hd:
-        print("Naver Post Series Page")
+        print("\033[1;32mNaver Post Series Page\033[0;0m")
         naverpost_series(hd)
     elif 'detail.naver' in hd:
-        print("Naver Post Series List")
+        print("\033[1;32mNaver Post Series List\033[0;0m")
         naverpost_list(hd)
     elif 'postView.naver' in hd:
-        print("Naver Post Page")
+        print("\033[1;32mNaver Post Page\033[0;0m")
         naverpost_post(hd)
