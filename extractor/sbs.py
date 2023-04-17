@@ -42,12 +42,12 @@ def from_sbs(hd):
     ############################
 
     for i in code_temp:
-        print(i)
+        print("Code: %s" % i)
         code = i
         api = 'https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/'
         params = '%s?callback=boardViewCallback_%s&action_type=callback&board_code=%s&jwt-token=&_=%s' % (board_no, code, code, token)
 
-        print(api + params)
+        # print(api + params)
         r = requests.get(api + params)
         if 'err_code' not in r.text:
             break
