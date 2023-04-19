@@ -25,8 +25,11 @@ def from_sbs(hd):
         '71279': ['inkigayo_pt04'],
         '71656': ['inkigayo_pt05'],
         '76748': ['inkigayo_pt06'],
+        '70688': ['2021sbsgayo_pt1'],
+        '70687': ['2021sbsgayo_pt2'],
         '76371': ['2022sbsgayo_pt'],
-        '58358': ['theshow04_pt']
+        '58358': ['theshow04_pt'],
+        '65175': ['sbspr_02']
     }
 
     code_temp = []
