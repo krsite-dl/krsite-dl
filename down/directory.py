@@ -48,12 +48,12 @@ def dir_handler_alt(img_list, title = None, post_date_short = None, post_date = 
     download_handler(img_list, subdirs, post_date)
     
 
-def dir_handler_naver(img_list, title = None, post_date_short = None, series = None, post_date = None):
+def dir_handler_naver(img_list, title = None, post_date_short = None, series = None, post_date = None, post_writer = None):
     if not kr.args.no_windows_filenames:
         title = re.sub(reserved_pattern, '', title)
 
     if title != None and post_date_short != None and series != None:
-        dirs = kr.args.destination + '/' + series + '/' + post_date_short + ' ' + title
+        dirs = kr.args.destination + '/' + post_writer + '/' + series + '/' + post_date_short + ' ' + title
         if not os.path.exists(dirs):
             os.makedirs(dirs)
     else:
