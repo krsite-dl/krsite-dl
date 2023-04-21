@@ -93,12 +93,14 @@ def from_naverpost(hd):
         w.get(hd)
 
         try:
+            post_writer = w.find_element(By.CLASS_NAME, 'se_author').text
             post_series = w.find_element(By.CLASS_NAME, 'se_series').text[3:]
             post_title = w.find_element(By.CLASS_NAME, 'se_textarea').text.replace('\n', ' ')
             post_date = w.find_element(By.CLASS_NAME, 'se_publishDate').text
             post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d. %H:%M')
             post_date_short = post_date.strftime('%y%m%d')
         except NoSuchElementException:
+            post_writer = w.find_element(By.CLASS_NAME, 'writer.ell').text
             post_series = w.find_element(By.CLASS_NAME, 'series').text
             post_title = w.find_element(By.CLASS_NAME, 'title').text.replace('\n', ' ')
             post_date = w.find_element(By.CLASS_NAME, 'post_date').text
@@ -110,7 +112,8 @@ def from_naverpost(hd):
         print("\nSeries: %s" % post_series)
         print("Title: %s" % post_title)
         print("Date: %s" % post_date_short)
-
+        print("Writer: %s" % post_writer)
+        
         for i in w.find_elements(By.CLASS_NAME, 'se_mediaImage'):
             if 'storep' not in i.get_attribute('src'):
                 img_list.append(str(i.get_attribute('src').split('?')[0]))
@@ -123,7 +126,7 @@ def from_naverpost(hd):
 
         print("Found %s image(s)" % len(img_list))
 
-        dir.dir_handler_naver(img_list, post_title, post_date_short, post_series, post_date)
+        dir.dir_handler_naver(img_list, post_title, post_date_short, post_series, post_date, post_writer)
 
     if 'my.naver' in hd:
         print("\033[1;32mNaver Post Main Page\033[0;0m")
