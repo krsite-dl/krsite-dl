@@ -51,6 +51,7 @@ def dir_handler_alt(img_list, title = None, post_date_short = None, post_date = 
 def dir_handler_naver(img_list, title = None, post_date_short = None, series = None, post_date = None, post_writer = None):
     if not kr.args.no_windows_filenames:
         title = re.sub(reserved_pattern, '', title)
+        post_writer = re.sub(reserved_pattern, '', post_writer)
 
     if title != None and post_date_short != None and series != None:
         dirs = kr.args.destination + '/' + post_writer + '/' + series + '/' + post_date_short + ' ' + title
