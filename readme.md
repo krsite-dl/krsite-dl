@@ -11,6 +11,7 @@
     * [SBS News](#sbs-news)
     * [TV Report (TV리포트)](#tv-report-tv리포트)
     * [K odyssey](#k-odyssey)
+    * [JTBC TV](#jtbc-tv)
 * [Usage](#usage)
 * [Options](#options)
 
@@ -73,6 +74,11 @@
 ```https://k-odyssey.com/```
 * Post Page
 ```https://k-odyssey.com/news/newsview.php?ncode=1065598383621554```
+
+### JTBC TV
+```https://tv.jtbc.co.kr/```
+* Post Page
+```https://tv.jtbc.co.kr/board/pr10011498/pm10065691/detail/71```
 
 ## Usage
 ```python3 krsite-dl [OPTIONS] URL [URL...]```
