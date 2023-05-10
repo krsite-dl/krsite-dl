@@ -11,8 +11,9 @@ import extractor.naverpost as naverpost
 import extractor.navernews as navernews
 import extractor.tvreport as tvreport
 import extractor.kodyssey as kodyssey
-import extractor.generic as generic  
-import extractor.direct as direct   
+import extractor.tvjtbc as tvjtbc
+import extractor.generic as generic
+import extractor.direct as direct
 
 parser = argparse.ArgumentParser()
 parser.add_argument("url", nargs='?',type=str, help="valid news/blog url")
@@ -38,6 +39,7 @@ def check_site(url):
         'news.naver.com': ['Naver News', navernews.from_navernews],
         'tvreport.co.kr': ['TV Report', tvreport.from_tvreport],
         'k-odyssey.com': ['K-odyssey', kodyssey.from_kodyssey],
+        'tv.jtbc.co.kr': ['JTBC TV', tvjtbc.from_tvjtbc],
         'generic': ['Generic', generic.from_generic]
     }
 
