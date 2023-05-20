@@ -12,6 +12,10 @@ import extractor.navernews as navernews
 import extractor.tvreport as tvreport
 import extractor.kodyssey as kodyssey
 import extractor.tvjtbc as tvjtbc
+import extractor.dazedkorea as dazedkorea
+import extractor.cosmopolitan as cosmopolitan
+import extractor.marieclairekorea as marieclairekorea
+import extractor.lofficielkorea as lofficielkorea
 import extractor.generic as generic
 import extractor.direct as direct
 
@@ -40,6 +44,10 @@ def check_site(url):
         'tvreport.co.kr': ['TV Report', tvreport.from_tvreport],
         'k-odyssey.com': ['K-odyssey', kodyssey.from_kodyssey],
         'tv.jtbc.co.kr': ['JTBC TV', tvjtbc.from_tvjtbc],
+        'dazedkorea.com': ['Dazed Korea', dazedkorea.from_dazedkorea],
+        'cosmopolitan.co.kr': ['Cosmopolitan', cosmopolitan.from_cosmopolitan],
+        'marieclairekorea.com': ['Marie Claire Korea', marieclairekorea.from_marieclairekorea],
+        'lofficielkorea.com': ["L'officiel Korea", lofficielkorea.from_lofficielkorea],
         'generic': ['Generic', generic.from_generic]
     }
 
