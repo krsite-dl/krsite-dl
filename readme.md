@@ -12,6 +12,7 @@
     * [TV Report (TV리포트)](#tv-report-tv리포트)
     * [K odyssey](#k-odyssey)
     * [JTBC TV](#jtbc-tv)
+* [Prerequisite](#prerequisite)
 * [Usage](#usage)
 * [Options](#options)
 
@@ -79,6 +80,10 @@
 ```https://tv.jtbc.co.kr/```
 * Post Page
 ```https://tv.jtbc.co.kr/board/pr10011498/pm10065691/detail/71```
+
+## Prerequisite
+```Python 3``` installed
+Run ```pip3 install -r requirements.txt``` to install dependencies
 
 ## Usage
 ```python3 krsite-dl [OPTIONS] URL [URL...]```
