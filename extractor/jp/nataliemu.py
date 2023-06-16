@@ -1,13 +1,31 @@
 import requests
+import re
+import json
+import datetime
 from bs4 import BeautifulSoup
+import down.directory as dir
 
 def from_nataliemu(hd):
     r = requests.get(hd)
-
     soup = BeautifulSoup(r.text, 'html.parser')
 
-    content = soup.find('article')
-    post_title = content.find('h1', class_='NA_article_title').text
-    post_date = content.find('span', class_='NA_article_date').text
+    json_raw = soup.find('script', type='application/ld+json')
+    json_data = re.sub(r'\\/', '/', bytes(json_raw.string, "utf=8").decode("unicode_escape"))
+    data = json.loads(json_data)
 
-    
+    post_title = data[0]["itemListElement"][-1]["item"]["name"]
+    post_date = data[1]["datePublished"]
+    post_date = datetime.datetime.strptime(post_date, '%Y-%m-%dT%H:%M:%S%z')
+    post_date = post_date.replace(tzinfo=None)
+    post_date_short = post_date.strftime('%Y%m%d')[2:]
+
+    print(post_title)
+    print(post_date)
+
+    content = soup.find('div', class_='NA_article_gallery')
+
+    img_list = []
+    for item in content.findAll('img'):
+        img_list.append(item['data-src'].split('?')[0])
+
+    dir.dir_handler(img_list, post_title, post_date_short, post_date)
