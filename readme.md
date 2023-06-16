@@ -1,4 +1,4 @@
-## Table of Contents
+    ## Table of Contents
 * [Supported Sites](#supported-sites)
     * [Naver Posts (Naver 포스트)](#naver-posts-naver-포스트)
     * [Naver News](#naver-news)
@@ -42,7 +42,7 @@
 ```https://enews.imbc.com/News/RetrieveNewsInfo/371280```
 
 ### MBC PR (MBC와 함께)
-```https://with.mbc.co.kr/pr/photo/```
+```https://with.mbc.co.kr/m/pr/photo/view.html```
 * Post Page
 ```https://with.mbc.co.kr/m/pr/photo/view.html?idx=56198&page=5&keyword=```
 

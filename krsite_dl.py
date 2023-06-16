@@ -1,23 +1,9 @@
 import argparse
 import sys
-import extractor.dispatch as dispatch
-import extractor.imbcnews as imbcnews
-import extractor.newsjamm as newsjamm
-import extractor.osen as osen
-import extractor.sbs as sbs
-import extractor.sbsnews as sbsnews
-import extractor.mbc as mbc
-import extractor.naverpost as naverpost
-import extractor.navernews as navernews
-import extractor.tvreport as tvreport
-import extractor.kodyssey as kodyssey
-import extractor.tvjtbc as tvjtbc
-import extractor.dazedkorea as dazedkorea
-import extractor.cosmopolitan as cosmopolitan
-import extractor.marieclairekorea as marieclairekorea
-import extractor.lofficielkorea as lofficielkorea
-import extractor.generic as generic
-import extractor.direct as direct
+from extractor import direct, generic
+from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, tvreport, kodyssey, tvjtbc, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea
+from extractor.jp import nataliemu
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("url", nargs='?',type=str, help="valid news/blog url")
@@ -29,9 +15,11 @@ parser.add_argument("--no-windows-filenames", action="store_true", help="By defa
 parser.add_argument("-d", "--destination", type=str, default=".",help="The destination path for the downloaded file")
 args = parser.parse_args()
 
+sitename = ''
 
 def check_site(url):
     site_dict = {
+        # KOREAN SITES
         'dispatch.co.kr': ['Dispatch', dispatch.from_dispatch],
         'enews.imbc.com': ['iMBC News', imbcnews.from_imbcnews],
         'mbc.co.kr': ['MBC', mbc.from_mbc],
@@ -48,11 +36,16 @@ def check_site(url):
         'cosmopolitan.co.kr': ['Cosmopolitan', cosmopolitan.from_cosmopolitan],
         'marieclairekorea.com': ['Marie Claire Korea', marieclairekorea.from_marieclairekorea],
         'lofficielkorea.com': ["L'officiel Korea", lofficielkorea.from_lofficielkorea],
+        # JAPAN SITES
+        'natalie.mu': ['Natalie 音楽ナタリー', nataliemu.from_nataliemu],
+        # SINGAPORE SITES
+        # FALLBACK
         'generic': ['Generic', generic.from_generic]
     }
 
     for site in site_dict:
         if site in url:
+            sitename = site_dict[site][0]
             print("\n\033[1;31mSite name '%s'\033[0;0m" % site_dict[site][0])
             print("\033[1;30;43mUrl: %s\033[0;0m" % url)
             site_dict[site][1](url)
@@ -72,7 +65,7 @@ def main():
                     if line[0] == '#' or line[0] == ';' or line[0] == ']':
                         continue
                     elif line != '\n':
-                        check_site(line)                        
+                        check_site(line.strip())                        
     except FileNotFoundError:
         print("File not found: %s" % args.a)
     except KeyboardInterrupt:
