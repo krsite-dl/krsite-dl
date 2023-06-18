@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from urllib.parse import urlparse, parse_qs, unquote
 import down.directory as dir
 
-def from_lofficielkorea(hd, loc, folder_name):
+def from_lofficielsingapore(hd, loc, folder_name):
     img_list = []
 
     opt = Options()
@@ -41,7 +41,7 @@ def from_lofficielkorea(hd, loc, folder_name):
     post_date = json_data['datePublished']
     post_date_short = post_date.replace('-', '')[2:8]
     post_date = datetime.datetime.strptime(post_date, '%Y-%m-%dT%H:%M:%S.%fZ')
-    tz = timezone('Asia/Seoul')
+    tz = timezone('Asia/Singapore')
     post_date = post_date.astimezone(tz).replace(tzinfo=None)
 
     w.quit()

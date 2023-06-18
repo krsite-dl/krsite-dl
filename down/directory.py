@@ -6,59 +6,57 @@ import krsite_dl as kr
 
 # windows reserved characters
 reserved_pattern = r'[\\/:*?"<>|]'
-def dir_handler(img_list, title = None, post_date_short = None, post_date = None):
+
+# directory handling for press sites / blogs that have distinct topics
+def dir_handler(img_list, title = None, post_date_short = None, post_date = None, loc = None, folder_name = None):
     if not kr.args.ai:
         if not kr.args.no_windows_filenames:
             title = re.sub(reserved_pattern, '', title)
     
     if title != None and post_date_short != None:
-        dirs = kr.args.destination + '/' + post_date_short + ' ' + title
+        dirs = os.path.join(kr.args.destination, 'krsite-dl', folder_name, post_date_short + ' ' + title)
         if not os.path.exists(dirs):
             os.makedirs(dirs)
     else:
-        dirs = kr.args.destination
+        dirs = os.path.join(kr.args.destination, 'krsite-dl', folder_name)
         if not os.path.exists(dirs):
             os.makedirs(dirs)
 
     if kr.args.ai:
-        download_handler_alt(img_list, dirs, post_date)
+        download_handler_alt(img_list, dirs, post_date, loc)
     else:
-        download_handler(img_list, dirs, post_date)
+        download_handler(img_list, dirs, post_date, loc)
 
 
-def dir_handler_alt(img_list, title = None, post_date_short = None, post_date = None):
+# directory handling for press sites / blogs that don't have distinct topics (e.g. news / random topics)
+def dir_handler_alt(img_list, title = None, post_date_short = None, post_date = None, loc = None, folder_name = None):
     if not kr.args.no_windows_filenames:
         title = re.sub(reserved_pattern, '', title)
 
     if title != None and post_date_short != None:
-        dirs = kr.args.destination + '/' + post_date_short
-        subdirs = dirs + '/' + title
+        dirs = os.path.join(kr.args.destination, 'krsite-dl', folder_name, post_date_short, title)
         if not os.path.exists(dirs):
             os.makedirs(dirs)
-            if not os.path.exists(dirs + '/' + title):               
-                os.makedirs(subdirs)
-        else:
-            if not os.path.exists(dirs + '/' + title):
-                os.makedirs(subdirs)
     else:
-        dirs = kr.args.destination
+        dirs = os.path.join(kr.args.destination, 'krsite-dl', folder_name)
         if not os.path.exists(dirs):
             os.makedirs(dirs)
 
-    download_handler(img_list, subdirs, post_date)
+    download_handler(img_list, dirs, post_date, loc)
     
 
+# directory handling for naver blogs
 def dir_handler_naver(img_list, title = None, post_date_short = None, series = None, post_date = None, post_writer = None):
     if not kr.args.no_windows_filenames:
         title = re.sub(reserved_pattern, '', title)
         post_writer = re.sub(reserved_pattern, '', post_writer)
 
     if title != None and post_date_short != None and series != None:
-        dirs = kr.args.destination + '/' + post_writer + '/' + series + '/' + post_date_short + ' ' + title
+        dirs = os.path.join(kr.args.destination, post_writer, series, post_date_short + ' ' + title)
         if not os.path.exists(dirs):
             os.makedirs(dirs)
     else:
-        dirs = kr.args.destination
+        dirs = os.path.jon(kr.args.destination, 'krsite-dl')
         if not os.path.exists(dirs):
             os.makedirs(dirs)
 
