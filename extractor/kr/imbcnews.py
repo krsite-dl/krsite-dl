@@ -4,7 +4,7 @@ import datetime
 from bs4 import BeautifulSoup
 import down.directory as dir
 
-def from_imbcnews(hd):
+def from_imbcnews(hd, loc, folder_name):
     r = requests.get(hd)
     soup = BeautifulSoup(r.text, 'html.parser')
     post_title = soup.find('h2').text.strip()
@@ -29,4 +29,4 @@ def from_imbcnews(hd):
     print("Found %s image(s)" % len(img_list))
     
 
-    dir.dir_handler_alt(img_list, post_title, post_date_short, post_date)
+    dir.dir_handler_alt(img_list, post_title, post_date_short, post_date, loc, folder_name)

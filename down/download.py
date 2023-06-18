@@ -6,7 +6,7 @@ import pytz
 from urllib.parse import unquote
 from down.progress import progress_handler
 
-def download_handler(img_list, dirs, post_date, chunk_size = 128):
+def download_handler(img_list, dirs, post_date, loc, chunk_size = 128):
     print("Downloading image(s) to folder: ", dirs)
     for img in img_list:
         try:
@@ -63,13 +63,20 @@ def download_handler(img_list, dirs, post_date, chunk_size = 128):
             print("\n[Status] Image %s downloaded" % img_name)
 
             # Set file and folders modification time
-            utc = pytz.timezone("Asia/Seoul")
+            if loc == "KR":
+                utc = pytz.timezone("Asia/Seoul")
+            elif loc == "JP":
+                utc = pytz.timezone("Asia/Tokyo")
+            elif loc == "SG":
+                utc = pytz.timezone("Asia/Singapore")
+            
             dt = post_date
             dt = utc.localize(dt)
-            
             timestamp = int(dt.timestamp())
+            
             # print(timestamp)
             # print(dt)
+            print(timestamp)
 
             os.utime(dirs + '/' + img_name, (timestamp, timestamp))
         os.utime(dirs, (timestamp, timestamp))
