@@ -1,6 +1,5 @@
 # REQUIRED PACKAGE
 # RUN `pip install -r requirements.txt` to install all the required packages
-urllib
 requests
 selenium
 bs4
