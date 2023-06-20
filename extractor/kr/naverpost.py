@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 import down.directory as dir
 
-def from_naverpost(hd):
+def from_naverpost(hd, loc, folder_name):
     opt = Options()
     opt.add_argument('--headless')
     w = wd.Chrome(options=opt)
@@ -126,7 +126,7 @@ def from_naverpost(hd):
 
         print("Found %s image(s)" % len(img_list))
 
-        dir.dir_handler_naver(img_list, post_title, post_date_short, post_series, post_date, post_writer)
+        dir.dir_handler_naver(img_list, post_title, post_date_short, post_series, post_date, post_writer, folder_name)
 
     if 'my.naver' in hd:
         print("\033[1;32mNaver Post Main Page\033[0;0m")
