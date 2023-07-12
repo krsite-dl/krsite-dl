@@ -1,7 +1,7 @@
 import argparse
 import sys
 from extractor import direct, generic
-from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, tvreport, kodyssey, tvjtbc, newsen, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar
+from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, kodyssey, tvjtbc, newsen, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar
 from extractor.jp import nataliemu
 from extractor.sg import lofficielsingapore
 
@@ -13,7 +13,7 @@ parser.add_argument("-ai", type=str, help="text file containing image urls")
 parser.add_argument("--no-windows-filenames", action="store_true", help="By default krsite-dl will remove characters that are not allowed in Windows filenames. This option will disable that.")
 # parser.add_argument("--force-date", type=str, help="Force a date for the downloaded file. Format: YYYYMMDD HHMMSS")
 # parser.add_argument("--board-no", type=int, help="The board number from a site (SBS). For example (https://programs.sbs.co.kr/enter/gayo/visualboard/54795?cmd=view&page=1&board_no=438994) will have a board no of 438994")
-parser.add_argument("-d", "--destination", type=str, default=".",help="The destination path for the downloaded file")
+parser.add_argument("-d", "--destination", default="/home/biscuits/Pictures/IVE", type=str, help="The destination path for the downloaded file")
 args = parser.parse_args()
 
 sitename = ''
@@ -31,6 +31,7 @@ def check_site(url):
             'ent.sbs.co.kr': ['SBS News', sbsnews.from_sbsnews],
             'post.naver.com': ['Naver Post', naverpost.from_naverpost],
             'news.naver.com': ['Naver News', navernews.from_navernews],
+            'news1.kr': ['News1', news1.from_news1],
             'tvreport.co.kr': ['TV Report', tvreport.from_tvreport],
             'k-odyssey.com': ['K-odyssey', kodyssey.from_kodyssey],
             'tv.jtbc.co.kr': ['JTBC TV', tvjtbc.from_tvjtbc],
@@ -64,27 +65,7 @@ def check_site(url):
                     print("\033[1;30;43mUrl: %s\033[0;0m" % url)
                     site_info[1](url, location, site_info[0])
                     return
-
-
-    # for sites in site_dict:
-    #     for site in sites:
-    #         country_code = site
-    #         print(country_code)
-    #         if site in url:
-    #             sitename = site_dict[site][0]
                 
-
-    #             print("\n\033[1;31mSite name '%s'\033[0;0m" % site_dict[site][0])
-    #             print("\033[1;30;43mUrl: %s\033[0;0m" % url)
-    #             print(site_dict[site][1])
-    #             # site_dict[site][1](url, site_dict[site][2])
-    #             return
-    # else:
-    #     print("\n\033[1;31mSite name '%s'\033[0;0m" % site_dict['generic'][0])
-    #     print("\030[1;30;43mUrl: %s\033[0;0m" % url)
-    #     site_dict['generic'][1](url)
-    #     return
-    
 
 def main():
     try:
@@ -119,13 +100,13 @@ def main():
                         print("\r", end="")
                         print("KeyboardInterrupt detected. Exiting gracefully.")
                         sys.exit(0)
-    if not args.a or not args.ai:
+    elif args.a or args.url:
         try:
             check_site(args.url)
-        # except AttributeError:
-        #     print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
-        #     print("You must provide at least one URL.")
-        #     print("Type 'krsite-dl -h' for more information.")
+        except AttributeError:
+            print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
+            print("You must provide at least one URL.")
+            print("Type 'krsite-dl -h' for more information.")
         except IndexError:
             print("No pictures found")
         except KeyboardInterrupt:
