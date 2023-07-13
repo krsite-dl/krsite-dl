@@ -8,7 +8,7 @@ def from_news1(hd, loc, folder_name):
     r = requests.get(hd)
     soup = BeautifulSoup(r.text, 'html.parser')
 
-    post_title = soup.find('meta', property='og:title')['content'].strip().encode('latin-1').decode('utf-8')
+    post_title = soup.find('meta', property='og:title')['content'].strip().encode('latin-1').decode('utf-8', 'ignore')
     post_date = soup.find('meta', property='article:published_time')['content'].strip()
     post_date = datetime.datetime.strptime(post_date, '%Y-%m-%dT%H:%M:%S%z')
     tz = timezone('Asia/Seoul')
