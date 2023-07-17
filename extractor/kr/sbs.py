@@ -4,7 +4,7 @@ import requests
 import json
 import down.directory as dir
 
-def from_sbs(hd):
+def from_sbs(hd, loc, folder_name):
     board_no = hd.split('board_no=')[-1].split('&')[0]
     print("Board no: %s" % board_no)
 
@@ -46,11 +46,17 @@ def from_sbs(hd):
     for i in code_temp:
         print("Code: %s" % i)
         code = i
-        api = 'https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/'
-        params = '%s?callback=boardViewCallback_%s&action_type=callback&board_code=%s&jwt-token=&_=%s' % (board_no, code, code, token)
+        api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/{board_no}"
 
-        # print(api + params)
-        r = requests.get(api + params)
+        params = {
+            'callback': f'boardViewCallback_{code}',
+            'action_type': 'callback',
+            'board_code': code,
+            'jwt-token': '',
+            '_': token
+        }
+
+        r = requests.get(api, params)
         if 'err_code' not in r.text:
             break
 
@@ -79,4 +85,4 @@ def from_sbs(hd):
     
     print("Found %s image(s)" % len(img_list))
 
-    dir.dir_handler(img_list, post_title, post_date_short, post_date)
+    dir.dir_handler(img_list, post_title, post_date_short, post_date, loc, folder_name)

@@ -10,7 +10,7 @@ def from_newsen(hd, loc, folder_name):
     w = wd.Chrome(options=opt)
     w.get(hd)
 
-    post_title = w.find_element(By.CSS_SELECTOR, 'span.art_title').text.strip()
+    post_title = w.find_element(By.XPATH, '//meta[@property="og:title"]').get_attribute('content').strip()
     post_date = w.find_element(By.XPATH, '//meta[@property="article:published_time"]').get_attribute('content').strip()
     post_date = datetime.datetime.strptime(post_date, '%Y-%m-%d %H:%M:%S')
     post_date_short = post_date.strftime('%y%m%d')
