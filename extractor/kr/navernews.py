@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import down.directory as dir
 
 
-def from_navernews(hd):
+def from_navernews(hd, loc, folder_name):
     r = requests.get(hd)
     soup = BeautifulSoup(r.text, 'html.parser')
     
@@ -22,4 +22,4 @@ def from_navernews(hd):
 
     print("Found %s image(s)" % len(img_list))
 
-    dir.dir_handler(img_list, post_title, post_date)
+    dir.dir_handler(img_list, post_title, post_date, loc, folder_name)
