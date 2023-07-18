@@ -1,7 +1,7 @@
 import argparse
 import sys
 from extractor import direct, generic
-from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, kodyssey, tvjtbc, newsen, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea
+from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, kodyssey, tvjtbc, newsen, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue
 from extractor.jp import nataliemu
 from extractor.sg import lofficielsingapore
 
@@ -42,6 +42,8 @@ def check_site(url):
             'lofficielkorea.com': ["L'officiel Korea", lofficielkorea.from_lofficielkorea],
             'harpersbazaar.co.kr': ["Harper's Bazaar Korea", harpersbazaar.from_harpersbazaar],
             'wkorea.com': ['W Korea', wkorea.from_wkorea],
+            'elle.co.kr': ['Elle Korea', elle.from_elle],
+            'vogue.co.kr': ['Vogue Korea', vogue.from_vogue]
         }],
         # JAPANESE SITES
         'JP': [{
