@@ -16,7 +16,13 @@ def from_harpersbazaar(hd, loc, folder_name):
 
     img_list = []
     for item in content.findAll('img'):
-        img_list.append(item.get('lazy'))
+        if item.get('lazy') is not None or item.get('src') is not None:
+            img_list.append(item.get('lazy') or item.get('src'))
+
+    head_img = soup.find('div', class_='article_head')
+    
+    if head_img.get('style') is not None:
+        img_list.append(head_img['style'].split('url(')[1].split(')')[0].replace('"',''))
 
     print("Title: %s" % post_title)
     print("Date: %s" % post_date)
