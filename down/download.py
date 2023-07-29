@@ -1,10 +1,9 @@
 import requests
 import os
 import time
-import datetime
 import pytz
+from rich.progress import Progress
 from urllib.parse import unquote
-from down.progress import progress_handler
 
 def download_handler(img_list, dirs, post_date, loc, chunk_size = 128):
     print("Downloading image(s) to folder: ", dirs)
@@ -51,12 +50,13 @@ def download_handler(img_list, dirs, post_date, loc, chunk_size = 128):
             response = requests.get(img, headers=headers, stream=True)
 
             with open(dirs + '/' + img_name + '.part', 'ab') as f:
-                start = time.time()
-                for chunk in response.iter_content(chunk_size=chunk_size):
-                    current_size += len(chunk)
-                    f.write(chunk)
-                    f.flush()
-                    progress_handler(current_size, content_length, start)
+                with Progress() as progress:
+                    task = progress.add_task("[cyan]Downloading...", total=content_length)
+                    for chunk in response.iter_content(chunk_size=chunk_size):
+                        current_size += len(chunk)
+                        f.write(chunk)
+                        f.flush()
+                        progress.update(task, completed=current_size)
             
             os.rename(dirs + '/' + img_name + '.part', dirs + '/' + img_name)
             
@@ -128,12 +128,13 @@ def download_handler_naver(img_list, dirs, post_date, chunk_size = 128):
             response = requests.get(img, headers=headers, stream=True)
 
             with open(dirs + '/' + img_name + '.part', 'ab') as f:
-                start = time.time()
-                for chunk in response.iter_content(chunk_size=chunk_size):
-                    current_size += len(chunk)
-                    f.write(chunk)
-                    f.flush()
-                    progress_handler(current_size, content_length, start)
+                with Progress() as progress:
+                    task = progress.add_task("[cyan]Downloading...", total=content_length)
+                    for chunk in response.iter_content(chunk_size=chunk_size):
+                        current_size += len(chunk)
+                        f.write(chunk)
+                        f.flush()
+                        progress.update(task, completed=current_size)
             
             os.rename(dirs + '/' + img_name + '.part', dirs + '/' + img_name)
             
@@ -185,12 +186,13 @@ def download_handler_news1(img_list, dirs, post_date, post_date_short, title, lo
             response = requests.get(img, headers=headers, stream=True)
 
             with open(dirs + '/' + img_name + '.part', 'ab') as f:
-                start = time.time()
-                for chunk in response.iter_content(chunk_size=chunk_size):
-                    current_size += len(chunk)
-                    f.write(chunk)
-                    f.flush()
-                    progress_handler(current_size, content_length, start)
+                with Progress() as progress:
+                    task = progress.add_task("[cyan]Downloading...", total=content_length)
+                    for chunk in response.iter_content(chunk_size=chunk_size):
+                        current_size += len(chunk)
+                        f.write(chunk)
+                        f.flush()
+                        progress.update(task, completed=current_size)
             
             os.rename(dirs + '/' + img_name + '.part', dirs + '/' + img_name)
             
@@ -260,12 +262,13 @@ def download_handler_alt(img, dirs, chunk_size = 128):
         response = requests.get(img, headers=headers, stream=True)
 
         with open(dirs + '/' + img_name + '.part', 'ab') as f:
-            start = time.time()
-            for chunk in response.iter_content(chunk_size=chunk_size):
-                current_size += len(chunk)
-                f.write(chunk)
-                f.flush()
-                progress_handler(current_size, content_length, start)
+            with Progress() as progress:
+                task = progress.add_task("[cyan]Downloading...", total=content_length)
+                for chunk in response.iter_content(chunk_size=chunk_size):
+                    current_size += len(chunk)
+                    f.write(chunk)
+                    f.flush()
+                    progress.update(task, completed=current_size)
         
         os.rename(dirs + '/' + img_name + '.part', dirs + '/' + img_name)
         

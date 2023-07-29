@@ -3,10 +3,11 @@ import datetime
 import requests
 import json
 import down.directory as dir
+from rich import print
 
 def from_sbs(hd, loc, folder_name):
     board_no = hd.split('board_no=')[-1].split('&')[0]
-    print("Board no: %s" % board_no)
+    print(f"[cyan]Board no:[/cyan] [white]{board_no}[/white]")
 
     code = ''
 
@@ -44,7 +45,7 @@ def from_sbs(hd, loc, folder_name):
     ############################
 
     for i in code_temp:
-        print("Code: %s" % i)
+        print(f"[cyan]Code:[/cyan] {i}")
         code = i
         api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/{board_no}"
 
