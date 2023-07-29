@@ -1,5 +1,6 @@
 import argparse
 import sys
+from rich import print
 from extractor import direct, generic
 from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, kodyssey, tvjtbc, newsen, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue
 from extractor.jp import nataliemu
@@ -64,8 +65,8 @@ def check_site(url):
         for sites in site_dict[country]:
             for site, site_info in sites.items():
                 if site in url:
-                    print("\n\033[1;31mSite name '%s'\033[0;0m" % site)
-                    print("\033[1;30;43mUrl: %s\033[0;0m" % url)
+                    print(f"[bold blue]Site name {site}[/bold blue]")
+                    print(f"[magenta]Url:[/magenta] {url}")
                     site_info[1](url, location, site_info[0])
                     return
                 
