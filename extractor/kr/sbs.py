@@ -7,7 +7,7 @@ from rich import print
 
 def from_sbs(hd, loc, folder_name):
     board_no = hd.split('board_no=')[-1].split('&')[0]
-    print(f"[cyan]Board no:[/cyan] [white]{board_no}[/white]")
+    print(f"[green]Board no:[/green] {board_no}")
 
     code = ''
 
@@ -45,7 +45,7 @@ def from_sbs(hd, loc, folder_name):
     ############################
 
     for i in code_temp:
-        print(f"[cyan]Code:[/cyan] {i}")
+        print(f"[green]Code:[/green] {i}")
         code = i
         api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/{board_no}"
 
@@ -74,8 +74,8 @@ def from_sbs(hd, loc, folder_name):
 
     img_list = []
 
-    print("Title: %s" % post_title)
-    print("Date: %s" % post_date)
+    print(f"[green]Title:[/green] {post_title}")
+    print(f"[green]Date:[/green] {post_date}")
 
     for i in data['URL']:
         if 'http' not in i:
@@ -84,6 +84,6 @@ def from_sbs(hd, loc, folder_name):
             img_list.append(str(i))
     
     
-    print("Found %s image(s)" % len(img_list))
+    print(f"Found {len(img_list)} image(s)")
 
     dir.dir_handler(img_list, post_title, post_date_short, post_date, loc, folder_name)
