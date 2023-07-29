@@ -7,7 +7,7 @@ from rich import print
 
 def from_sbs(hd, loc, folder_name):
     board_no = hd.split('board_no=')[-1].split('&')[0]
-    print(f"[green]Board no:[/green] {board_no}")
+    print(f"Board no: {board_no}")
 
     code = ''
 
@@ -74,8 +74,8 @@ def from_sbs(hd, loc, folder_name):
 
     img_list = []
 
-    print(f"[green]Title:[/green] {post_title}")
-    print(f"[green]Date:[/green] {post_date}")
+    print(f"Title: {post_title}")
+    print(f"Date: {post_date}")
 
     for i in data['URL']:
         if 'http' not in i:
