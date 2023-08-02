@@ -1,3 +1,6 @@
+    ## Disclaimer
+    This project is aimed for getting images easily from korean sites in which the images are publicly available and not behind any paywall or login. This project is not intended for piracy or any other illegal activities in any way. All images this project downloads can be downloaded manually without this project by interacting with the website page. Any illegal activities done with this project is not the responsibility of the author.
+    
     ## Table of Contents
 * [Supported Sites](#supported-sites)
     * [Naver Posts (Naver 포스트)](#naver-posts-naver-포스트)
