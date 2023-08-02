@@ -1,2 +1,9 @@
 [Settings]
 base_dir = C:\Users\Documents
+
+# Each site will have their own directory after the base_dir.
+# For example:
+# /PATH/Naverpost
+# /PATH/news1
+
+# The base_dir must be /PATH/
