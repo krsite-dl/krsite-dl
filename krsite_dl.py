@@ -1,4 +1,5 @@
 import argparse
+import configparser
 import sys
 from rich import print
 from extractor import direct, generic
@@ -6,6 +7,13 @@ from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, 
 from extractor.jp import nataliemu
 from extractor.sg import lofficielsingapore
 
+# Reading settings from config file
+config = configparser.ConfigParser()
+config.read('config.ini')
+if config.has_section('Settings'):
+    destination_dir = config['Settings']['base_dir']
+else:
+    destination_dir = '.'
 
 parser = argparse.ArgumentParser()
 parser.add_argument("url", nargs='?',type=str, help="valid news/blog url")
@@ -14,7 +22,7 @@ parser.add_argument("-ai", type=str, help="text file containing image urls")
 parser.add_argument("--no-windows-filenames", action="store_true", help="By default krsite-dl will remove characters that are not allowed in Windows filenames. This option will disable that.")
 # parser.add_argument("--force-date", type=str, help="Force a date for the downloaded file. Format: YYYYMMDD HHMMSS")
 # parser.add_argument("--board-no", type=int, help="The board number from a site (SBS). For example (https://programs.sbs.co.kr/enter/gayo/visualboard/54795?cmd=view&page=1&board_no=438994) will have a board no of 438994")
-parser.add_argument("-d", "--destination", default="/home/biscuits/Pictures", type=str, help="The destination path for the downloaded file")
+parser.add_argument("-d", "--destination", default=destination_dir, type=str, help="The destination path for the downloaded file")
 args = parser.parse_args()
 
 sitename = ''
