@@ -59,7 +59,6 @@ def download_handler(img_list, dirs, post_date, loc, chunk_size = 128):
             
             os.rename(dirs + '/' + img_name + '.part', dirs + '/' + img_name)
             
-            print("\n[Status] Image %s downloaded" % img_name)
 
             # Set file and folders modification time
             if loc == "KR":
