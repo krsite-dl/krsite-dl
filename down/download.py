@@ -32,9 +32,8 @@ def download_handler(img_list, dirs, post_date, loc, chunk_size = 128):
         img_name = img_name.decode('euc-kr')
 
         print("[Source URL] %s" % img)
-        print("[Image] %s" % img_name)
+        print("[Image Name] %s" % img_name)
 
-        print("[Metadata] extracting metadata...")
 
         if os.path.exists(dirs + '/' + img_name):
             print("[Status] This file already exists. Skipping...")
@@ -108,9 +107,8 @@ def download_handler_naver(img_list, dirs, post_date, chunk_size = 128):
         img_name = img_name.decode('euc-kr')
 
         print("[Source URL] %s" % img)
-        print("[Image] %s" % img_name)
+        print("[Image Name] %s" % img_name)
 
-        print("[Metadata] extracting metadata...")
 
         if os.path.exists(dirs + '/' + img_name):
             print("[Status] This file already exists. Skipping...")
@@ -166,9 +164,8 @@ def download_handler_news1(img_list, dirs, post_date, post_date_short, title, lo
         img_name = f'{post_date_short} {title}.{img_ext}'
 
         print("[Source URL] %s" % img)
-        print("[Image] %s" % img_name)
+        print("[Image Name] %s" % img_name)
 
-        print("[Metadata] extracting metadata...")
 
         if os.path.exists(dirs + '/' + img_name):
             print("[Status] This file already exists. Skipping...")
@@ -239,9 +236,8 @@ def download_handler_alt(img, dirs, chunk_size = 128):
 
     img_name = img_name.decode('euc-kr')
 
-    print("\n[Image] %s" % img_name)
+    print("\n[Image Name] %s" % img_name)
 
-    print("[Metadata] extracting metadata...")
 
     if os.path.exists(dirs + '/' + img_name):
         print("[Status] This file already exists. Skipping...")
