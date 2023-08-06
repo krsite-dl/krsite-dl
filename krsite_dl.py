@@ -74,7 +74,7 @@ def check_site(url):
             for site, site_info in sites.items():
                 if site in url:
                     print(f"[bold blue]Site name {site}[/bold blue]")
-                    print(f"[magenta]Url:[/magenta] {url}")
+                    print(f"[bold red]Url:[/bold red]\n[italic red]{url}[/italic red]")
                     site_info[1](url, location, site_info[0])
                     return
                 

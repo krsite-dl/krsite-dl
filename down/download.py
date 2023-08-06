@@ -76,7 +76,6 @@ def download_handler(img_list, dirs, post_date, loc, chunk_size = 128):
             
             # print(timestamp)
             # print(dt)
-            print(timestamp)
 
             os.utime(dirs + '/' + img_name, (timestamp, timestamp))
         os.utime(dirs, (timestamp, timestamp))
@@ -137,8 +136,7 @@ def download_handler_naver(img_list, dirs, post_date, chunk_size = 128):
                         progress.update(task, completed=current_size)
             
             os.rename(dirs + '/' + img_name + '.part', dirs + '/' + img_name)
-            
-            print("\n[Status] Image %s downloaded" % img_name)
+
 
             # Set file and folders modification time
             utc = pytz.timezone("Asia/Seoul")
@@ -196,7 +194,6 @@ def download_handler_news1(img_list, dirs, post_date, post_date_short, title, lo
             
             os.rename(dirs + '/' + img_name + '.part', dirs + '/' + img_name)
             
-            print("\n[Status] Image %s downloaded" % img_name)
 
             # Set file and folders modification time
             if loc == "KR":
@@ -272,7 +269,6 @@ def download_handler_alt(img, dirs, chunk_size = 128):
         
         os.rename(dirs + '/' + img_name + '.part', dirs + '/' + img_name)
         
-        print("\n[Status] Image %s downloaded" % img_name)
 
         # Set file and folders modification time
         if url_mod_time:
