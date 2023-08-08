@@ -1,5 +1,7 @@
+from rich import print
 import time
 import datetime
+import requests
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -129,17 +131,21 @@ def from_naverpost(hd, loc, folder_name):
         dir.dir_handler_naver(img_list, post_title, post_date_short, post_series, post_date, post_writer, folder_name)
 
     if 'my.naver' in hd:
-        print("\033[1;32mNaver Post Main Page\033[0;0m")
+        print("[bold green]Naver Post Main Page[/bold green]")
         naverpost_search(hd)
     elif 'authorPost.naver' in hd:
-        print("\033[1;32mNaver Post Search Result\033[0;0m")
+        print("[bold green]Naver Post Search Result[/bold green]")
         naverpost_search(hd)
     elif 'series.naver' in hd:
-        print("\033[1;32mNaver Post Series Page\033[0;0m")
+        print("[bold green]Naver Post Series Page[/bold green]")
         naverpost_series(hd)
     elif 'detail.naver' in hd:
-        print("\033[1;32mNaver Post Series List\033[0;0m")
+        print("[bold green]Naver Post Series List[/bold green]")
         naverpost_list(hd)
     elif 'postView.naver' in hd:
-        print("\033[1;32mNaver Post Page\033[0;0m")
+        print("[bold green]Naver Post Page[/bold green]")
         naverpost_post(hd)
+    elif 'naver.me' in hd:
+        print("[bold green]Accessing Shortened URL[/bold green]")
+        r = requests.get(hd)
+        from_naverpost(r.url, loc, folder_name)

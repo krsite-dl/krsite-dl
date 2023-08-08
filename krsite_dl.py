@@ -39,6 +39,7 @@ def check_site(url):
             'programs.sbs.co.kr': ['SBS Program', sbs.from_sbs],
             'ent.sbs.co.kr': ['SBS News', sbsnews.from_sbsnews],
             'post.naver.com': ['Naver Post', naverpost.from_naverpost],
+            'naver.me': ['Naver Post', naverpost.from_naverpost],
             'news.naver.com': ['Naver News', navernews.from_navernews],
             'news1.kr': ['News1', news1.from_news1],
             'tvreport.co.kr': ['TV Report', tvreport.from_tvreport],
