@@ -1,7 +1,7 @@
-    ## Disclaimer
-    This project is aimed for getting images easily from korean sites in which the images are publicly available and not behind any paywall or login. This project is not intended for piracy or any other illegal activities in any way. All images this project downloads can be downloaded manually without this project by interacting with the website page. Any illegal activities done with this project is not the responsibility of the author.
-    
-    ## Table of Contents
+## Disclaimer
+This project is aimed for getting images easily from korean sites in which the images are publicly available and not behind any paywall or login. This project is not intended for piracy or any other illegal activities in any way. All images this project downloads can be downloaded manually without this project by interacting with the website page. Any illegal activities done with this project is not the responsibility of the author.
+
+## Table of Contents
 * [Supported Sites](#supported-sites)
     * [Naver Posts (Naver 포스트)](#naver-posts-naver-포스트)
     * [Naver News](#naver-news)
@@ -15,9 +15,24 @@
     * [TV Report (TV리포트)](#tv-report-tv리포트)
     * [K odyssey](#k-odyssey)
     * [JTBC TV](#jtbc-tv)
+    * [News1](#news1)
+    * [Newsen](#newsen)
+    * [TV JTBC](#tv-jtbc)
+    * [Cosmopolitan Korea](#cosmopolitan-korea)
+    * [Dazed Korea](#dazed-korea)
+    * [Elle Korea](#elle-korea)
+    * [Harper's Bazaar Korea](#harpers-bazaar-korea)
+    * [L'Officiel Korea](#lofficiel-korea)
+    * [Marie Claire Korea](#marie-claire-korea)
+    * [Vogue Korea](#vogue-korea)
+    * [W Korea](#w-korea)
+    * [L'Officiel Singapore](#lofficiel-singapore)
+    * [Nataliemu](#nataliemu)
+
 * [Prerequisite](#prerequisite)
 * [Usage](#usage)
 * [Options](#options)
+* [Issues](#issues)
 
 ## Supported Sites
 ### Naver Posts (Naver 포스트)
@@ -105,3 +120,11 @@ Run ```pip3 install -r requirements.txt``` to install dependencies
 --no-windows-filenames    By default krsite-dl will remove characters that are not allowed in Windows filenames. This option will disable that.
 ```
 ```*supports on generic sites (not listed above) may and may not work*```
+
+## Issues
+```
+Please make an issue if you encounter any problems or just want to get more sites supported.
+
+Site Name: 
+Site URL (preferably the post page):
+```
