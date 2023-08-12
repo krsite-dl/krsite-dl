@@ -128,7 +128,6 @@ Site Name:
 Site URL (preferably the post page):
 ```
 ## FAQ
-```
 Q: Why is the download speed so slow?
 A: The download speed is limited by the site itself. You can try to use a VPN to get a better speed.
 
@@ -140,4 +139,3 @@ A: Yes, you can download images from multiple sites at once by using the -a opti
 
 Q: Can I download images from a site that is not listed above?
 A: Yes, you probably can. You can also make an issue if you want to get a site supported.
-```
