@@ -120,11 +120,24 @@ Run ```pip3 install -r requirements.txt``` to install dependencies
 --no-windows-filenames    By default krsite-dl will remove characters that are not allowed in Windows filenames. This option will disable that.
 ```
 ```*supports on generic sites (not listed above) may and may not work*```
-
 ## Issues
 ```
 Please make an issue if you encounter any problems or just want to get more sites supported.
 
 Site Name: 
 Site URL (preferably the post page):
+```
+## FAQ
+```
+Q: Why is the download speed so slow?
+A: The download speed is limited by the site itself. You can try to use a VPN to get a better speed.
+
+Q: Can I set a default download path?
+A: Yes, you can set a default download path by editing the config.ini file. The config.ini file is located in the same directory as the krsite-dl file. You can also set the default download path by using the -d option.
+
+Q: Can I download images from multiple sites at once?
+A: Yes, you can download images from multiple sites at once by using the -a option. The -a option takes in a text file containing site urls. Each line in the text file should contain a site url. You can also use the -ai option to download images from multiple sites at once (But this isn't working right now). The -ai option takes in a text file containing image urls. Each line in the text file should contain an image url.
+
+Q: Can I download images from a site that is not listed above?
+A: Yes, you probably can. You can also make an issue if you want to get a site supported.
 ```
