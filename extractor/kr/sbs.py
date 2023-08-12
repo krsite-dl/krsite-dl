@@ -30,7 +30,8 @@ def from_sbs(hd, loc, folder_name):
         '70687': ['2021sbsgayo_pt2'],
         '76371': ['2022sbsgayo_pt'],
         '58358': ['theshow04_pt'],
-        '65175': ['sbspr_02']
+        '65175': ['sbspr_02'],
+        '4295': ['sbssuperconcert_pt']
     }
 
     code_temp = []
