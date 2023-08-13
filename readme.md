@@ -2,6 +2,9 @@
 This project is aimed for getting images easily from korean sites in which the images are publicly available and not behind any paywall or login. This project is not intended for piracy or any other illegal activities in any way. All images this project downloads can be downloaded manually without this project by interacting with the website page. Any illegal activities done with this project is not the responsibility of the author.
 
 ## Table of Contents
+* [Prerequisite](#prerequisite)
+* [Usage](#usage)
+* [Options](#options)
 * [Supported Sites](#supported-sites)
     * [Naver Posts (Naver 포스트)](#naver-posts-naver-포스트)
     * [Naver News](#naver-news)
@@ -28,80 +31,13 @@ This project is aimed for getting images easily from korean sites in which the i
     * [W Korea](#w-korea)
     * [L'Officiel Singapore](#lofficiel-singapore)
     * [Nataliemu](#nataliemu)
-
-* [Prerequisite](#prerequisite)
-* [Usage](#usage)
-* [Options](#options)
 * [Issues](#issues)
-
-## Supported Sites
-### Naver Posts (Naver 포스트)
-```https://post.naver.com/```
-* Main Page
-```https://post.naver.com/my.naver?memberNo=24876555```
-* Search Result
-```https://post.naver.com/search/authorPost.naver?keyword=%EC%95%84%EC%9D%B4%EC%A6%88%EC%9B%90&memberNo=24876555```
-* Series List
-```https://post.naver.com/series.naver?memberNo=24876555```
-* Series Page
-```https://post.naver.com/my/series/detail.naver?memberNo=24876555&seriesNo=598640```
-* Post Page
-```https://post.naver.com/viewer/postView.naver?volumeNo=28559893&memberNo=24876555&navigationType=push```
-
-### Naver News
-### Dispatch (디스패치)
-```https://www.dispatch.co.kr/category/photos```
-* Post Page
-```https://www.dispatch.co.kr/2239272```
-
-### iMBC News
-```https://enews.imbc.com/```
-* Post Page
-```https://enews.imbc.com/News/RetrieveNewsInfo/371280```
-
-### MBC PR (MBC와 함께)
-```https://with.mbc.co.kr/m/pr/photo/view.html```
-* Post Page
-```https://with.mbc.co.kr/m/pr/photo/view.html?idx=56198&page=5&keyword=```
-
-### Newsjamm
-```https://newsjamm.co.kr/```
-* Post Page
-```https://newsjamm.co.kr/contents/642e7084129f6c0973201626```
-
-### OSEN
-```https://osen.mt.co.kr/```
-* Post Page
-```https://osen.mt.co.kr/article/G1111909432```
-
-### SBS Program
-```https://programs.sbs.co.kr/```
-* Post Page
-```https://programs.sbs.co.kr/special/pdnote/board/65942?search_option=title&search_keyword=%EC%95%84%EC%9D%B4%EB%B8%8C&cmd=multi_list&board_code=inkigayo_pt01&board_no=437548```
-
-### SBS News
-```https://news.sbs.co.kr/```
-* Post Page
-```https://ent.sbs.co.kr/news/article.do?article_id=E10010268907&plink=ORI&cooper=NAVER```
-
-### TV Report (TV리포트)
-```https://tvreport.co.kr/```
-* Post Page
-```https://tvreport.co.kr/star/article/718199/```
-
-### K odyssey
-```https://k-odyssey.com/```
-* Post Page
-```https://k-odyssey.com/news/newsview.php?ncode=1065598383621554```
-
-### JTBC TV
-```https://tv.jtbc.co.kr/```
-* Post Page
-```https://tv.jtbc.co.kr/board/pr10011498/pm10065691/detail/71```
+* [FAQ](#faq)
 
 ## Prerequisite
-```Python 3``` installed
-Run ```pip3 install -r requirements.txt``` to install dependencies
+`python3` installed.
+
+Run `pip3 install -r requirements.txt` to install dependencies
 
 ## Usage
 ```python3 krsite-dl [OPTIONS] URL [URL...]```
@@ -120,6 +56,91 @@ Run ```pip3 install -r requirements.txt``` to install dependencies
 --no-windows-filenames    By default krsite-dl will remove characters that are not allowed in Windows filenames. This option will disable that.
 ```
 ```*supports on generic sites (not listed above) may and may not work*```
+
+## Supported Sites
+### Naver Posts (Naver 포스트)
+```https://post.naver.com/```
+* Main Page
+```https://post.naver.com/my.naver?memberNo=24876555```
+* Search Result
+```https://post.naver.com/search/authorPost.naver?keyword=%EC%95%84%EC%9D%B4%EC%A6%88%EC%9B%90&memberNo=24876555```
+* Series List
+```https://post.naver.com/series.naver?memberNo=24876555```
+* Series Page
+```https://post.naver.com/my/series/detail.naver?memberNo=24876555&seriesNo=598640```
+* Post Page
+```https://post.naver.com/viewer/postView.naver?volumeNo=28559893&memberNo=24876555&navigationType=push```
+### Naver News
+### Dispatch (디스패치)
+```https://www.dispatch.co.kr/category/photos```
+* Post Page
+```https://www.dispatch.co.kr/2239272```
+### iMBC News
+```https://enews.imbc.com/```
+* Post Page
+```https://enews.imbc.com/News/RetrieveNewsInfo/371280```
+### MBC PR (MBC와 함께)
+```https://with.mbc.co.kr/m/pr/photo/view.html```
+* Post Page
+```https://with.mbc.co.kr/m/pr/photo/view.html?idx=56198&page=5&keyword=```
+### Newsjamm
+```https://newsjamm.co.kr/```
+* Post Page
+```https://newsjamm.co.kr/contents/642e7084129f6c0973201626```
+### OSEN
+```https://osen.mt.co.kr/```
+* Post Page
+```https://osen.mt.co.kr/article/G1111909432```
+### SBS Program
+```https://programs.sbs.co.kr/```
+* Post Page
+```https://programs.sbs.co.kr/special/pdnote/board/65942?search_option=title&search_keyword=%EC%95%84%EC%9D%B4%EB%B8%8C&cmd=multi_list&board_code=inkigayo_pt01&board_no=437548```
+BS News
+```https://news.sbs.co.kr/```
+* Post Page
+```https://ent.sbs.co.kr/news/article.do?article_id=E10010268907&plink=ORI&cooper=NAVER```
+### TV Report (TV리포트)
+```https://tvreport.co.kr/```
+* Post Page
+```https://tvreport.co.kr/star/article/718199/```
+### K odyssey
+```https://k-odyssey.com/```
+* Post Page
+```https://k-odyssey.com/news/newsview.php?ncode=1065598383621554```
+### JTBC TV
+```https://tv.jtbc.co.kr/```
+* Post Page
+```https://tv.jtbc.co.kr/board/pr10011498/pm10065691/detail/71```
+### News1
+```https://www.news1.kr/```
+* Post Page
+```https://www.news1.kr/photos/details/?6089321```
+### Newsen
+```https://www.newsen.com/news_photo_hd.php```
+* Post Page
+```https://www.newsen.com/news_view.php?uid=202308112345129410&code=199999```
+### TV JTBC
+### Cosmopolitan Korea
+```https://www.cosmopolitan.co.kr/```
+* Post Page
+```https://www.cosmopolitan.co.kr/article/79823```
+### Dazed Korea
+```https://www.dazedkorea.com/```
+* Post Page
+```http://www.dazedkorea.com/fashion/article/16/detail.do```
+### Elle Korea
+```https://www.elle.co.kr/```
+* Post Page
+```https://www.elle.co.kr/article/70290```
+### Harper's Bazaar Korea
+```https://www.harpersbazaar.co.kr/```
+* Post Page
+```https://www.harpersbazaar.co.kr/article/79298```
+### L'Officiel Korea
+```https://www.lofficielkorea.com/```
+* Post Page
+```https://www.lofficielkorea.com/people/anyujin-interview```
+
 ## Issues
 ```
 Please make an issue if you encounter any problems or just want to get more sites supported.
@@ -128,14 +149,14 @@ Site Name:
 Site URL (preferably the post page):
 ```
 ## FAQ
-Q: Why is the download speed so slow?
+#### Q: Why is the download speed so slow?
 A: The download speed is limited by the site itself. You can try to use a VPN to get a better speed.
 
-Q: Can I set a default download path?
+#### Q: Can I set a default download path?
 A: Yes, you can set a default download path by editing the config.ini file. The config.ini file is located in the same directory as the krsite-dl file. You can also set the default download path by using the -d option.
 
-Q: Can I download images from multiple sites at once?
+#### Q: Can I download images from multiple sites at once?
 A: Yes, you can download images from multiple sites at once by using the -a option. The -a option takes in a text file containing site urls. Each line in the text file should contain a site url. You can also use the -ai option to download images from multiple sites at once (But this isn't working right now). The -ai option takes in a text file containing image urls. Each line in the text file should contain an image url.
 
-Q: Can I download images from a site that is not listed above?
+#### Q: Can I download images from a site that is not listed above?
 A: Yes, you probably can. You can also make an issue if you want to get a site supported.
