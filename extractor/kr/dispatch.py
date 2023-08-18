@@ -13,9 +13,13 @@ def from_dispatch(hd, loc, folder_name):
 
     for i in soup.findAll('img', class_='post-image'):
         if i.get('data-src') != None:
+            if i.get('data-src').startswith('<' or '>'):
+                continue
             temp = i.get('data-src')
             img_list.append(temp)
         else:
+            if i.get('src').startswith('<' or '>'):
+                continue
             temp = i.get('src')
             img_list.append(temp)
 
