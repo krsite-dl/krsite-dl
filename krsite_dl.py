@@ -3,8 +3,8 @@ import configparser
 import sys
 from rich import print
 from extractor import direct, generic
-from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, kodyssey, tvjtbc, newsen, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue
-from extractor.jp import nataliemu
+from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, kodyssey, tvjtbc, newsen, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue, esquirekorea
+from extractor.jp import nataliemu, vivi
 from extractor.sg import lofficielsingapore
 
 # Reading settings from config file
@@ -53,11 +53,13 @@ def check_site(url):
             'harpersbazaar.co.kr': ["Harper's Bazaar Korea", harpersbazaar.from_harpersbazaar],
             'wkorea.com': ['W Korea', wkorea.from_wkorea],
             'elle.co.kr': ['Elle Korea', elle.from_elle],
-            'vogue.co.kr': ['Vogue Korea', vogue.from_vogue]
+            'vogue.co.kr': ['Vogue Korea', vogue.from_vogue],
+            'esquirekorea.co.kr': ['Esquire Korea', esquirekorea.from_esquirekorea],
         }],
         # JAPANESE SITES
         'JP': [{
-            'natalie.mu': ['Natalie 音楽ナタリー', 'jp', nataliemu.from_nataliemu],
+            'natalie.mu': ['Natalie 音楽ナタリー', nataliemu.from_nataliemu],
+            'vivi.tv': ['ViVi', vivi.from_vivi],
         }],
         # SINGAPOREAN SITES
         'SG': [{
