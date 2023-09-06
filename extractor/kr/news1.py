@@ -26,4 +26,4 @@ def from_news1(hd, loc, folder_name):
     print("Date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
 
-    dir.dir_handler_news1(img_list, post_title, post_date_short, post_date, loc, folder_name)
+    dir.dir_handler_no_folder(img_list, post_title, post_date_short, post_date, loc, folder_name)
