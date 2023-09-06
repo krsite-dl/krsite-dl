@@ -3,7 +3,7 @@ import configparser
 import sys
 from rich import print
 from extractor import direct, generic
-from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, kodyssey, tvjtbc, newsen, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue, esquirekorea
+from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, topstarnews, kodyssey, tvjtbc, newsen, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue, esquirekorea
 from extractor.jp import nataliemu, vivi
 from extractor.sg import lofficielsingapore
 
@@ -43,6 +43,7 @@ def check_site(url):
             'news.naver.com': ['Naver News', navernews.from_navernews],
             'news1.kr': ['News1', news1.from_news1],
             'tvreport.co.kr': ['TV Report', tvreport.from_tvreport],
+            'topstarnews.net': ['Topstarnews', topstarnews.from_topstarnews],
             'k-odyssey.com': ['K-odyssey', kodyssey.from_kodyssey],
             'tv.jtbc.co.kr': ['JTBC TV', tvjtbc.from_tvjtbc],
             'newsen.com': ['Newsen', newsen.from_newsen],
