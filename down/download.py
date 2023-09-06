@@ -148,7 +148,7 @@ def download_handler_naver(img_list, dirs, post_date, chunk_size = 128):
         os.utime(dirs, (timestamp, timestamp))
 
 
-def download_handler_news1(img_list, dirs, post_date, post_date_short, title, loc, chunk_size = 128):
+def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title, loc, chunk_size = 128):
     print("Downloading image(s) to folder: ", dirs)
     for img in img_list:
         try:
@@ -202,10 +202,6 @@ def download_handler_news1(img_list, dirs, post_date, post_date_short, title, lo
             dt = post_date
             dt = utc.localize(dt)
             timestamp = int(dt.timestamp())
-            
-            # print(timestamp)
-            # print(dt)
-            print(timestamp)
 
             os.utime(dirs + '/' + img_name, (timestamp, timestamp))
         os.utime(dirs, (timestamp, timestamp))
