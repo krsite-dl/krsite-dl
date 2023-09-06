@@ -38,6 +38,7 @@ This project is aimed for getting images easily from korean sites in which the i
 | W Korea | https://www.wkorea.com/ | Post Page | Image |
 | L'Officiel Singapore | https://www.lofficielsingapore.com/ | Post Page | Image |
 | Nataliemu | https://nataliemu.com/ | Post Page | Image |
+| Vivi | https://www.vivi.tv/ | 🚧 | Image |
 | Generic Sites | Any Sites not listed above | ? | Image |
 
 ## Prerequisite
