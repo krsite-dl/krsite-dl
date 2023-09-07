@@ -2,33 +2,83 @@ import requests
 import datetime
 from pytz import timezone
 from bs4 import BeautifulSoup
+from urllib.parse import urlparse, parse_qs, urlencode
 import down.directory as dir
 
 def from_topstarnews(hd, loc, folder_name):
-    r = requests.get(hd)
-    soup = BeautifulSoup(r.text, 'html.parser')
+    def iterate_pages():
+        r = requests.get(hd)
+        soup = BeautifulSoup(r.text, 'html.parser')
 
-    post_title = soup.find('meta', property='og:title')['content'].strip()
-    post_dates = soup.find_all('meta', property='article:published_time')
-    if len(post_dates) >= 2:
-        post_date = post_dates[1].attrs['content']
-    else:
-        post_date = post_dates[0].attrs['content']
+        pagination = soup.find('ul', class_='pagination')
 
-    post_date_short = post_date.replace('-', '')[2:8]
-    post_date = datetime.datetime.strptime(post_date, '%Y-%m-%dT%H:%M:%S%z')
-    tz = timezone('Asia/Seoul')
-    post_date = post_date.astimezone(tz).replace(tzinfo=None)
+        first_page = pagination.find('li', class_='pagination-start')
+        base = 'https://topstarnews.net/news' + first_page.find('a').get('href').strip('.')
+
+        # start iterating
+        page = 1
+        while True:
+            print('Page %s' % page)
+            query_params = parse_qs(urlparse(base).query)
+            query_params['page'] = [str(page)]
+            new_query_string = urlencode(query_params, doseq=True)
+            new_url = urlparse(base)._replace(query=new_query_string).geturl()
+            grab_post_urls(new_url)
+            page += 1
+
+            # stop if there's no post in the page
+            if soup.find('section', class_='article-custom-list') is None:
+                break
+
+
+    def grab_post_urls(page_url):
+        r = requests.get(page_url)
+        soup = BeautifulSoup(r.text, 'html.parser')
+
+        section = soup.find('section', class_='article-custom-list')
+
+        post_urls = []
+
+        for item in section.findAll('a'):
+            post_urls.append('https://topstarnews.net' + item.get('href'))
+
+        for post in post_urls:
+            post_page(post, loc, folder_name)
+
+
+    def post_page(hd, loc, folder_name):
+        r = requests.get(hd)
+        soup = BeautifulSoup(r.text, 'html.parser')
+
+        post_title = soup.find('meta', property='og:title')['content'].strip()
+        post_dates = soup.find_all('meta', property='article:published_time')
+        if len(post_dates) >= 2:
+            post_date = post_dates[1].attrs['content']
+        else:
+            post_date = post_dates[0].attrs['content']
+
+        post_date_short = post_date.replace('-', '')[2:8]
+        post_date = datetime.datetime.strptime(post_date, '%Y-%m-%dT%H:%M:%S%z')
+        tz = timezone('Asia/Seoul')
+        post_date = post_date.astimezone(tz).replace(tzinfo=None)
+        
+        img_list = []
+
+        content = soup.find('div', itemprop='articleBody')
+
+        for item in content.findAll('img'):
+            img_list.append(item.get('data-org'))
+
+        print("Title: %s" % post_title)
+        print("Date: %s" % post_date)
+        print("Found %s image(s)" % len(img_list))
+
+        dir.dir_handler_no_folder(img_list, post_title, post_date_short, post_date, loc, folder_name)
+
     
-    img_list = []
-
-    content = soup.find('div', itemprop='articleBody')
-
-    for item in content.findAll('img'):
-        img_list.append(item.get('data-org'))
-
-    print("Title: %s" % post_title)
-    print("Date: %s" % post_date)
-    print("Found %s image(s)" % len(img_list))
-
-    dir.dir_handler_no_folder(img_list, post_title, post_date_short, post_date, loc, folder_name)
+    if 'idxno' in hd:
+        print('[yellow]Single page[/yellow]')
+        post_page(hd, loc, folder_name)
+    else:
+        print('[yellow]Iterating pages[/yellow]')
+        iterate_pages()
