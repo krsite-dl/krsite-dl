@@ -1,5 +1,6 @@
 import requests
 import datetime
+from rich import print
 from pytz import timezone
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs, urlencode
