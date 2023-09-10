@@ -40,8 +40,10 @@ def from_topstarnews(hd, loc, folder_name):
 
         post_urls = []
 
-        for item in section.findAll('a'):
-            post_urls.append('https://topstarnews.net' + item.get('href'))
+        for item in section.findAll('div', class_='article-column'):
+            post_urls.append('https://topstarnews.net' + item.find('a').get('href'))
+        
+        print('Found %s post(s)' % len(post_urls))
 
         for post in post_urls:
             post_page(post, loc, folder_name)
