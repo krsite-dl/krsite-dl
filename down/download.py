@@ -41,23 +41,24 @@ def download_handler(img_list, dirs, post_date, loc, chunk_size = 128):
             '-k' '1M', 
             '-o', img_name, img])
 
-        # Set file and folders modification time
-        if loc == "KR":
-            utc = pytz.timezone("Asia/Seoul")
-        elif loc == "JP":
-            utc = pytz.timezone("Asia/Tokyo")
-        elif loc == "SG":
-            utc = pytz.timezone("Asia/Singapore")
-        
-        dt = post_date
-        dt = utc.localize(dt)
-        timestamp = int(dt.timestamp())
-        
-        # print(timestamp)
-        # print(dt)
+        if os.path.exists(dirs + '/' + img_name):
+            # Set file and folders modification time
+            if loc == "KR":
+                utc = pytz.timezone("Asia/Seoul")
+            elif loc == "JP":
+                utc = pytz.timezone("Asia/Tokyo")
+            elif loc == "SG":
+                utc = pytz.timezone("Asia/Singapore")
+            
+            dt = post_date
+            dt = utc.localize(dt)
+            timestamp = int(dt.timestamp())
+            
+            # print(timestamp)
+            # print(dt)
 
-        os.utime(dirs + '/' + img_name, (timestamp, timestamp))
-        os.utime(dirs, (timestamp, timestamp))
+            os.utime(dirs + '/' + img_name, (timestamp, timestamp))
+            os.utime(dirs, (timestamp, timestamp))
 
 
 def download_handler_naver(img_list, dirs, post_date, chunk_size = 128):
@@ -94,18 +95,19 @@ def download_handler_naver(img_list, dirs, post_date, chunk_size = 128):
             '-x', '5', 
             '-k' '1M', 
             '-o', img_name, img])
-
-        # Set file and folders modification time
-        utc = pytz.timezone("Asia/Seoul")
-        dt = post_date
-        dt = utc.localize(dt)
         
-        timestamp = int(dt.timestamp())
-        # print(timestamp)
-        # print(dt)
+        if os.path.exists(dirs + '/' + img_name):
+            # Set file and folders modification time
+            utc = pytz.timezone("Asia/Seoul")
+            dt = post_date
+            dt = utc.localize(dt)
+            
+            timestamp = int(dt.timestamp())
+            # print(timestamp)
+            # print(dt)
 
-        os.utime(dirs + '/' + img_name, (timestamp, timestamp))
-        os.utime(dirs, (timestamp, timestamp))
+            os.utime(dirs + '/' + img_name, (timestamp, timestamp))
+            os.utime(dirs, (timestamp, timestamp))
 
 
 def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title, loc, chunk_size = 128):
@@ -130,21 +132,24 @@ def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title
             '-k' '1M', 
             '-o', img_name, img,
             '--check-certificate=false'])
-    
-        # Set file and folders modification time
-        if loc == "KR":
-            utc = pytz.timezone("Asia/Seoul")
-        elif loc == "JP":
-            utc = pytz.timezone("Asia/Tokyo")
-        elif loc == "SG":
-            utc = pytz.timezone("Asia/Singapore")
-        
-        dt = post_date
-        dt = utc.localize(dt)
-        timestamp = int(dt.timestamp())
 
-        os.utime(dirs + '/' + img_name, (timestamp, timestamp))
-        os.utime(dirs, (timestamp, timestamp))
+        # check subprocess status
+
+        if os.path.exists(dirs + '/' + img_name):
+            # Set file and folders modification time
+            if loc == "KR":
+                utc = pytz.timezone("Asia/Seoul")
+            elif loc == "JP":
+                utc = pytz.timezone("Asia/Tokyo")
+            elif loc == "SG":
+                utc = pytz.timezone("Asia/Singapore")
+            
+            dt = post_date
+            dt = utc.localize(dt)
+            timestamp = int(dt.timestamp())
+
+            os.utime(dirs + '/' + img_name, (timestamp, timestamp))
+            os.utime(dirs, (timestamp, timestamp))
 
 
 def download_handler_alt(img, dirs, chunk_size = 128):
@@ -187,12 +192,12 @@ def download_handler_alt(img, dirs, chunk_size = 128):
             '-k' '1M', 
             '-o', img_name, img])
         
-
-    # Set file and folders modification time
-    if url_mod_time:
-        print("[Metadata] Embedding metadata to %s" % img_name)
-        mod_time = time.strptime(url_mod_time, '%a, %d %b %Y %H:%M:%S %Z')
-        os.utime(dirs + '/' + img_name, (time.time(), time.mktime(mod_time)))
-    
-    if url_mod_time:
-        os.utime(dirs, (time.time(), time.mktime(mod_time)))
+    if os.path.exists(dirs + '/' + img_name):
+        # Set file and folders modification time
+        if url_mod_time:
+            print("[Metadata] Embedding metadata to %s" % img_name)
+            mod_time = time.strptime(url_mod_time, '%a, %d %b %Y %H:%M:%S %Z')
+            os.utime(dirs + '/' + img_name, (time.time(), time.mktime(mod_time)))
+        
+        if url_mod_time:
+            os.utime(dirs, (time.time(), time.mktime(mod_time)))
