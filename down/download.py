@@ -45,6 +45,7 @@ def download_handler(img_list, dirs, post_date, loc):
                         '-o', img_name, img,
                         '--download-result=hide'],
                         stdout=subprocess.PIPE,
+                        encoding='utf-8',
                         text=True)
             
             for line in process.stdout:
@@ -112,6 +113,7 @@ def download_handler_naver(img_list, dirs, post_date):
                         '-o', img_name, img,
                         '--download-result=hide'],
                         stdout=subprocess.PIPE,
+                        encoding='utf-8',
                         text=True)
             
             for line in process.stdout:
@@ -161,6 +163,7 @@ def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title
                         '--download-result=hide',
                         '--check-certificate=false'],
                         stdout=subprocess.PIPE,
+                        encoding='utf-8',
                         text=True)
             
             for line in process.stdout:
@@ -231,6 +234,7 @@ def download_handler_alt(img, dirs):
                     '-o', img_name, img,
                     '--download-result=hide'],
                     stdout=subprocess.PIPE,
+                    encoding='utf-8',
                     text=True)
         
         for line in process.stdout:
