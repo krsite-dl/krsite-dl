@@ -7,7 +7,7 @@ import subprocess
 from rich.progress import Progress
 from urllib.parse import unquote
 
-def download_handler(img_list, dirs, post_date, loc, chunk_size = 128):
+def download_handler(img_list, dirs, post_date, loc):
     print("Downloading image(s) to folder: ", dirs)
     for img in img_list:
         img_name = img.split('/')[-1]
@@ -74,7 +74,7 @@ def download_handler(img_list, dirs, post_date, loc, chunk_size = 128):
             os.utime(dirs, (timestamp, timestamp))
 
 
-def download_handler_naver(img_list, dirs, post_date, chunk_size = 128):
+def download_handler_naver(img_list, dirs, post_date):
     print("Downloading image(s) to folder: ", dirs)
     for img in img_list:
         img_name = img.split('/')[-1]
@@ -135,7 +135,7 @@ def download_handler_naver(img_list, dirs, post_date, chunk_size = 128):
             os.utime(dirs, (timestamp, timestamp))
 
 
-def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title, loc, chunk_size = 128):
+def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title, loc):
     print("Downloading image(s) to folder: ", dirs)
     for img in img_list:
         img_ext = img.split('.')[-1]
@@ -187,7 +187,7 @@ def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title
             os.utime(dirs, (timestamp, timestamp))
 
 
-def download_handler_alt(img, dirs, chunk_size = 128):
+def download_handler_alt(img, dirs):
     print("Downloading image(s) to folder: ", dirs)
     try:
         response = requests.head(img, timeout=60)
@@ -220,12 +220,25 @@ def download_handler_alt(img, dirs, chunk_size = 128):
     
     url_mod_time = response.headers.get('Last-Modified')
 
-    subprocess.run(['aria2c', '-d', dirs, 
-            '-s', '10', '-V', '-c', 
-            '-j', '6', 
-            '-x', '5', 
-            '-k' '1M', 
-            '-o', img_name, img])
+    with Progress() as progress:
+        task = progress.add_task("[cyan]Downloading...", total=100)
+
+        process = subprocess.Popen(['aria2c', '-d', dirs, 
+                    '-s', '10', '-V', '-c', 
+                    '-j', '6', 
+                    '-x', '5', 
+                    '-k' '1M', 
+                    '-o', img_name, img,
+                    '--download-result=hide'],
+                    stdout=subprocess.PIPE,
+                    text=True)
+        
+        for line in process.stdout:
+            parts = line.split()
+            if len(parts) >=3 and parts[1].endswith('%)'):
+                progress.update(task, advance=int(re.search(r'\((\d+)%\)', parts[1]).group(1)))
+            if 'Download complete' in line:
+                progress.update(task, completed=100)
         
     if os.path.exists(dirs + '/' + img_name):
         # Set file and folders modification time
