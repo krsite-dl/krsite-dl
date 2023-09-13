@@ -1,5 +1,6 @@
 import requests
 import datetime
+import time
 from rich import print
 from pytz import timezone
 from bs4 import BeautifulSoup
@@ -47,6 +48,8 @@ def from_topstarnews(hd, loc, folder_name):
 
         for post in post_urls:
             post_page(post, loc, folder_name)
+        
+        time.sleep(15)
 
 
     def post_page(hd, loc, folder_name):
