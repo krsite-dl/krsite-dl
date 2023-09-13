@@ -38,9 +38,9 @@ def download_handler(img_list, dirs, post_date, loc):
             task = progress.add_task("[cyan]Downloading...", total=100)
 
             process = subprocess.Popen(['aria2c', '-d', dirs, 
-                        '-s', '10', '-V', '-c', 
-                        '-j', '6', 
-                        '-x', '5', 
+                        '-s', '3', '-V', '-c', 
+                        '-j', '3', 
+                        '-x', '3', 
                         '-k' '1M', 
                         '-o', img_name, img,
                         '--download-result=hide'],
@@ -106,9 +106,9 @@ def download_handler_naver(img_list, dirs, post_date):
             task = progress.add_task("[cyan]Downloading...", total=100)
 
             process = subprocess.Popen(['aria2c', '-d', dirs, 
-                        '-s', '10', '-V', '-c', 
-                        '-j', '6', 
-                        '-x', '5', 
+                        '-s', '3', '-V', '-c', 
+                        '-j', '3', 
+                        '-x', '3', 
                         '-k' '1M', 
                         '-o', img_name, img,
                         '--download-result=hide'],
@@ -155,9 +155,9 @@ def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title
             task = progress.add_task("[cyan]Downloading...", total=100)
 
             process = subprocess.Popen(['aria2c', '-d', dirs, 
-                        '-s', '10', '-V', '-c', 
-                        '-j', '6', 
-                        '-x', '5', 
+                        '-s', '3', '-V', '-c', 
+                        '-j', '3', 
+                        '-x', '3', 
                         '-k' '1M', 
                         '-o', img_name, img,
                         '--download-result=hide',
