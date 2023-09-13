@@ -29,50 +29,60 @@ def download_handler(img_list, dirs, post_date, loc):
         print("[Source URL] %s" % img)
         print("[Image Name] %s" % img_name)
 
-
-        if os.path.exists(dirs + '/' + img_name):
+        if os.path.exists(dirs + '/' + img_name) and not os.path.exists(dirs + '/' + img_name + '.aria2'):
             print("[Status] This file already exists. Skipping...")
             continue
         
-        with Progress() as progress:
-            task = progress.add_task("[cyan]Downloading...", total=100)
+        try:
+            with Progress() as progress:
+                process = subprocess.Popen(['aria2c', '-d', dirs, 
+                            '-s', '3', '-V', '-c', 
+                            '-j', '3', 
+                            '-x', '3', 
+                            '-k', '1M', 
+                            '-o', img_name, img,
+                            '--continue',
+                            '--download-result=hide'],
+                            stdout=subprocess.PIPE,
+                            encoding='utf-8',
+                            text=True)
+                
+                task = progress.add_task("Downloading...", total=100)
+                
+                for line in process.stdout:
+                    parts = line.split()
+                    if len(parts) >=3 and parts[1].endswith('%)'):
+                        progress.update(task, advance=int(re.search(r'\((\d+)%\)', parts[1]).group(1)))
+                    if 'Download complete' in line:
+                        progress.update(task, completed=100)
 
-            process = subprocess.Popen(['aria2c', '-d', dirs, 
-                        '-s', '3', '-V', '-c', 
-                        '-j', '3', 
-                        '-x', '3', 
-                        '-k' '1M', 
-                        '-o', img_name, img,
-                        '--download-result=hide'],
-                        stdout=subprocess.PIPE,
-                        encoding='utf-8',
-                        text=True)
-            
-            for line in process.stdout:
-                parts = line.split()
-                if len(parts) >=3 and parts[1].endswith('%)'):
-                    progress.update(task, advance=int(re.search(r'\((\d+)%\)', parts[1]).group(1)))
-                if 'Download complete' in line:
-                    progress.update(task, completed=100)
+            if os.path.exists(dirs + '/' + img_name):
+                # Set file and folders modification time
+                if loc == "KR":
+                    utc = pytz.timezone("Asia/Seoul")
+                elif loc == "JP":
+                    utc = pytz.timezone("Asia/Tokyo")
+                elif loc == "SG":
+                    utc = pytz.timezone("Asia/Singapore")
+                
+                dt = post_date
+                dt = utc.localize(dt)
+                timestamp = int(dt.timestamp())
+                
+                # print(timestamp)
+                # print(dt)
 
-        if os.path.exists(dirs + '/' + img_name):
-            # Set file and folders modification time
-            if loc == "KR":
-                utc = pytz.timezone("Asia/Seoul")
-            elif loc == "JP":
-                utc = pytz.timezone("Asia/Tokyo")
-            elif loc == "SG":
-                utc = pytz.timezone("Asia/Singapore")
-            
-            dt = post_date
-            dt = utc.localize(dt)
-            timestamp = int(dt.timestamp())
-            
-            # print(timestamp)
-            # print(dt)
-
-            os.utime(dirs + '/' + img_name, (timestamp, timestamp))
-            os.utime(dirs, (timestamp, timestamp))
+                os.utime(dirs + '/' + img_name, (timestamp, timestamp))
+                os.utime(dirs, (timestamp, timestamp))
+        except requests.exceptions.SSLError:
+            print("[Status] SSL Error. Skipping...")
+            continue
+        except requests.exceptions.HTTPError:
+            print("[Status] HTTP Error. Skipping...")
+            continue
+        except requests.exceptions.ConnectionError:
+            print("[Status] Connection Error. Skipping...")
+            continue
 
 
 def download_handler_naver(img_list, dirs, post_date):
@@ -98,43 +108,54 @@ def download_handler_naver(img_list, dirs, post_date):
         print("[Image Name] %s" % img_name)
 
 
-        if os.path.exists(dirs + '/' + img_name):
+        if os.path.exists(dirs + '/' + img_name) and not os.path.exists(dirs + '/' + img_name + '.aria2'):
             print("[Status] This file already exists. Skipping...")
             continue
         
-        with Progress() as progress:
-            task = progress.add_task("[cyan]Downloading...", total=100)
-
-            process = subprocess.Popen(['aria2c', '-d', dirs, 
-                        '-s', '3', '-V', '-c', 
-                        '-j', '3', 
-                        '-x', '3', 
-                        '-k' '1M', 
-                        '-o', img_name, img,
-                        '--download-result=hide'],
-                        stdout=subprocess.PIPE,
-                        encoding='utf-8',
-                        text=True)
+        try:
+            with Progress() as progress:
+                process = subprocess.Popen(['aria2c', '-d', dirs, 
+                            '-s', '3', '-V', '-c', 
+                            '-j', '3', 
+                            '-x', '3', 
+                            '-k', '1M', 
+                            '-o', img_name, img,
+                            '--continue',
+                            '--download-result=hide'],
+                            stdout=subprocess.PIPE,
+                            encoding='utf-8',
+                            text=True)
+                
+                task = progress.add_task("Downloading...", total=100)
+                
+                for line in process.stdout:
+                    parts = line.split()
+                    if len(parts) >=3 and parts[1].endswith('%)'):
+                        progress.update(task, advance=int(re.search(r'\((\d+)%\)', parts[1]).group(1)))
+                    if 'Download complete' in line:
+                        progress.update(task, completed=100)
             
-            for line in process.stdout:
-                parts = line.split()
-                if len(parts) >=3 and parts[1].endswith('%)'):
-                    progress.update(task, advance=int(re.search(r'\((\d+)%\)', parts[1]).group(1)))
-                if 'Download complete' in line:
-                    progress.update(task, completed=100)
-        
-        if os.path.exists(dirs + '/' + img_name):
-            # Set file and folders modification time
-            utc = pytz.timezone("Asia/Seoul")
-            dt = post_date
-            dt = utc.localize(dt)
-            
-            timestamp = int(dt.timestamp())
-            # print(timestamp)
-            # print(dt)
+            if os.path.exists(dirs + '/' + img_name):
+                # Set file and folders modification time
+                utc = pytz.timezone("Asia/Seoul")
+                dt = post_date
+                dt = utc.localize(dt)
+                
+                timestamp = int(dt.timestamp())
+                # print(timestamp)
+                # print(dt)
 
-            os.utime(dirs + '/' + img_name, (timestamp, timestamp))
-            os.utime(dirs, (timestamp, timestamp))
+                os.utime(dirs + '/' + img_name, (timestamp, timestamp))
+                os.utime(dirs, (timestamp, timestamp))
+        except requests.exceptions.SSLError:
+            print("[Status] SSL Error. Skipping...")
+            continue
+        except requests.exceptions.HTTPError:
+            print("[Status] HTTP Error. Skipping...")
+            continue
+        except requests.exceptions.ConnectionError:
+            print("[Status] Connection Error. Skipping...")
+            continue
 
 
 def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title, loc):
@@ -147,47 +168,59 @@ def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title
         print("[Source URL] %s" % img)
         print("[Image Name] %s" % img_name)
 
-        if os.path.exists(dirs + '/' + img_name):
+        if os.path.exists(dirs + '/' + img_name) and not os.path.exists(dirs + '/' + img_name + '.aria2'):
             print("[Status] This file already exists. Skipping...")
             continue
 
-        with Progress() as progress:
-            task = progress.add_task("[cyan]Downloading...", total=100)
+        try:
+            with Progress() as progress:
 
-            process = subprocess.Popen(['aria2c', '-d', dirs, 
-                        '-s', '3', '-V', '-c', 
-                        '-j', '3', 
-                        '-x', '3', 
-                        '-k' '1M', 
-                        '-o', img_name, img,
-                        '--download-result=hide',
-                        '--check-certificate=false'],
-                        stdout=subprocess.PIPE,
-                        encoding='utf-8',
-                        text=True)
-            
-            for line in process.stdout:
-                parts = line.split()
-                if len(parts) >=3 and parts[1].endswith('%)'):
-                    progress.update(task, advance=int(re.search(r'\((\d+)%\)', parts[1]).group(1)))
-                if 'Download complete' in line:
-                    progress.update(task, completed=100)
+                process = subprocess.Popen(['aria2c', '-d', dirs, 
+                            '-s', '3', '-V', '-c', 
+                            '-j', '3', 
+                            '-x', '3', 
+                            '-k', '1M', 
+                            '-o', img_name, img,
+                            '--continue',
+                            '--download-result=hide',
+                            '--check-certificate=false'],
+                            stdout=subprocess.PIPE,
+                            encoding='utf-8',
+                            text=True)
+                
+                task = progress.add_task("Downloading...", total=100)
+                
+                for line in process.stdout:
+                    parts = line.split()
+                    if len(parts) >=3 and parts[1].endswith('%)'):
+                        progress.update(task, advance=int(re.search(r'\((\d+)%\)', parts[1]).group(1)))
+                    if 'Download complete' in line:
+                        progress.update(task, completed=100)
 
-        if os.path.exists(dirs + '/' + img_name):
-            # Set file and folders modification time
-            if loc == "KR":
-                utc = pytz.timezone("Asia/Seoul")
-            elif loc == "JP":
-                utc = pytz.timezone("Asia/Tokyo")
-            elif loc == "SG":
-                utc = pytz.timezone("Asia/Singapore")
-            
-            dt = post_date
-            dt = utc.localize(dt)
-            timestamp = int(dt.timestamp())
+            if os.path.exists(dirs + '/' + img_name):
+                # Set file and folders modification time
+                if loc == "KR":
+                    utc = pytz.timezone("Asia/Seoul")
+                elif loc == "JP":
+                    utc = pytz.timezone("Asia/Tokyo")
+                elif loc == "SG":
+                    utc = pytz.timezone("Asia/Singapore")
+                
+                dt = post_date
+                dt = utc.localize(dt)
+                timestamp = int(dt.timestamp())
 
-            os.utime(dirs + '/' + img_name, (timestamp, timestamp))
-            os.utime(dirs, (timestamp, timestamp))
+                os.utime(dirs + '/' + img_name, (timestamp, timestamp))
+                os.utime(dirs, (timestamp, timestamp))
+        except requests.exceptions.SSLError:
+            print("[Status] SSL Error. Skipping...")
+            continue
+        except requests.exceptions.HTTPError:
+            print("[Status] HTTP Error. Skipping...")
+            continue
+        except requests.exceptions.ConnectionError:
+            print("[Status] Connection Error. Skipping...")
+            continue
 
 
 def download_handler_alt(img, dirs):
@@ -215,23 +248,19 @@ def download_handler_alt(img, dirs):
     img_name = img_name.decode('euc-kr')
 
     print("\n[Image Name] %s" % img_name)
-
-
-    if os.path.exists(dirs + '/' + img_name):
-        print("[Status] This file already exists. Skipping...")
-        return
     
     url_mod_time = response.headers.get('Last-Modified')
 
     with Progress() as progress:
-        task = progress.add_task("[cyan]Downloading...", total=100)
+        task = progress.add_task("Downloading...", total=100)
 
         process = subprocess.Popen(['aria2c', '-d', dirs, 
                     '-s', '10', '-V', '-c', 
                     '-j', '6', 
                     '-x', '5', 
-                    '-k' '1M', 
+                    '-k', '1M', 
                     '-o', img_name, img,
+                    '--continue',
                     '--download-result=hide'],
                     stdout=subprocess.PIPE,
                     encoding='utf-8',
