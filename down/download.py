@@ -42,7 +42,8 @@ def download_handler(img_list, dirs, post_date, loc):
                             '-k', '1M', 
                             '-o', img_name, img,
                             '--continue',
-                            '--download-result=hide'],
+                            '--download-result=hide',
+                            '-U', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0'],
                             stdout=subprocess.PIPE,
                             encoding='utf-8',
                             text=True)
@@ -121,7 +122,8 @@ def download_handler_naver(img_list, dirs, post_date):
                             '-k', '1M', 
                             '-o', img_name, img,
                             '--continue',
-                            '--download-result=hide'],
+                            '--download-result=hide',
+                            '-U', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0'],
                             stdout=subprocess.PIPE,
                             encoding='utf-8',
                             text=True)
@@ -174,7 +176,6 @@ def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title
 
         try:
             with Progress() as progress:
-
                 process = subprocess.Popen(['aria2c', '-d', dirs, 
                             '-s', '3', '-V', '-c', 
                             '-j', '3', 
@@ -183,7 +184,8 @@ def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title
                             '-o', img_name, img,
                             '--continue',
                             '--download-result=hide',
-                            '--check-certificate=false'],
+                            '--check-certificate=false',
+                            '-U', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0'],
                             stdout=subprocess.PIPE,
                             encoding='utf-8',
                             text=True)
@@ -261,7 +263,8 @@ def download_handler_alt(img, dirs):
                     '-k', '1M', 
                     '-o', img_name, img,
                     '--continue',
-                    '--download-result=hide'],
+                    '--download-result=hide',
+                    '-U', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0'],
                     stdout=subprocess.PIPE,
                     encoding='utf-8',
                     text=True)
