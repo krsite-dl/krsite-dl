@@ -165,7 +165,11 @@ def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title
     for img in img_list:
         img_ext = img.split('.')[-1]
 
-        img_name = f'{post_date_short} {title}.{img_ext}'
+        # set image name based on the number of images
+        if len(img_list) > 0:
+            img_name = f'{post_date_short} {title} ({img_list.index(img)+1}).{img_ext}'
+        else:
+            img_name = f'{post_date_short} {title}.{img_ext}'
 
         print("[Source URL] %s" % img)
         print("[Image Name] %s" % img_name)
@@ -173,7 +177,7 @@ def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title
         if os.path.exists(dirs + '/' + img_name) and not os.path.exists(dirs + '/' + img_name + '.aria2'):
             print("[Status] This file already exists. Skipping...")
             continue
-
+        
         try:
             with Progress() as progress:
                 process = subprocess.Popen(['aria2c', '-d', dirs, 
