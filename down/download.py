@@ -166,7 +166,7 @@ def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title
         img_ext = img.split('.')[-1]
 
         # set image name based on the number of images
-        if len(img_list) > 0:
+        if len(img_list) > 1:
             img_name = f'{post_date_short} {title} ({img_list.index(img)+1}).{img_ext}'
         else:
             img_name = f'{post_date_short} {title}.{img_ext}'
