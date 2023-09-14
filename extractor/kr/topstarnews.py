@@ -5,6 +5,8 @@ from rich import print
 from pytz import timezone
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs, urlencode
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 import down.directory as dir
 
 def from_topstarnews(hd, loc, folder_name):
@@ -53,7 +55,13 @@ def from_topstarnews(hd, loc, folder_name):
 
 
     def post_page(hd, loc, folder_name):
-        r = requests.get(hd, headers={'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0'})
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        
+        r = session.get(hd, headers={'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0'})
         soup = BeautifulSoup(r.text, 'html.parser')
 
         post_title = soup.find('meta', property='og:title')['content'].strip()
@@ -80,8 +88,7 @@ def from_topstarnews(hd, loc, folder_name):
         print("Found %s image(s)" % len(img_list))
 
         dir.dir_handler_no_folder(img_list, post_title, post_date_short, post_date, loc, folder_name)
-
-    
+        
     if 'idxno' in hd:
         print('[yellow]Single page[/yellow]')
         post_page(hd, loc, folder_name)
