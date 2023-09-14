@@ -30,7 +30,7 @@ def from_topstarnews(hd, loc, folder_name):
             page += 1
 
             # stop if there's no post in the page
-            if soup.find('section', class_='article-custom-list') is None:
+            if soup.find('section', class_='article-column') is None:
                 break
 
 
