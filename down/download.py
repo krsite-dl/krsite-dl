@@ -36,10 +36,8 @@ def download_handler(img_list, dirs, post_date, loc):
         try:
             with Progress() as progress:
                 process = subprocess.Popen(['aria2c', '-d', dirs, 
-                            '-s', '3', '-V', '-c', 
-                            '-j', '3', 
-                            '-x', '3', 
-                            '-k', '1M', 
+                            '-c', 
+                            '-j', '2', 
                             '-o', img_name, img,
                             '--continue',
                             '--download-result=hide',
@@ -115,11 +113,11 @@ def download_handler_naver(img_list, dirs, post_date):
         
         try:
             with Progress() as progress:
+                task = progress.add_task("Downloading...", total=100)
+
                 process = subprocess.Popen(['aria2c', '-d', dirs, 
-                            '-s', '3', '-V', '-c', 
-                            '-j', '3', 
-                            '-x', '3', 
-                            '-k', '1M', 
+                            '-c', 
+                            '-j', '2', 
                             '-o', img_name, img,
                             '--continue',
                             '--download-result=hide',
@@ -127,8 +125,6 @@ def download_handler_naver(img_list, dirs, post_date):
                             stdout=subprocess.PIPE,
                             encoding='utf-8',
                             text=True)
-                
-                task = progress.add_task("Downloading...", total=100)
                 
                 for line in process.stdout:
                     parts = line.split()
@@ -181,10 +177,8 @@ def download_handler_no_folder(img_list, dirs, post_date, post_date_short, title
         try:
             with Progress() as progress:
                 process = subprocess.Popen(['aria2c', '-d', dirs, 
-                            '-s', '3', '-V', '-c', 
-                            '-j', '3', 
-                            '-x', '3', 
-                            '-k', '1M', 
+                            '-c', 
+                            '-j', '2', 
                             '-o', img_name, img,
                             '--continue',
                             '--download-result=hide',
@@ -261,10 +255,8 @@ def download_handler_alt(img, dirs):
         task = progress.add_task("Downloading...", total=100)
 
         process = subprocess.Popen(['aria2c', '-d', dirs, 
-                    '-s', '10', '-V', '-c', 
-                    '-j', '6', 
-                    '-x', '5', 
-                    '-k', '1M', 
+                    '-V', '-c', 
+                    '-j', '2', 
                     '-o', img_name, img,
                     '--continue',
                     '--download-result=hide',
