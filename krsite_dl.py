@@ -36,6 +36,7 @@ def check_site(url):
             'mbc.co.kr': ['MBC', 'kr', mbc.from_mbc],
             'newsjamm.co.kr': ['News Jamm', newsjamm.from_newsjamm],
             'osen.mt.co.kr': ['OSEN', osen.from_osen],
+            'osen.co.kr': ['OSEN', osen.from_osen],
             'programs.sbs.co.kr': ['SBS Program', sbs.from_sbs],
             'ent.sbs.co.kr': ['SBS News', sbsnews.from_sbsnews],
             'post.naver.com': ['Naver Post', naverpost.from_naverpost],
