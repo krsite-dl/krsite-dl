@@ -2,7 +2,6 @@ import datetime
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-import down.directory as dir
 
 def from_newsen(hd, loc, folder_name):
     opt = Options()
@@ -30,4 +29,6 @@ def from_newsen(hd, loc, folder_name):
     print("Date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
 
-    dir.dir_handler(img_list, post_title, post_date_short, post_date, loc, folder_name)
+    from down.directory import DirectoryHandler
+
+    DirectoryHandler().handle_directory(img_list, post_title, post_date, post_date_short, loc, folder_name)

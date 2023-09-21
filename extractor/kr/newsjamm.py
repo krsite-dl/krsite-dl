@@ -1,9 +1,8 @@
 import requests
 import datetime
 from bs4 import BeautifulSoup
-import down.directory as dir
 
-def from_newsjamm(hd):
+def from_newsjamm(hd, loc, folder_name):
     r = requests.get(hd)
     soup = BeautifulSoup(r.text, 'html.parser')
     post_title = soup.find('h1').text
@@ -20,4 +19,6 @@ def from_newsjamm(hd):
     print("Date: %s" % post_date_short)
     print("Found %s image(s)" % len(img_list))
 
-    dir.dir_handler_alt(img_list, post_title, post_date_short, post_date)
+    from down.directory import DirectoryHandler
+
+    DirectoryHandler().handle_directory_alternate(img_list, post_title, post_date, post_date_short, loc, folder_name)

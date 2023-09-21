@@ -3,9 +3,8 @@ import re
 import json
 import datetime
 from bs4 import BeautifulSoup
-import down.directory as dir
 
-def from_nataliemu(hd):
+def from_nataliemu(hd, loc, folder_name):
     r = requests.get(hd)
     soup = BeautifulSoup(r.text, 'html.parser')
 
@@ -28,4 +27,6 @@ def from_nataliemu(hd):
     for item in content.findAll('img'):
         img_list.append(item['data-src'].split('?')[0])
 
-    dir.dir_handler(img_list, post_title, post_date_short, post_date)
+    from down.directory import DirectoryHandler
+
+    DirectoryHandler().handle_directory(img_list, post_title, post_date, post_date_short, loc, folder_name)
