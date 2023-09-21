@@ -23,4 +23,6 @@ def from_osen(hd, loc, folder_name):
     print("Post date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
     
-    dir.dir_handler_alt(img_list, post_title, post_date_short, post_date, loc, folder_name)
+    from down.directory import DirectoryHandler
+
+    DirectoryHandler().handle_directory_combine(img_list, post_title, post_date, post_date_short, loc, folder_name)

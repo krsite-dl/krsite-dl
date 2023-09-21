@@ -84,7 +84,9 @@ def from_topstarnews(hd, loc, folder_name):
         print("Date: %s" % post_date)
         print("Found %s image(s)" % len(img_list))
 
-        dir.dir_handler_no_folder(img_list, post_title, post_date_short, post_date, loc, folder_name)
+        from down.directory import DirectoryHandler
+
+        DirectoryHandler().handle_directory_combine(img_list, post_title, post_date, post_date_short, loc, folder_name)
         
     if 'idxno' in hd:
         print('[yellow]Single page[/yellow]')
