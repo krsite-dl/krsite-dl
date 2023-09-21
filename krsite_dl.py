@@ -33,7 +33,7 @@ def check_site(url):
         'KR': [{
             'dispatch.co.kr': ['Dispatch', dispatch.from_dispatch],
             'enews.imbc.com': ['iMBC News', imbcnews.from_imbcnews],
-            'mbc.co.kr': ['MBC', 'kr', mbc.from_mbc],
+            'mbc.co.kr': ['MBC', mbc.from_mbc],
             'newsjamm.co.kr': ['News Jamm', newsjamm.from_newsjamm],
             'osen.mt.co.kr': ['OSEN', osen.from_osen],
             'osen.co.kr': ['OSEN', osen.from_osen],
@@ -119,18 +119,19 @@ def main():
                         print("KeyboardInterrupt detected. Exiting gracefully.")
                         sys.exit(0)
     elif args.a or args.url:
-        try:
-            check_site(args.url)
-        except AttributeError:
-            print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
-            print("You must provide at least one URL.")
-            print("Type 'krsite-dl -h' for more information.")
-        except IndexError:
-            print("No pictures found")
-        except KeyboardInterrupt:
-            print("\r", end="")
-            print("KeyboardInterrupt detected. Exiting gracefully.")
-            sys.exit(0)
+        check_site(args.url)
+        # try:
+        #     check_site(args.url)
+        # except AttributeError:
+        #     print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
+        #     print("You must provide at least one URL.")
+        #     print("Type 'krsite-dl -h' for more information.")
+        # except IndexError:
+        #     print("No pictures found")
+        # except KeyboardInterrupt:
+        #     print("\r", end="")
+        #     print("KeyboardInterrupt detected. Exiting gracefully.")
+        #     sys.exit(0)
 
 if __name__ == '__main__':
     main()
