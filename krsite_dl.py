@@ -119,19 +119,19 @@ def main():
                         print("KeyboardInterrupt detected. Exiting gracefully.")
                         sys.exit(0)
     elif args.a or args.url:
-        check_site(args.url)
-        # try:
-        #     check_site(args.url)
-        # except AttributeError:
-        #     print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
-        #     print("You must provide at least one URL.")
-        #     print("Type 'krsite-dl -h' for more information.")
-        # except IndexError:
-        #     print("No pictures found")
-        # except KeyboardInterrupt:
-        #     print("\r", end="")
-        #     print("KeyboardInterrupt detected. Exiting gracefully.")
-        #     sys.exit(0)
+        try:
+            check_site(args.url)
+        except AttributeError:
+            print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
+            print("You must provide at least one URL.")
+            print("Type 'krsite-dl -h' for more information.")
+        except IndexError:
+            print("No pictures found")
+        except KeyboardInterrupt:
+            print("\r", end="")
+            print("KeyboardInterrupt detected. Exiting gracefully.")
+            sys.exit(0)
+
 
 if __name__ == '__main__':
     main()
