@@ -2,7 +2,6 @@ import requests
 import datetime
 from pytz import timezone
 from bs4 import BeautifulSoup
-import down.directory as dir
 
 def from_vogue(hd, loc, folder_name):
     r = requests.get(hd)

@@ -6,7 +6,6 @@ from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
-# import down.directory as dir
 
 def from_naverpost(hd, loc, folder_name):
     opt = Options()
