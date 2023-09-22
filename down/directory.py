@@ -57,7 +57,7 @@ class DirectoryHandler:
 
     # directory handling for naver blogs
     def handle_directory_naver(self, img_list, title = None, post_date = None, post_date_short = None, series = None, post_writer = None, directory_name = None):
-        title, post_writer, series = self.__sanitize_string(title, post_writer, series)
+        title, directory_name, post_writer, series = self.__sanitize_string(title, directory_name, post_writer, series)
 
         if title and post_date_short and series:
             dirs = self._create_directory(directory_name, post_writer, series, f'{post_date_short} {title}')
