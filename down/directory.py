@@ -10,15 +10,13 @@ class DirectoryHandler:
 
 
     # sanitize string to remove windows reserved characters
-    def __sanitize_string(self, string1, string2, string3 = None):
-        if not self.args.no_windows_filenames:
-            string1 = re.sub(self.reserved_pattern, '', string1)
-            string2 = re.sub(self.reserved_pattern, '', string2)
-            if string3: 
-                string3 = re.sub(self.reserved_pattern, '', string3)
-                return string1, string2, string3
-            
-        return string1, string2
+    def __sanitize_string(self, *strings):
+        sanitized_strings = []
+        for string in strings:
+            if not self.args.no_windows_filenames:
+                string = re.sub(self.reserved_pattern, '', string)
+            sanitized_strings.append(string)
+        return tuple(sanitized_strings)
     
 
     # create directory if it doesn't exist
