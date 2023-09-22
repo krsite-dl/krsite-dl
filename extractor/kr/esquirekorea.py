@@ -1,7 +1,6 @@
 import requests
 import datetime
 from bs4 import BeautifulSoup
-import down.directory as dir
 
 def from_esquirekorea(hd, loc, folder_name):
     r = requests.get(hd)
@@ -29,4 +28,6 @@ def from_esquirekorea(hd, loc, folder_name):
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")
 
-    dir.dir_handler(img_list, post_title, post_date_short, post_date, loc, folder_name)
+    from down.directory import DirectoryHandler
+
+    DirectoryHandler().handle_directory(img_list, post_title, post_date, post_date_short, loc, folder_name)

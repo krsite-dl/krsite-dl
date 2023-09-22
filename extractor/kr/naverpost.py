@@ -6,7 +6,6 @@ from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
-import down.directory as dir
 
 def from_naverpost(hd, loc, folder_name):
     opt = Options()
@@ -128,8 +127,11 @@ def from_naverpost(hd, loc, folder_name):
 
         print("Found %s image(s)" % len(img_list))
 
-        dir.dir_handler_naver(img_list, post_title, post_date_short, post_series, post_date, post_writer, folder_name)
+        from down.directory import DirectoryHandler
 
+        DirectoryHandler().handle_directory_naver(img_list, post_title, post_date, post_date_short, post_series, post_writer, folder_name)
+
+        
     if 'my.naver' in hd:
         print("[bold green]Naver Post Main Page[/bold green]")
         naverpost_search(hd)

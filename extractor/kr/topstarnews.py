@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs, urlencode
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-import down.directory as dir
 
 def from_topstarnews(hd, loc, folder_name):
     def iterate_pages():
@@ -84,7 +83,9 @@ def from_topstarnews(hd, loc, folder_name):
         print("Date: %s" % post_date)
         print("Found %s image(s)" % len(img_list))
 
-        dir.dir_handler_no_folder(img_list, post_title, post_date_short, post_date, loc, folder_name)
+        from down.directory import DirectoryHandler
+
+        DirectoryHandler().handle_directory_combine(img_list, post_title, post_date, post_date_short, loc, folder_name)
         
     if 'idxno' in hd:
         print('[yellow]Single page[/yellow]')
