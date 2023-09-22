@@ -3,7 +3,6 @@ import re
 import datetime
 from pytz import timezone
 from bs4 import BeautifulSoup
-import down.directory as dir
 import down.video_handler as video_handler
 
 def from_wkorea(hd, loc, folder_name):
@@ -39,4 +38,6 @@ def from_wkorea(hd, loc, folder_name):
 
         video_handler.video_handler(video_list, post_title, post_date_short, post_date, loc, folder_name)
 
-    # dir.dir_handler(img_list, post_title, post_date_short, post_date, loc, folder_name)
+    from down.directory import DirectoryHandler
+
+    DirectoryHandler().handle_directory(img_list, post_title, post_date, post_date_short, loc, folder_name)

@@ -1,7 +1,6 @@
 import requests
 import datetime
 from bs4 import BeautifulSoup
-import down.directory as dir
 
 def from_osen(hd, loc, folder_name):
     r = requests.get(hd)

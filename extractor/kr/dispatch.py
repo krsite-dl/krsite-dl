@@ -2,7 +2,7 @@ import requests
 import re
 import datetime
 from bs4 import BeautifulSoup
-import down.directory as dir
+
 def from_dispatch(hd, loc, folder_name):
     r = requests.get(hd)
     soup = BeautifulSoup(r.text, 'html.parser')

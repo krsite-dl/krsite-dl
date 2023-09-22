@@ -10,9 +10,11 @@ def from_newsjamm(hd, loc, folder_name):
     post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d')
     post_date_short = post_date.strftime('%y%m%d')
 
+    content = soup.find('div', class_='PostContent_contentSection__ChFQz')
+
     img_list = []
 
-    for item in soup.findAll('img'):
+    for item in content.findAll('img'):
         img_list.append(item.get('src'))
 
     print("Title: %s" % post_title)

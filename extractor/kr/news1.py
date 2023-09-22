@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 from pytz import timezone
-import down.directory as dir
 
 def from_news1(hd, loc, folder_name):
     r = requests.get(hd)

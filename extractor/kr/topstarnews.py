@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs, urlencode
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-import down.directory as dir
 
 def from_topstarnews(hd, loc, folder_name):
     def iterate_pages():
