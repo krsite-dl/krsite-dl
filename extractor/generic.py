@@ -1,8 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-import down.directory as dir
 
-def from_generic(hd):
+def from_generic(hd, loc, folder_name):
     r = requests.get(hd)
     soup = BeautifulSoup(r.text, 'html.parser')
     img_list = []
@@ -12,4 +11,6 @@ def from_generic(hd):
     
     print("Found %s image(s)" % len(img_list))
 
-    dir.dir_handler(img_list)
+    from down.directory import DirectoryHandler
+
+    DirectoryHandler().handle_directory(img_list, None, None, None, loc, folder_name)

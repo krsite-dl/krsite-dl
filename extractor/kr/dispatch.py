@@ -2,7 +2,7 @@ import requests
 import re
 import datetime
 from bs4 import BeautifulSoup
-import down.directory as dir
+
 def from_dispatch(hd, loc, folder_name):
     r = requests.get(hd)
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -32,5 +32,7 @@ def from_dispatch(hd, loc, folder_name):
     print("Title: %s" % post_title)
     print("Date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
-    
-    dir.dir_handler_alt(img_list, post_title, post_date_short, post_date, loc, folder_name)
+
+    from down.directory import DirectoryHandler
+
+    DirectoryHandler().handle_directory_alternate(img_list, post_title, post_date, post_date_short, loc, folder_name)
