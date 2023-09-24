@@ -8,15 +8,23 @@
 * [Disclaimer](#disclaimer)
 
 ## Prerequisite
-1. Make sure you have `aria2c` installed and executeable in your system's PATH.
-
-    Install `aria2c`` from https://github.com/aria2/aria2
-
-2. Make sure you have `python3` at least version 3.6 installed and executeable in your system's PATH.
-
-3. Run `pip3 install -r requirements.txt` to install dependencies
+> [!IMPORTANT]
+> 1. Make sure you have `aria2c` installed and executeable in your system's PATH.
+>
+>   Install `aria2c`` from https://github.com/aria2/aria2
+>
+> 2. Make sure you have `python3` at least version 3.6 installed and executeable in your system's PATH.
+>
+> 3. Run `pip3 install -r requirements.txt` to install dependencies
+> 
+> 4. There are some sites that requires selenium. User must have chrome and chromedriver installed and executeable
 
 ## Usage
+User can add config.ini file to set default download path. The config.ini file is located in the same directory as the krsite-dl file. The config.ini file should contain the following:
+> [!NOTE]
+> ```[Settings]
+> base_dir = /your/path/here```
+```
 ```python3 krsite-dl [OPTIONS] URL [URL...]```
 
 ```python3 krsite-dl https://example.com -d ~/Pictures/```
@@ -29,7 +37,7 @@
 ```
 -a                        Text file containing site urls
 -ai                       Text file containing image urls
--d                        The destination path for the downloaded file
+-d                        The destination path for the downloaded file (unnecessary if config.ini is setup unless you want to override the default download path)
 --no-windows-filenames    (default=False) krsite-dl will keep the original filenames of the images. This includes filenames that are not allowed in Windows OS.
 ```
 
@@ -68,12 +76,11 @@
 | Generic Sites | Any Sites not listed above | ? | Image |
 
 ## Issues
-```
-Please make an issue if you encounter any problems or just want to get more sites supported.
+> [!NOTE]\
+> Please make an issue if you encounter any problems or just want to get more sites supported.
+> Site Name: 
+> Site URL (preferably the post page):
 
-Site Name: 
-Site URL (preferably the post page):
-```
 ## FAQ
 #### Q: Why is the download speed so slow?
 A: The download speed is limited by the site itself. You can try to use a VPN to get a better speed.
