@@ -24,7 +24,7 @@ User can add config.ini file to set default download path. The config.ini file i
 > [!NOTE]
 > ```[Settings]
 > base_dir = /your/path/here```
-```
+
 ```python3 krsite-dl [OPTIONS] URL [URL...]```
 
 ```python3 krsite-dl https://example.com -d ~/Pictures/```
@@ -76,10 +76,10 @@ User can add config.ini file to set default download path. The config.ini file i
 | Generic Sites | Any Sites not listed above | ? | Image |
 
 ## Issues
-> [!NOTE]\
+> [!NOTE]
 > Please make an issue if you encounter any problems or just want to get more sites supported.
-> Site Name: 
-> Site URL (preferably the post page):
+> Site Name: www.example.com
+> Site URL (preferably the post page): www.example.com/post/1234
 
 ## FAQ
 #### Q: Why is the download speed so slow?
