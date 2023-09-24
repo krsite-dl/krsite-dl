@@ -17,11 +17,15 @@
 >
 > 3. Run `pip3 install -r requirements.txt` to install dependencies
 > 
-> 4. There are some sites that requires selenium. User must have chrome and chromedriver installed and executeable
+> 4. There are some sites that requires selenium. User must have [chrome](https://www.google.com/chrome/) and [chromedriver](https://chromedriver.chromium.org/downloads) installed and executeable
 
-## Usage
-User can add config.ini file to set default download path. The config.ini file is located in the same directory as the krsite-dl file. The config.ini file should contain the following:
 > [!NOTE]
+> 
+## Usage
+User can add `krsite-dl.config` file to set default download path. The `krsite-dl.config` file is located in the same directory as the krsite-dl file.
+> [!NOTE]
+>
+> The `krsite-dl.config` file should contain the following:
 > ```[Settings]
 > base_dir = /your/path/here```
 
@@ -37,33 +41,33 @@ User can add config.ini file to set default download path. The config.ini file i
 ```
 -a                        Text file containing site urls
 -ai                       Text file containing image urls
--d                        The destination path for the downloaded file (unnecessary if config.ini is setup unless you want to override the default download path)
+-d                        The destination path for the downloaded file (unnecessary if you have `krsite-dl.config` unless you want to override the default download path)
 --no-windows-filenames    (default=False) krsite-dl will keep the original filenames of the images. This includes filenames that are not allowed in Windows OS.
 ```
 
 ## Supported Sites
 
-| Site Name | Site URL | Supported | Media Type |
-| :--- | :--- | :---: | :---: |
+| Site Name | Site URL | Supported | Media Type | Requires Selenium |
+| :--- | :--- | :---: | :---: | :---: |
 | Cosmopolitan Korea | https://www.cosmopolitan.co.kr/ | Post Page | Image |
 | Dazed Korea | https://www.dazedkorea.com/ | Post Page | Image |
-| Dispatch (디스패치) | https://www.dispatch.co.kr/category/photos | Post Page | Image |
-| Elle Korea | https://www.elle.co.kr/ | Post Page | Image |
-| Esquire Korea | https://www.esquirekorea.co.kr/ | Post Page | Image |
+| Dispatch (디스패치) | https://www.dispatch.co.kr/category/photos | Post Page | Image 
+| Elle Korea | https://www.elle.co.kr/ | Post Page | Image | |
+| Esquire Korea | https://www.esquirekorea.co.kr/ | Post Page | Image | |
 | Harper's Bazaar Korea | https://www.harpersbazaar.co.kr/ | Post Page | Image |
-| iMBC News | https://enews.imbc.com/ | Post Page | Image |
-| JTBC TV | https://tv.jtbc.co.kr/ | Post Page | Image |
-| K odyssey | https://k-odyssey.com/ | Post Page | Image |
-| L'Officiel Korea | https://www.lofficielkorea.com/ | Post Page | Image |
-| L'Officiel Singapore | https://www.lofficielsingapore.com/ | Post Page | Image |
+| iMBC News | https://enews.imbc.com/ | Post Page | Image | |
+| JTBC TV | https://tv.jtbc.co.kr/ | Post Page | Image | |
+| K odyssey | https://k-odyssey.com/ | Post Page | Image | |
+| L'Officiel Korea | https://www.lofficielkorea.com/ | Post Page | Image | Yes |
+| L'Officiel Singapore | https://www.lofficielsingapore.com/ | Post Page | Image | Yes |
 | Marie Claire Korea | https://www.marieclairekorea.com/ | Post Page | Image |
-| MBC PR (MBC와 함께) | https://with.mbc.co.kr/m/pr/photo/view.html | Post Page | Image |
-| Nataliemu | https://nataliemu.com/ | Post Page | Image |
-| Naver Posts (Naver 포스트) | https://post.naver.com/ | [Post Page](https://post.naver.com/viewer/postView.naver?volumeNo=35887849&memberNo=25831870), [Search Result](https://post.naver.com/search/authorPost.naver?keyword=%EC%95%84%EC%9D%B4%EB%B8%8C&memberNo=25831870), [Series List](https://post.naver.com/series.naver?memberNo=25831870), [Series Page](https://post.naver.com/my/series/detail.naver?seriesNo=671644&memberNo=25831870), [Main Page](https://post.naver.com/my.naver?memberNo=25831870&navigationType=push) | Image |
+| MBC PR (MBC와 함께) | https://with.mbc.co.kr/m/pr/photo/view.html | Post Page | Image | Yes |
+| Nataliemu | https://nataliemu.com/ | Post Page | Image | 
+| Naver Posts (Naver 포스트) | https://post.naver.com/ | [Post Page](https://post.naver.com/viewer/postView.naver?volumeNo=35887849&memberNo=25831870), [Search Result](https://post.naver.com/search/authorPost.naver?keyword=%EC%95%84%EC%9D%B4%EB%B8%8C&memberNo=25831870), [Series List](https://post.naver.com/series.naver?memberNo=25831870), [Series Page](https://post.naver.com/my/series/detail.naver?seriesNo=671644&memberNo=25831870), [Main Page](https://post.naver.com/my.naver?memberNo=25831870&navigationType=push) | Image | Yes |
 | Naver News | https://news.naver.com/ | Post Page | Image |
 | Newsjamm | https://newsjamm.co.kr/ | Post Page | Image |
-| News1 | https://www.news1.kr/ | Post Page | Image |
-| Newsen | https://www.newsen.com/news_photo_hd.php | Post Page | Image |
+| News1 | https://www.news1.kr/ | Post Page | Image | 
+| Newsen | https://www.newsen.com/news_photo_hd.php | Post Page | Image | Yes |
 | OSEN | https://osen.mt.co.kr/ | Post Page | Image |
 | SBS Program | https://programs.sbs.co.kr/ | Post Page | Image |
 | SBS News | https://news.sbs.co.kr/ | Post Page | Image |
@@ -78,7 +82,9 @@ User can add config.ini file to set default download path. The config.ini file i
 ## Issues
 > [!NOTE]
 > Please make an issue if you encounter any problems or just want to get more sites supported.
+>
 > Site Name: www.example.com
+>
 > Site URL (preferably the post page): www.example.com/post/1234
 
 ## FAQ

@@ -9,7 +9,7 @@ from extractor.sg import lofficielsingapore
 
 # Reading settings from config file
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read('krsite-dl.config')
 if config.has_section('Settings'):
     destination_dir = config['Settings']['base_dir']
 else:
