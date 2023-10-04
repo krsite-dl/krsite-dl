@@ -25,8 +25,11 @@ User can add `krsite-dl.config` file to set default download path. The `krsite-d
 > [!NOTE]
 >
 > The `krsite-dl.config` file should contain the following:
-> ```[Settings]
-> base_dir = /your/path/here```
+> ```
+> [Settings]
+>
+> base_dir = /your/path/here
+> ```
 
 ```python3 krsite-dl [OPTIONS] URL [URL...]```
 
