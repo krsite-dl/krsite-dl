@@ -17,17 +17,19 @@
 >
 > 3. Run `pip3 install -r requirements.txt` to install dependencies
 > 
-> 4. There are some sites that requires selenium. User must have [chrome](https://www.google.com/chrome/) and [chromedriver](https://chromedriver.chromium.org/downloads) installed and executeable
+> 4. There are some sites that requires selenium. User must have [chrome](https://www.google.com/chrome/) and [chromedriver](https://chromedriver.chromium.org/downloads) installed and executeable. The list of sites can be found [here](#supported-sites).
 
-> [!NOTE]
-> 
+
 ## Usage
 User can add `krsite-dl.config` file to set default download path. The `krsite-dl.config` file is located in the same directory as the krsite-dl file.
 > [!NOTE]
 >
 > The `krsite-dl.config` file should contain the following:
-> ```[Settings]
-> base_dir = /your/path/here```
+> ```
+> [Settings]
+>
+> base_dir = /your/path/here
+> ```
 
 ```python3 krsite-dl [OPTIONS] URL [URL...]```
 
