@@ -112,8 +112,8 @@ def main():
                         direct.from_direct(line)
                     except FileNotFoundError:
                         print("File not found: %s" % args.ai)
-                    except IndexError:
-                        print("No pictures found")
+                    except IndexError as e:
+                        print("Index Error: %s" % e)
                     except KeyboardInterrupt:
                         print("\r", end="")
                         print("KeyboardInterrupt detected. Exiting gracefully.")
@@ -125,8 +125,8 @@ def main():
             print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
             print("You must provide at least one URL.")
             print("Type 'krsite-dl -h' for more information.")
-        except IndexError:
-            print("No pictures found")
+        except IndexError as e:
+            print("Index Error: %s" % e)
         except KeyboardInterrupt:
             print("\r", end="")
             print("KeyboardInterrupt detected. Exiting gracefully.")
