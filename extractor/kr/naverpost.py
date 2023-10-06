@@ -123,6 +123,10 @@ def from_naverpost(hd, loc, folder_name):
             if 'storep' not in i.get_attribute('src'):
                 img_list.append(str(i.get_attribute('src').split('?')[0]))
 
+        for i in w.find_elements(By.CLASS_NAME, 'se_card_exception_img'):
+            if 'storep' not in i.get_attribute('src'):
+                img_list.append(str(i.get_attribute('src').split('?')[0]))
+
         w.quit()
 
         print("Found %s image(s)" % len(img_list))
