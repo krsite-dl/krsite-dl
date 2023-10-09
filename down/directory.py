@@ -62,7 +62,7 @@ class DirectoryHandler:
         if title and post_date_short and series:
             dirs = self._create_directory(directory_name, post_writer, series, f'{post_date_short} {title}')
         else:
-            dirs = self._create_directory(directory_name, 'krsite-dl')
+            dirs = self._create_directory(directory_name, post_writer, f'{post_date_short} {title}')
 
         DownloadHandler().downloader_naver(img_list, dirs, post_date)
 
