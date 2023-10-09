@@ -13,7 +13,7 @@ If you like this project, please consider giving it a star! Thanks!
 > [!IMPORTANT]
 > 1. Make sure you have `aria2c` installed and executeable in your system's PATH.
 >
->   Install `aria2c` from https://github.com/aria2/aria2
+>   Install `aria2c`` from https://github.com/aria2/aria2
 >
 > 2. Make sure you have `python3` at least version 3.6 installed and executeable in your system's PATH.
 >
