@@ -1,3 +1,5 @@
+If you like this project, please consider giving it a star! Thanks!
+
 ## Table of Contents
 * [Prerequisite](#prerequisite)
 * [Usage](#usage)
