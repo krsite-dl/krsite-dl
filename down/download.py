@@ -98,8 +98,16 @@ class DownloadHandler():
 
 
     def downloader_naver(self, img_list, dirs, post_date):
+        duplicate_counts = {}
         for img in img_list:
             img_name = self._encode_kr(img)
+            img_ext = img_name.split('.')[-1]
+
+            if img_name in duplicate_counts:
+                duplicate_counts[img_name] += 1
+                img_name = f"{img_name.split('.')[0]} ({duplicate_counts[img_name]}).{img_ext}"
+            else:
+                duplicate_counts[img_name] = 0
 
             print("[Source URL] %s" % img)
             print("[Image Name] %s" % img_name)
