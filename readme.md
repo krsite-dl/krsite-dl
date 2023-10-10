@@ -45,8 +45,8 @@ User can add `krsite-dl.config` file to set default download path. The `krsite-d
 ```
 -a                        Text file containing site urls
 -ai                       Text file containing image urls
--d                        The destination path for the downloaded file (unnecessary if config.ini is setup unless you want to override the default download path)
---no-windows-filenames    (default=False) By default krsite-dl will remove characters that are not allowed in Windows filenames. This option will disable that.
+-d                        The destination path for the downloaded file (unnecessary if you have `krsite-dl.config` unless you want to override the default download path)
+--no-windows-filenames    (default=False) krsite-dl will keep the original filenames of the images. This includes filenames that are not allowed in Windows OS.
 ```
 
 ## Supported Sites
