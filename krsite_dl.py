@@ -16,7 +16,7 @@ else:
     destination_dir = '.'
 
 parser = argparse.ArgumentParser()
-parser.add_argument("url", nargs='+',type=str, help="valid news/blog urls")
+parser.add_argument("url", nargs='*',type=str, help="valid news/blog urls")
 parser.add_argument("-a", type=str, help="text file containing site urls")
 parser.add_argument("-ai", type=str, help="text file containing image urls")
 parser.add_argument("--no-windows-filenames", action="store_true", help="(default=False) By default krsite-dl will remove characters that are not allowed in Windows filenames. This option will disable that.")
