@@ -16,10 +16,10 @@ else:
     destination_dir = '.'
 
 parser = argparse.ArgumentParser()
-parser.add_argument("url", nargs='+',type=str, help="valid news/blog urls")
+parser.add_argument("url", nargs='?',type=str, help="valid news/blog url")
 parser.add_argument("-a", type=str, help="text file containing site urls")
 parser.add_argument("-ai", type=str, help="text file containing image urls")
-parser.add_argument("--no-windows-filenames", action="store_true", help="(default=False) By default krsite-dl will remove characters that are not allowed in Windows filenames. This option will disable that.")
+parser.add_argument("--no-windows-filenames", action="store_true", help="By default krsite-dl will remove characters that are not allowed in Windows filenames. This option will disable that.")
 # parser.add_argument("--force-date", type=str, help="Force a date for the downloaded file. Format: YYYYMMDD HHMMSS")
 # parser.add_argument("--board-no", type=int, help="The board number from a site (SBS). For example (https://programs.sbs.co.kr/enter/gayo/visualboard/54795?cmd=view&page=1&board_no=438994) will have a board no of 438994")
 parser.add_argument("-d", "--destination", default=destination_dir, type=str, help="The destination path for the downloaded file (unnecessary if config.ini is setup unless you want to override the default download path)")
@@ -120,8 +120,7 @@ def main():
                         sys.exit(0)
     elif args.a or args.url:
         try:
-            for url in args.url:
-                check_site(url)
+            check_site(args.url)
         except AttributeError:
             print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
             print("You must provide at least one URL.")
