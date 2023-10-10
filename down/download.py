@@ -45,7 +45,6 @@ class DownloadHandler():
 
         return img
     
-    
     def _download_logic(self, filename, uri, dirs, post_date, loc):
         try:
             with Progress() as progress:
@@ -126,9 +125,9 @@ class DownloadHandler():
             img_ext = img.split('.')[-1]
 
             if len(img_list) > 1:
-                img_name = f"{post_date_short} {title} ({img_list.index(img)+1}).{img_ext}"
+                img_name = f'{post_date_short} {title} ({img_list.index(img)+1}).{img_ext}'
             else:
-                img_name = f"{post_date_short} {title}.{img_ext}"
+                img_name = f'{post_date_short} {title}.{img_ext}'
 
             print("[Source URL] %s" % img)
             print("[Image Name] %s" % img_name)
