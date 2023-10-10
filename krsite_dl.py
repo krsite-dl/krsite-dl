@@ -120,7 +120,8 @@ def main():
                         sys.exit(0)
     elif args.a or args.url:
         try:
-            check_site(args.url)
+            for url in args.url:
+                check_site(url)
         except AttributeError:
             print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
             print("You must provide at least one URL.")
