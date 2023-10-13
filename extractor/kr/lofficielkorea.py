@@ -1,7 +1,8 @@
 import datetime
-from pytz import timezone
 import json
 import re
+
+from pytz import timezone
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait

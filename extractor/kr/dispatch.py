@@ -1,6 +1,6 @@
 import requests
-import re
 import datetime
+
 from bs4 import BeautifulSoup
 
 def from_dispatch(hd, loc, folder_name):

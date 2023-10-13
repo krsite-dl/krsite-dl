@@ -1,6 +1,7 @@
 import requests
-import re
 import datetime
+import re
+
 from bs4 import BeautifulSoup
 
 def from_tvreport(hd, loc, folder_name):

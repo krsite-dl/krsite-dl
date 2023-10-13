@@ -1,5 +1,7 @@
 import requests
 import datetime
+
+from client.user_agent import InitUserAgent
 from rich import print
 from pytz import timezone
 from bs4 import BeautifulSoup
@@ -9,7 +11,7 @@ from urllib3.util.retry import Retry
 
 def from_topstarnews(hd, loc, folder_name):
     def iterate_pages():
-        r = requests.get(hd, headers={'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0'})
+        r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
         soup = BeautifulSoup(r.text, 'html.parser')
 
         pagination = soup.find('ul', class_='pagination')
@@ -34,7 +36,7 @@ def from_topstarnews(hd, loc, folder_name):
 
 
     def grab_post_urls(page_url):
-        r = requests.get(page_url, headers={'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0'})
+        r = requests.get(page_url, headers={'User-Agent': InitUserAgent().get_user_agent()})
         soup = BeautifulSoup(r.text, 'html.parser')
 
         section = soup.find('section', class_='article-custom-list')
@@ -57,7 +59,7 @@ def from_topstarnews(hd, loc, folder_name):
         session.mount('http://', adapter)
         session.mount('https://', adapter)
         
-        r = session.get(hd, headers={'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0'})
+        r = session.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
         soup = BeautifulSoup(r.text, 'html.parser')
 
         post_title = soup.find('meta', property='og:title')['content'].strip()
