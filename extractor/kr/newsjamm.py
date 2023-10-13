@@ -1,5 +1,6 @@
 import requests
 import datetime
+
 from bs4 import BeautifulSoup
 
 def from_newsjamm(hd, loc, folder_name):
