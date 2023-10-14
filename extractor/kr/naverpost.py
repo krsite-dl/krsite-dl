@@ -1,7 +1,8 @@
-from rich import print
-import time
-import datetime
 import requests
+import datetime
+import time
+
+from rich import print
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options

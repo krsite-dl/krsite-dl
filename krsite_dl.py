@@ -3,7 +3,7 @@ import configparser
 import sys
 from rich import print
 from extractor import direct, generic
-from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, topstarnews, kodyssey, tvjtbc, newsen, sportsw, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue, esquirekorea
+from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, topstarnews, kodyssey, tvjtbc, newsen, sportsw, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue, esquirekorea, melon, genie
 from extractor.jp import nataliemu, vivi
 from extractor.sg import lofficielsingapore
 
@@ -20,8 +20,6 @@ parser.add_argument("url", nargs='?',type=str, help="valid news/blog url")
 parser.add_argument("-a", type=str, help="text file containing site urls")
 parser.add_argument("-ai", type=str, help="text file containing image urls")
 parser.add_argument("--no-windows-filenames", action="store_true", help="(default=False) krsite-dl will keep the original filenames of the images. This includes filenames that are not allowed in Windows OS.")
-# parser.add_argument("--force-date", type=str, help="Force a date for the downloaded file. Format: YYYYMMDD HHMMSS")
-# parser.add_argument("--board-no", type=int, help="The board number from a site (SBS). For example (https://programs.sbs.co.kr/enter/gayo/visualboard/54795?cmd=view&page=1&board_no=438994) will have a board no of 438994")
 parser.add_argument("-d", "--destination", default=destination_dir, type=str, help="The destination path for the downloaded file (unnecessary if you have `krsite-dl.config` unless you want to override the default download path)")
 args = parser.parse_args()
 
@@ -58,6 +56,8 @@ def check_site(url):
             'elle.co.kr': ['Elle Korea', elle.from_elle],
             'vogue.co.kr': ['Vogue Korea', vogue.from_vogue],
             'esquirekorea.co.kr': ['Esquire Korea', esquirekorea.from_esquirekorea],
+            'melon.com': ['Melon', melon.from_melon],
+            'genie.co.kr': ['Genie', genie.from_genie]
         }],
         # JAPANESE SITES
         'JP': [{
