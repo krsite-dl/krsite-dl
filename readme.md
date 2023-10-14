@@ -58,7 +58,7 @@ User can add `krsite-dl.config` file to set default download path. The `krsite-d
 | Dispatch (디스패치) | https://www.dispatch.co.kr/category/photos | Post Page | Image 
 | Elle Korea | https://www.elle.co.kr/ | Post Page | Image | |
 | Esquire Korea | https://www.esquirekorea.co.kr/ | Post Page | Image | |
-| Genie Music | https://www.genie.co.kr/ | [Artist Page](https://www.genie.co.kr/detail/artistInfo?xxnm=81271496) | Image | |
+| Genie Music | https://www.genie.co.kr/ | [Artist Page](https://www.genie.co.kr/detail/artistInfo?xxnm=81271496) | Image |
 | Harper's Bazaar Korea | https://www.harpersbazaar.co.kr/ | Post Page | Image |
 | iMBC News | https://enews.imbc.com/ | Post Page | Image | |
 | JTBC TV | https://tv.jtbc.co.kr/ | Post Page | Image | |
