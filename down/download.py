@@ -4,8 +4,10 @@ import re
 import time
 import pytz
 import subprocess
+
 from rich.progress import Progress
 from urllib.parse import unquote
+from client.user_agent import InitUserAgent
 import krsite_dl as kr
 
 class DownloadHandler():
@@ -45,7 +47,9 @@ class DownloadHandler():
 
         return img
     
-    def _download_logic(self, filename, uri, dirs, post_date, loc):
+    def _download_logic(self, filename, uri, dirs, post_date, loc, cert_bool):
+        user_agent = InitUserAgent().get_user_agent()
+        
         try:
             with Progress() as progress:
                 process = subprocess.Popen([
@@ -54,8 +58,9 @@ class DownloadHandler():
                             '-j', '2', 
                             '-o', filename, uri,
                             '--continue',
-                            '--download-result=hide',
-                            '-U', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0'],
+                            '--download-result=full',
+                            f'--check-certificate={cert_bool}',
+                            '-U', user_agent],
                             stdout=subprocess.PIPE,
                             encoding='utf-8',
                             text=True)
@@ -69,7 +74,7 @@ class DownloadHandler():
                     if 'Download complete' in line:
                         progress.update(task, completed=100)
 
-            if os.path.exists(dirs + '/' + filename):
+            if os.path.exists(dirs + '/' + filename) and post_date is not None:
                 utc = pytz.timezone(self._location(loc))
                 dt = post_date
                 dt = utc.localize(dt)
@@ -94,7 +99,7 @@ class DownloadHandler():
                 print("[Status] This file already exists. Skipping...")
                 continue
 
-            self._download_logic(img_name, img, dirs, post_date, loc)
+            self._download_logic(img_name, img, dirs, post_date, loc, "true")
 
 
     def downloader_naver(self, img_list, dirs, post_date):
@@ -116,18 +121,19 @@ class DownloadHandler():
                 print("[Status] This file already exists. Skipping...")
                 continue
 
-            self._download_logic(img_name, img, dirs, post_date, "KR")
+            self._download_logic(img_name, img, dirs, post_date, "KR", "true")
 
 
-    def downloader_combine(self, img_list, dirs, post_date, post_date_short, title, loc):
+    def downloader_combine(self, img_list, dirs, post_date, post_date_short, loc):
         for img in img_list:
             img_name = self._encode_kr(img)
             img_ext = img.split('.')[-1]
+            img_name = img_name.split('/')[-1].split('.')[0]
 
             if len(img_list) > 1:
-                img_name = f'{post_date_short} {title} ({img_list.index(img)+1}).{img_ext}'
+                img_name = f'{post_date_short} {img_name} ({img_list.index(img)+1}).{img_ext}'
             else:
-                img_name = f'{post_date_short} {title}.{img_ext}'
+                img_name = f'{post_date_short} {img_name}.{img_ext}'
 
             print("[Source URL] %s" % img)
             print("[Image Name] %s" % img_name)
@@ -136,4 +142,9 @@ class DownloadHandler():
                 print("[Status] This file already exists. Skipping...")
                 continue
 
-            self._download_logic(img_name, img, dirs, post_date, loc)
+            if 'topstarnews' in img:
+                cert_bool = 'false'
+            else:
+                cert_bool = 'true'
+
+            self._download_logic(img_name, img, dirs, post_date, loc, cert_bool)

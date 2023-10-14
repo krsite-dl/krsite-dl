@@ -1,7 +1,8 @@
 import requests
-import re
-import json
 import datetime
+import json
+import re
+
 from bs4 import BeautifulSoup
 
 def from_nataliemu(hd, loc, folder_name):

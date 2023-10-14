@@ -1,4 +1,5 @@
 import requests
+
 from bs4 import BeautifulSoup
 
 def from_generic(hd, loc, folder_name):

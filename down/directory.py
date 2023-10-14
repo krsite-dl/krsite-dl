@@ -34,7 +34,7 @@ class DirectoryHandler:
         if title and post_date_short:
             dirs = self._create_directory(directory_name, f'{post_date_short} {title}')
         else:
-            dirs = self._create_directory(directory_name)
+            dirs = self._create_directory(directory_name, title)
 
         # if self.args.ai:
         #     download_handler_alt(img_list, dirs, post_date, loc)
@@ -71,6 +71,6 @@ class DirectoryHandler:
     def handle_directory_combine(self, img_list, title=None, post_date=None, post_date_short=None, loc=None, directory_name=None):
         title, directory_name = self.__sanitize_string(title, directory_name)
 
-        dirs = self._create_directory(directory_name)
+        dirs = self._create_directory(directory_name, post_date_short)
 
-        DownloadHandler().downloader_combine(img_list, dirs, post_date, post_date_short, title, loc)
+        DownloadHandler().downloader_combine(img_list, dirs, post_date, post_date_short, loc)

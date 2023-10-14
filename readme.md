@@ -58,6 +58,7 @@ User can add `krsite-dl.config` file to set default download path. The `krsite-d
 | Dispatch (디스패치) | https://www.dispatch.co.kr/category/photos | Post Page | Image 
 | Elle Korea | https://www.elle.co.kr/ | Post Page | Image | |
 | Esquire Korea | https://www.esquirekorea.co.kr/ | Post Page | Image | |
+| Genie Music | https://www.genie.co.kr/ | [Artist Page](https://www.genie.co.kr/detail/artistInfo?xxnm=81271496) | Image |
 | Harper's Bazaar Korea | https://www.harpersbazaar.co.kr/ | Post Page | Image |
 | iMBC News | https://enews.imbc.com/ | Post Page | Image | |
 | JTBC TV | https://tv.jtbc.co.kr/ | Post Page | Image | |
@@ -66,6 +67,7 @@ User can add `krsite-dl.config` file to set default download path. The `krsite-d
 | L'Officiel Singapore | https://www.lofficielsingapore.com/ | Post Page | Image | Yes |
 | Marie Claire Korea | https://www.marieclairekorea.com/ | Post Page | Image |
 | MBC PR (MBC와 함께) | https://with.mbc.co.kr/m/pr/photo/view.html | Post Page | Image | Yes |
+| Melon | https://www.melon.com/ | [Artist Page](https://www.melon.com/artist/photo.htm?artistId=3055146) | Image |
 | Nataliemu | https://nataliemu.com/ | Post Page | Image | 
 | Naver Posts (Naver 포스트) | https://post.naver.com/ | [Post Page](https://post.naver.com/viewer/postView.naver?volumeNo=35887849&memberNo=25831870), [Search Result](https://post.naver.com/search/authorPost.naver?keyword=%EC%95%84%EC%9D%B4%EB%B8%8C&memberNo=25831870), [Series List](https://post.naver.com/series.naver?memberNo=25831870), [Series Page](https://post.naver.com/my/series/detail.naver?seriesNo=671644&memberNo=25831870), [Main Page](https://post.naver.com/my.naver?memberNo=25831870&navigationType=push) | Image | Yes |
 | Naver News | https://news.naver.com/ | Post Page | Image |
