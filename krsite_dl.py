@@ -3,7 +3,7 @@ import configparser
 import sys
 from rich import print
 from extractor import direct, generic
-from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, topstarnews, kodyssey, tvjtbc, newsen, sportsw, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue, esquirekorea
+from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, topstarnews, kodyssey, tvjtbc, newsen, sportsw, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue, esquirekorea, melon
 from extractor.jp import nataliemu, vivi
 from extractor.sg import lofficielsingapore
 
@@ -58,6 +58,7 @@ def check_site(url):
             'elle.co.kr': ['Elle Korea', elle.from_elle],
             'vogue.co.kr': ['Vogue Korea', vogue.from_vogue],
             'esquirekorea.co.kr': ['Esquire Korea', esquirekorea.from_esquirekorea],
+            'melon.com': ['Melon', melon.from_melon]
         }],
         # JAPANESE SITES
         'JP': [{
@@ -122,10 +123,10 @@ def main():
         try:
             for url in args.url:
                 check_site(url)
-        except AttributeError:
-            print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
-            print("You must provide at least one URL.")
-            print("Type 'krsite-dl -h' for more information.")
+        # except AttributeError:
+        #     print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
+        #     print("You must provide at least one URL.")
+        #     print("Type 'krsite-dl -h' for more information.")
         except IndexError as e:
             print("Index Error: %s" % e)
         except KeyboardInterrupt:
