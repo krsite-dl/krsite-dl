@@ -80,7 +80,7 @@ User can add `krsite-dl.config` file to set default download path. The `krsite-d
 | Topstarnews | https://www.topstarnews.net/ | Post Page, Search Result Page, [HD Posts Page](https://www.topstarnews.net/news/articleList.html?sc_article_type=C&view_type=tm) | Image |
 | TV Report (TV리포트) | https://tvreport.co.kr/ | Post Page | Image |
 | TV JTBC | https://tv.jtbc.co.kr/ | Post Page | Image |
-| Vivi | https://www.vivi.tv/ | 🚧 | Image |
+| Vivi | https://www.vivi.tv/ | Post Page | Image |
 | Vogue Korea | https://www.vogue.co.kr/ | Post Page | Image |
 | W Korea | https://www.wkorea.com/ | Post Page | Image |
 | Generic Sites | Any Sites not listed above | ? | Image |
