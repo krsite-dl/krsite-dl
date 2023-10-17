@@ -10,7 +10,6 @@
 
 
 ### python3
-
 Supports stable versions of python3
 
 | Version | Supported          |
