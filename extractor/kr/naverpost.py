@@ -3,12 +3,15 @@ import datetime
 import time
 
 from rich import print
+from urllib.parse import urlparse
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 
 def from_naverpost(hd, loc, folder_name):
+    hostname = urlparse(hd).hostname
+
     opt = Options()
     opt.add_argument('--headless')
     w = wd.Chrome(options=opt)
@@ -137,21 +140,26 @@ def from_naverpost(hd, loc, folder_name):
         DirectoryHandler().handle_directory_naver(img_list, post_title, post_date, post_date_short, post_series, post_writer, folder_name)
 
         
-    if 'my.naver' in hd:
+    if f"{hostname}/my.naver" in hd:
         print("[bold green]Naver Post Main Page[/bold green]")
         naverpost_search(hd)
-    elif 'authorPost.naver' in hd:
+
+    elif f"{hostname}/search/authorPost.naver" in hd:
         print("[bold green]Naver Post Search Result[/bold green]")
         naverpost_search(hd)
-    elif 'series.naver' in hd:
+
+    elif f"{hostname}/series.naver" in hd:
         print("[bold green]Naver Post Series Page[/bold green]")
         naverpost_series(hd)
-    elif 'detail.naver' in hd:
+
+    elif f"{hostname}/my/series/detail.naver" in hd:
         print("[bold green]Naver Post Series List[/bold green]")
         naverpost_list(hd)
-    elif 'postView.naver' in hd:
+
+    elif f"{hostname}/viewer/postView.naver" in hd:
         print("[bold green]Naver Post Page[/bold green]")
         naverpost_post(hd)
+        
     elif 'naver.me' in hd:
         print("[bold green]Accessing Shortened URL[/bold green]")
         r = requests.get(hd)
