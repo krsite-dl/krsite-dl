@@ -1,12 +1,14 @@
 import requests
 import datetime
 
+from client.user_agent import InitUserAgent
 from bs4 import BeautifulSoup
 
 def from_newsjamm(hd, loc, folder_name):
-    r = requests.get(hd)
+    r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
     soup = BeautifulSoup(r.text, 'html.parser')
-    post_title = soup.find('h1').text
+
+    post_title = soup.find('meta', property='og:title')['content'].strip()
     post_date = soup.find('span', class_='PostContent_statusItem__AgJEE').text.strip()
     post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d')
     post_date_short = post_date.strftime('%y%m%d')
