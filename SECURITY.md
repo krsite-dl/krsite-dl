@@ -2,18 +2,21 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+### krsite-dl
+| Version | Supported          |
+| ------- | ------------------ |
+| >=2.0.x | :white_check_mark: |
+| < 2.0.0 | :x:                |
+
+
+### python3
+Supports stable versions of python3
 
 | Version | Supported          |
 | ------- | ------------------ |
-| >=2.0.x   | :white_check_mark: |
-| < 2.0.0   | :x:                |
+| >=3.10  | :white_check_mark: |
+| < 3.10  | :x:                |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
-
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+If you find a vulnerability, please report it to the [issues](https://github.com/danrynr/krsite-dl/issues)
