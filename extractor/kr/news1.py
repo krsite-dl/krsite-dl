@@ -2,10 +2,11 @@ import requests
 import datetime
 
 from pytz import timezone
+from client.user_agent import InitUserAgent
 from bs4 import BeautifulSoup
 
 def from_news1(hd, loc, folder_name):
-    r = requests.get(hd)
+    r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
     soup = BeautifulSoup(r.text, 'html.parser')
 
     post_title = soup.find('meta', property='og:title')['content'].strip().encode('latin-1').decode('utf-8', 'ignore')

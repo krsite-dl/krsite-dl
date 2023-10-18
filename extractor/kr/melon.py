@@ -13,8 +13,6 @@ def from_melon(hd, loc, folder_name):
 
     post_title = soup.find('meta', property='og:title')['content'].strip()
 
-    print(post_title)
-
     init_url = f'https://www.melon.com/artist/photoPaging.htm?startIndex=1&pageSize=5000&orderBy=NEW&listType=0&artistId={artist_id}'
 
     r = requests.get(init_url, headers={'User-Agent': InitUserAgent().get_user_agent()})
@@ -24,7 +22,8 @@ def from_melon(hd, loc, folder_name):
 
     for item in photo_list.findAll('img'):
         img_list.append(re.sub(r'(?<=.jpg).*$', '', item['src']))
-
+    
+    print("Title: %s" % post_title)
     print("Found %s image(s)" % len(img_list))
 
     from down.directory import DirectoryHandler

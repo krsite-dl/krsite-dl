@@ -2,10 +2,11 @@ import requests
 import datetime
 import re
 
+from client.user_agent import InitUserAgent
 from bs4 import BeautifulSoup
 
 def from_imbcnews(hd, loc, folder_name):
-    r = requests.get(hd)
+    r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
     soup = BeautifulSoup(r.text, 'html.parser')
     post_title = soup.find('h2').text.strip()
     post_date = soup.find('span', class_='date').text.strip()

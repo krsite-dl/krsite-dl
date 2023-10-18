@@ -5,3 +5,4 @@ selenium
 bs4
 pytz
 rich
+fake-useragent

@@ -3,6 +3,7 @@ import datetime
 import time
 import json
 
+from client.user_agent import InitUserAgent
 from rich import print
 
 def from_sbs(hd, loc, folder_name):
@@ -58,7 +59,7 @@ def from_sbs(hd, loc, folder_name):
             '_': token
         }
 
-        r = requests.get(api, params)
+        r = requests.get(api, params, headers={'User-Agent': InitUserAgent().get_user_agent()})
         if 'err_code' not in r.text:
             break
 
