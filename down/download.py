@@ -6,7 +6,7 @@ import pytz
 import subprocess
 
 from rich.progress import Progress
-from urllib.parse import unquote
+from urllib.parse import unquote, urlparse
 from client.user_agent import InitUserAgent
 import krsite_dl as kr
 
@@ -46,6 +46,23 @@ class DownloadHandler():
         img = self.__sanitize_string(korean_filename.decode('euc-kr'))
 
         return img
+    
+
+    def _get_filename(self, item):
+        parsed_url = urlparse(item)
+        filename = os.path.basename(unquote(parsed_url.path))
+
+        return filename
+    
+
+    def _process_item(self, item):
+        if isinstance(item, list) and len(item) == 2:
+            url, filename = item[0], item[1]
+        else:
+            url, filename = item, self._get_filename(item)
+
+        return url, filename
+    
     
     def _download_logic(self, filename, uri, dirs, post_date, loc, cert_bool):
         user_agent = InitUserAgent().get_user_agent()
@@ -88,9 +105,12 @@ class DownloadHandler():
         except requests.exceptions.ConnectionError:
             print("[Status] Connection Error. Skipping...")
 
+
     def downloader(self, img_list, dirs, post_date, loc):
         for img in img_list:
-            img_name = self._encode_kr(img)
+            # get url and separate the filename as a new variable
+            img, filename = self._process_item(img)
+            img_name = self._encode_kr(filename)
 
             print("[Source URL] %s" % img)
             print("[Image Name] %s" % img_name)

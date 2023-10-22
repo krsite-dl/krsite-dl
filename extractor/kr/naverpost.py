@@ -101,15 +101,19 @@ def from_naverpost(hd, loc, folder_name):
             post_writer = w.find_element(By.CLASS_NAME, 'se_author').text
             post_series = w.find_element(By.CLASS_NAME, 'se_series').text[3:]
             post_title = w.find_element(By.CLASS_NAME, 'se_textarea').text.replace('\n', ' ')
-            post_date = w.find_element(By.CLASS_NAME, 'se_publishDate').text
-            post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d. %H:%M')
+            # post_date = w.find_element(By.CLASS_NAME, 'se_publishDate').text
+            post_date = w.find_element(By.XPATH, '//meta[@property="og:createdate"]') # using meta tag for more accurate time
+            # post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d. %H:%M')
+            post_date = datetime.datetime.strptime(post_date.get_attribute('content'), '%Y.%m.%d. %H:%M:%S')
             post_date_short = post_date.strftime('%y%m%d')
         except NoSuchElementException:
             post_writer = w.find_element(By.CLASS_NAME, 'writer.ell').text
             post_series = w.find_element(By.CLASS_NAME, 'series').text
             post_title = w.find_element(By.CLASS_NAME, 'title').text.replace('\n', ' ')
-            post_date = w.find_element(By.CLASS_NAME, 'post_date').text
-            post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d. %H:%M')
+            # post_date = w.find_element(By.CLASS_NAME, 'post_date').text
+            post_date = w.find_element(By.XPATH, '//meta[@property="og:createdate"]') # using meta tag for more accurate time
+            # post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d. %H:%M')
+            post_date = datetime.datetime.strptime(post_date.get_attribute('content'), '%Y.%m.%d. %H:%M:%S')
             post_date_short = post_date.strftime('%y%m%d')
 
         img_list = []

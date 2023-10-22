@@ -1,5 +1,6 @@
 import requests
 import datetime
+import re
 
 from client.user_agent import InitUserAgent
 from pytz import timezone
@@ -16,12 +17,16 @@ def from_wkorea(hd, loc, folder_name):
     tz = timezone('Asia/Seoul')
     post_date = post_date.astimezone(tz).replace(tzinfo=None)
 
-    content = soup.find('div', class_='post-content')
+    contents = soup.find('div', class_='masonry_grid')
+
+    if contents is None:
+        contents = soup.find('div', class_='post_content')
 
     img_list = set()
-    for item in content.findAll('img'):
+    for item in contents.findAll('img'):
         i = item.get('src')
-        img_list.add(i.split('-')[0] + '.' + i.split('.')[-1])
+        if i.startswith('http'):
+            img_list.add(re.sub(r'-\d+x\d+', '', i))
 
     print("Title: %s" % post_title)
     print("Date: %s" % post_date)
