@@ -2,8 +2,9 @@ import argparse
 import configparser
 import sys
 from rich import print
+from urllib.parse import urlparse
 from extractor import direct, generic
-from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, topstarnews, kodyssey, tvjtbc, newsen, sportsw, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue, esquirekorea, melon, genie
+from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, topstarnews, kodyssey, tvjtbc, newsen, sportsw, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue, esquirekorea, melon, genie, sbskpop
 from extractor.jp import nataliemu, vivi
 from extractor.sg import lofficielsingapore
 
@@ -26,6 +27,8 @@ args = parser.parse_args()
 sitename = ''
 
 def check_site(url):
+    hostname = urlparse(url).hostname
+
     site_dict = {
         # KOREAN SITES
         'KR': [{
@@ -57,7 +60,8 @@ def check_site(url):
             'vogue.co.kr': ['Vogue Korea', vogue.from_vogue],
             'esquirekorea.co.kr': ['Esquire Korea', esquirekorea.from_esquirekorea],
             'melon.com': ['Melon', melon.from_melon],
-            'genie.co.kr': ['Genie', genie.from_genie]
+            'genie.co.kr': ['Genie', genie.from_genie],
+            'sbskpop.kr': ['SBS KPOP', sbskpop.from_sbskpop],
         }],
         # JAPANESE SITES
         'JP': [{
@@ -78,7 +82,7 @@ def check_site(url):
         # print(location)
         for sites in site_dict[country]:
             for site, site_info in sites.items():
-                if site in url:
+                if site in hostname:
                     print(f"[bold blue]Site name {site}[/bold blue]")
                     print(f"[bold red]Url:[/bold red]\n[italic red]{url}[/italic red]")
                     site_info[1](url, location, site_info[0])
@@ -120,11 +124,10 @@ def main():
                         sys.exit(0)
     elif args.a or args.url:
         try:
-            check_site(args.url)
-        except AttributeError:
-            print("Usage: krsite-dl [OPTIONS] URL [URL...]\n")
-            print("You must provide at least one URL.")
-            print("Type 'krsite-dl -h' for more information.")
+            for url in args.url:
+                check_site(url)
+        except AttributeError as e:
+            print("Attribute Error: %s" % e)
         except IndexError as e:
             print("Index Error: %s" % e)
         except KeyboardInterrupt:
