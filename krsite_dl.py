@@ -3,6 +3,7 @@ import configparser
 import sys
 # from rich import print
 from urllib.parse import urlparse
+from extractor import direct
 import lazy_import  
 
 # Reading settings from config file
