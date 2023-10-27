@@ -24,7 +24,7 @@ If you like this project, please consider giving it a star! Thanks!
 > [!NOTE]
 > To update the script, you need to pull this repository again. You can also run `git pull` if you have git installed.
 > Make sure to run another `pip install -r requirements.txt` to install any new dependencies.
-> In you run into a `chromedriver` error, you need to update your `chromedriver`. You can download the latest chrome driver [here](https://chromedriver.chromium.org/downloads).
+> In case you ran into a `chromedriver` error, you need to update your `chromedriver`. You can download the latest chrome driver [here](https://chromedriver.chromium.org/downloads).
 
 ## Usage
 User can add `krsite-dl.config` file to set default download path. The `krsite-dl.config` file is located in the same directory as the krsite-dl file.
