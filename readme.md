@@ -74,6 +74,7 @@ User can add `krsite-dl.config` file to set default download path. The `krsite-d
 | Newsjamm | https://newsjamm.co.kr/ | Post Page | Image |
 | News1 | https://www.news1.kr/ | Post Page | Image | 
 | Newsen | https://www.newsen.com/news_photo_hd.php | Post Page | Image | Yes |
+| Non-no Korea | https://www.nonno.hpplus.jp/ | Post Page | Image |
 | OSEN | https://osen.mt.co.kr/ | Post Page | Image |
 | SBS Program | https://programs.sbs.co.kr/ | Post Page | Image |
 | SBS News | https://news.sbs.co.kr/ | Post Page | Image |
