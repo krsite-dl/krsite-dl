@@ -1,10 +1,13 @@
 import datetime
 
+from common.data_structure import Site, ScrapperPayload
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
-def from_newsen(hd, loc, folder_name):
+SITE_INFO = Site(hostname="newsen.com", name="Newsen", location="KR")
+
+def get_data(hd):
     opt = Options()
     opt.add_argument('--headless')
     w = wd.Chrome(options=opt)
@@ -30,6 +33,17 @@ def from_newsen(hd, loc, folder_name):
     print("Date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
 
+    payload = ScrapperPayload(
+        title=post_title,
+        shortDate=post_date_short,
+        mediaDate=post_date,
+        site=SITE_INFO.name,
+        series=None,
+        writer=None,
+        location=SITE_INFO.location,
+        media=img_list,
+    )
+
     from down.directory import DirectoryHandler
 
-    DirectoryHandler().handle_directory(img_list, post_title, post_date, post_date_short, loc, folder_name)
+    DirectoryHandler().handle_directory(payload)

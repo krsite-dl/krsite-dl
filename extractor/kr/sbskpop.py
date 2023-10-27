@@ -2,10 +2,12 @@ import requests
 import datetime
 
 from client.user_agent import InitUserAgent
+from common.data_structure import Site, ScrapperPayload
 from bs4 import BeautifulSoup
 
+SITE_INFO = Site(hostname="sbskpop.kr", name="SBS KPOP", location="KR")
 
-def from_sbskpop(hd, loc, folder_name):
+def get_data(hd):
     r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
     soup = BeautifulSoup(r.text, 'html.parser')
 
@@ -46,6 +48,17 @@ def from_sbskpop(hd, loc, folder_name):
 
     # print(img_list)
 
+    payload = ScrapperPayload(
+        title=post_title,
+        shortDate=post_date_short,
+        mediaDate=post_date,
+        site=SITE_INFO.name,
+        series=None,
+        writer=None,
+        location=SITE_INFO.location,
+        media=img_list,
+    )
+
     from down.directory import DirectoryHandler
 
-    DirectoryHandler().handle_directory(img_list, post_title, post_date, post_date_short, loc, folder_name)
+    DirectoryHandler().handle_directory(payload)

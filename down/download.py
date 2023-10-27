@@ -106,7 +106,14 @@ class DownloadHandler():
             print("[Status] Connection Error. Skipping...")
 
 
-    def downloader(self, img_list, dirs, post_date, loc):
+    def downloader(self, payload):
+        img_list, dirs, post_date, loc = (
+            payload.media,
+            payload.directory,
+            payload.date,
+            payload.location,
+        )
+        
         for img in img_list:
             # get url and separate the filename as a new variable
             img, filename = self._process_item(img)
@@ -122,7 +129,14 @@ class DownloadHandler():
             self._download_logic(img_name, img, dirs, post_date, loc, "true")
 
 
-    def downloader_naver(self, img_list, dirs, post_date):
+    def downloader_naver(self, payload):
+        img_list, dirs, post_date, loc = (
+            payload.media,
+            payload.directory,
+            payload.date,
+            payload.location,
+        )
+
         duplicate_counts = {}
         for img in img_list:
             img_name = self._encode_kr(img)
@@ -141,7 +155,7 @@ class DownloadHandler():
                 print("[Status] This file already exists. Skipping...")
                 continue
 
-            self._download_logic(img_name, img, dirs, post_date, "KR", "true")
+            self._download_logic(img_name, img, dirs, post_date, loc, "true")
 
 
     def downloader_combine(self, img_list, dirs, post_date, post_date_short, loc):

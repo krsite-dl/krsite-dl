@@ -4,20 +4,18 @@ import time
 import json
 
 from client.user_agent import InitUserAgent
+from common.data_structure import Site, ScrapperPayload
 from rich import print
 
-def from_sbs(hd, loc, folder_name):
+SITE_INFO = Site(hostname="programs.sbs.co.kr", name="SBS Program", location="KR")
+
+def get_data(hd):
     board_no = hd.split('board_no=')[-1].split('&')[0]
     print(f"Board no: {board_no}")
 
     code = ''
 
     # ADD MORE KEY AND VALUE HERE
-    """
-    https://programs.sbs.co.kr/enter/gayo/visualboard/board_id?
-    board_code can be found in the api. look at response in the network tab.
-    FORMAT: 'board_id': 'board_code
-    """
     code_dict = {
         '69423': ['runningman_photo'],
         '65942': ['pdnote_hotissue', 'inkigayo_pt01'],
@@ -88,6 +86,17 @@ def from_sbs(hd, loc, folder_name):
     
     print(f"Found {len(img_list)} image(s)")
 
+    payload = ScrapperPayload(
+        title=post_title,
+        shortDate=post_date_short,
+        mediaDate=post_date,
+        site=SITE_INFO.name,
+        series=None,
+        writer=None,
+        location=SITE_INFO.location,
+        media=img_list,
+    )
+    
     from down.directory import DirectoryHandler
 
-    DirectoryHandler().handle_directory(img_list, post_title, post_date, post_date_short, loc, folder_name)
+    DirectoryHandler().handle_directory(payload)
