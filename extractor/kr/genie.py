@@ -3,11 +3,14 @@ import datetime
 import re
 
 from client.user_agent import InitUserAgent
+from common.data_structure import Site, ScrapperPayload
 from rich import print
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
-def from_genie(hd, loc, folder_name):
+SITE_INFO = Site(hostname="genie.co.kr", name="Genie", location="KR")
+
+def get_data(hd):
     hostname = urlparse(hd).hostname
     def genie_artist():
         r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
@@ -53,9 +56,19 @@ def from_genie(hd, loc, folder_name):
         print("Date: %s" % mag_date)
         print("Found %s image(s)" % len(image_list))
 
+        payload = ScrapperPayload(
+            title=mag_title,
+            shortDate=mag_date_short,
+            mediaDate=mag_date,
+            site=SITE_INFO.name,
+            series=None,
+            writer=None,
+            location=SITE_INFO.location,
+            media=image_list,
+        )
         from down.directory import DirectoryHandler
 
-        DirectoryHandler().handle_directory(image_list, mag_title, mag_date, mag_date_short, loc, folder_name)
+        DirectoryHandler().handle_directory(payload)
         
 
     if f"{hostname}/detail/artistInfo" in hd:

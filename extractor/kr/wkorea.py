@@ -3,10 +3,13 @@ import datetime
 import re
 
 from client.user_agent import InitUserAgent
+from common.data_structure import Site, ScrapperPayload
 from pytz import timezone
 from bs4 import BeautifulSoup
 
-def from_wkorea(hd, loc, folder_name):
+SITE_INFO = Site(hostname="wkorea.com", name="W Korea", location="KR")
+
+def get_data(hd):
     r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
     soup = BeautifulSoup(r.text, 'html.parser')
 
@@ -32,6 +35,17 @@ def from_wkorea(hd, loc, folder_name):
     print("Date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
 
+    payload = ScrapperPayload(
+        title=post_title,
+        shortDate=post_date_short,
+        mediaDate=post_date,
+        site=SITE_INFO.name,
+        series=None,
+        writer=None,
+        location=SITE_INFO.location,
+        media=img_list,
+    )
+
     from down.directory import DirectoryHandler
 
-    DirectoryHandler().handle_directory(img_list, post_title, post_date, post_date_short, loc, folder_name)
+    DirectoryHandler().handle_directory(payload)

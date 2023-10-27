@@ -2,6 +2,7 @@ import datetime
 import json
 import re
 
+from common.data_structure import Site, ScrapperPayload
 from pytz import timezone
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
@@ -10,7 +11,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from urllib.parse import urlparse, parse_qs, unquote
 
-def from_lofficielsingapore(hd, loc, folder_name):
+SITE_INFO = Site(hostname="lofficielsingapore.com", name="L'Officiel Singapore", location="SG")
+
+def get_data(hd):
     img_list = []
 
     opt = Options()
@@ -52,6 +55,17 @@ def from_lofficielsingapore(hd, loc, folder_name):
     print("Date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
     
+    payload = ScrapperPayload(
+        title=post_title,
+        shortDate=post_date_short,
+        mediaDate=post_date,
+        site=SITE_INFO.name,
+        series=None,
+        writer=None,
+        location=SITE_INFO.location,
+        media=img_list,
+    )
+
     from down.directory import DirectoryHandler
 
-    DirectoryHandler().handle_directory(img_list, post_title, post_date, post_date_short, loc, folder_name)
+    DirectoryHandler().handle_directory(payload)
