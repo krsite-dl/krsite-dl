@@ -89,7 +89,6 @@ User can add `krsite-dl.config` file to set default download path. The `krsite-d
 | Vivi | https://www.vivi.tv/ | Post Page | Image |
 | Vogue Korea | https://www.vogue.co.kr/ | Post Page | Image |
 | W Korea | https://www.wkorea.com/ | Post Page | Image |
-| Generic Sites | Any Sites not listed above | ? | Image |
 
 ## Issues
 > [!NOTE]
