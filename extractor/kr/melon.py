@@ -33,8 +33,8 @@ def get_data(hd):
     substitute_date = datetime.datetime.now()
     payload = ScrapperPayload(
         title=post_title,
-        shortDate=None,
-        mediaDate=None,
+        shortDate=substitute_date.strftime('%y%m%d'),
+        mediaDate=substitute_date,
         site=SITE_INFO.name,
         series=None,
         writer=None,
@@ -44,4 +44,4 @@ def get_data(hd):
 
     from down.directory import DirectoryHandler
 
-    DirectoryHandler().handle_directory(payload)
+    DirectoryHandler().handler_directory_melon(payload)
