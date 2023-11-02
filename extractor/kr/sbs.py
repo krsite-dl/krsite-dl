@@ -29,7 +29,14 @@ def get_data(hd):
         '70687': ['2021sbsgayo_pt2'],
         '76371': ['2022sbsgayo_pt'],
         '58358': ['theshow04_pt'],
+        '65174': ['sbspr_01'],
         '65175': ['sbspr_02'],
+        '65176': ['sbspr_03'],
+        '65177': ['sbspr_04'],
+        '65178': ['sbspr_05'],
+        '65179': ['sbspr_06'],
+        '65180': ['sbspr_07'],  
+        '65181': ['sbspr_08'],
         '4295': ['sbssuperconcert_pt']
     }
 
