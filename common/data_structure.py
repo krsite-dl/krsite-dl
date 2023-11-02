@@ -16,11 +16,12 @@ class ScrapperPayload(BaseModel):
     series: Optional[str]
     writer: Optional[str]
     location: str
-    media: list[str]
+    media: list[str] | list[tuple[str, str]]
 
 
 class DownloadPayload(BaseModel):
-    media: list[str]
+    media: list[str] | list[tuple[str, str]]
     directory: str
     date: datetime.datetime
+    shortDate: Optional[str]
     location: str
