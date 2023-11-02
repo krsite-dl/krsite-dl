@@ -175,9 +175,9 @@ class DownloadHandler():
             img_name = self._encode_kr(img_name)
             
             if len(img_list) > 1:
-                img_name = f'{post_date_short} {img_name} ({img_list.index(img)+1}).{img_ext}'
+                img_name = f'{post_date_short} {img_name} ({img_list.index(img)+1}){img_ext}'
             else:
-                img_name = f'{post_date_short} {img_name}.{img_ext}'
+                img_name = f'{post_date_short} {img_name}{img_ext}'
 
             print("[Source URL] %s" % img)
             print("[Image Name] %s" % img_name)
