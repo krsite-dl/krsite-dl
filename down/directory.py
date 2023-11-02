@@ -54,6 +54,7 @@ class DirectoryHandler:
             media=media_list,
             directory=dirs,
             date=post_date,
+            shortDate=None,
             location=loc,
         )
 
@@ -82,6 +83,7 @@ class DirectoryHandler:
             media=media_list,
             directory=dirs,
             date=post_date,
+            shortDate=None,
             location=country_code,
         )
 
@@ -112,15 +114,59 @@ class DirectoryHandler:
             media=media_list,
             directory=dirs,
             date=post_date,
+            shortDate=None,
             location=country_code,
         )
 
         DownloadHandler().downloader_naver(download_payload)
 
+    
+    #directory handling for melon
+    def handler_directory_melon(self, payload):
+        title, post_date_short, post_date, directory_name, country_code, media_list = (
+            payload.title,
+            payload.shortDate,
+            payload.mediaDate,
+            payload.site,
+            payload.location,
+            payload.media,
+        )
+
+        title, directory_name = self.__sanitize_string(title, directory_name)
+
+        dirs = self._create_directory(directory_name, title)
+
+        download_payload = DownloadPayload(
+            media=media_list,
+            directory=dirs,
+            date=post_date,
+            shortDate=None,
+            location=country_code,
+        )
+
+        DownloadHandler().downloader(download_payload)
+
     # directory handling for news1 (news1.kr). Create a single directory, instead of multiple directories for each article we use the name of the article as image name
-    def handle_directory_combine(self, img_list, title=None, post_date=None, post_date_short=None, loc=None, directory_name=None):
+    def handler_directory_combine(self, payload):
+        title, post_date_short, post_date, country_code, directory_name, media_list = (
+            payload.title,
+            payload.shortDate,
+            payload.mediaDate,
+            payload.location,
+            payload.site,
+            payload.media,
+        )
+
         title, directory_name = self.__sanitize_string(title, directory_name)
 
         dirs = self._create_directory(directory_name, post_date_short)
 
-        DownloadHandler().downloader_combine(img_list, dirs, post_date, post_date_short, loc)
+        download_payload = DownloadPayload(
+            media=media_list,
+            directory=dirs,
+            date=post_date,
+            shortDate=post_date_short,
+            location=country_code,
+        )
+
+        DownloadHandler().downloader_combine(download_payload)

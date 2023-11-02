@@ -35,24 +35,25 @@ class DownloadHandler():
 
     # korean filename encoder
     def _encode_kr(self, img_name):
-        img = img_name.split('/')[-1]
-        decoded = unquote(img).strip()
+        # img = img_name.split('/')[-1]
+        decoded = unquote(img_name).strip()
 
         if '%EC' in decoded or '%EB' in decoded:
             korean_filename = decoded.encode('utf-8')
         else:
-            korean_filename = decoded.encode('euc-kr', errors='ignore')
+            korean_filename = decoded.encode('euc-kr').decode('euc-kr')
 
-        img = self.__sanitize_string(korean_filename.decode('euc-kr'))
+        filename = self.__sanitize_string(korean_filename)
 
-        return img
+        return filename
     
 
     def _get_filename(self, item):
         parsed_url = urlparse(item)
         filename = os.path.basename(unquote(parsed_url.path))
+        base, extension = os.path.splitext(filename)
 
-        return filename
+        return base, extension
     
 
     def _process_item(self, item):
@@ -116,8 +117,8 @@ class DownloadHandler():
         
         for img in img_list:
             # get url and separate the filename as a new variable
-            img, filename = self._process_item(img)
-            img_name = self._encode_kr(filename)
+            base, extension = self._get_filename(img)
+            img_name = self._encode_kr(base + extension)
 
             print("[Source URL] %s" % img)
             print("[Image Name] %s" % img_name)
@@ -126,6 +127,7 @@ class DownloadHandler():
                 print("[Status] This file already exists. Skipping...")
                 continue
 
+                
             self._download_logic(img_name, img, dirs, post_date, loc, "true")
 
 
@@ -139,7 +141,8 @@ class DownloadHandler():
 
         duplicate_counts = {}
         for img in img_list:
-            img_name = self._encode_kr(img)
+            base, extension = self._get_filename(img)
+            img_name = self._encode_kr(base + extension)
             img_ext = img_name.split('.')[-1]
 
             if img_name in duplicate_counts:
@@ -158,12 +161,19 @@ class DownloadHandler():
             self._download_logic(img_name, img, dirs, post_date, loc, "true")
 
 
-    def downloader_combine(self, img_list, dirs, post_date, post_date_short, loc):
+    def downloader_combine(self, payload):
+        img_list, dirs, post_date, post_date_short, loc = (
+            payload.media,
+            payload.directory,
+            payload.date,
+            payload.shortDate,
+            payload.location,
+        )
+        
         for img in img_list:
-            img_name = self._encode_kr(img)
-            img_ext = img.split('.')[-1]
-            img_name = img_name.split('/')[-1].split('.')[0]
-
+            img_name, img_ext = self._get_filename(img)
+            img_name = self._encode_kr(img_name)
+            
             if len(img_list) > 1:
                 img_name = f'{post_date_short} {img_name} ({img_list.index(img)+1}).{img_ext}'
             else:
