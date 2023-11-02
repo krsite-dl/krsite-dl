@@ -101,7 +101,7 @@ def get_data(hd):
         
         from down.directory import DirectoryHandler
 
-        DirectoryHandler().handle_directory_combine(payload)
+        DirectoryHandler().handler_directory_combine(payload)
         
     if 'idxno' in hd:
         print('[yellow]Single page[/yellow]')
