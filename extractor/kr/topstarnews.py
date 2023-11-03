@@ -22,11 +22,12 @@ def get_data(hd):
         first_page = pagination.find('li', class_='pagination-start')
         base = 'https://topstarnews.net/news' + first_page.find('a').get('href').strip('.')
 
+        # get page value from url
+        query_params = parse_qs(urlparse(hd).query)
+        page = lambda: int(query_params.get('page')[0]) if query_params.get('page') else 1
         # start iterating
-        page = 1
         while True:
             print('Page %s' % page)
-            query_params = parse_qs(urlparse(base).query)
             query_params['page'] = [str(page)]
             new_query_string = urlencode(query_params, doseq=True)
             new_url = urlparse(base)._replace(query=new_query_string).geturl()
