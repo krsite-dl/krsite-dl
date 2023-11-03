@@ -30,7 +30,6 @@ def check_site(url):
     sites_available = lazy_import.imported_modules
 
     for module_name, module in sites_available.items():
-        # print(module_name)
         if hasattr(module, 'SITE_INFO'):
             site_info = module.SITE_INFO
             if isinstance(site_info.hostname, str):
