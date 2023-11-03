@@ -1,7 +1,7 @@
 import argparse
 import configparser
 import sys
-# from rich import print
+from rich import print
 from urllib.parse import urlparse
 from extractor import direct
 import lazy_import  
@@ -35,12 +35,13 @@ def check_site(url):
             site_info = module.SITE_INFO
             if isinstance(site_info.hostname, str):
                 if module.SITE_INFO.hostname in hostname:
-                    print(f"[{module_name}] Site name: [{module.SITE_INFO.name}]")
-                    print(f"Url: {url}")
+                    print(f"[cyan]From {module_name}[/cyan]")
+                    print(f"[magenta]Url: {url}[/magenta]")
                     module.get_data(url)
             elif isinstance(site_info.hostname, list):
                 if any(item in hostname for item in site_info.hostname):
-                    print(f"[{module_name}] Site name: [{module.SITE_INFO.name}]")
+                    print(f"[cyan]From {module_name}[/cyan]")
+                    print(f"[magenta]Url: {url}[/magenta]")
                     module.get_data(url)
 
 
