@@ -30,11 +30,12 @@ def get_data(hd):
             query_params['page'] = [str(page)]
             new_query_string = urlencode(query_params, doseq=True)
             new_url = urlparse(base)._replace(query=new_query_string).geturl()
+            print(new_url)
             grab_post_urls(new_url)
             page += 1
 
             # stop if there's no post in the page
-            if soup.find('section', class_='article-column') is None:
+            if soup.find('div', class_='article-column') is None:
                 break
 
 
