@@ -41,9 +41,9 @@ class DownloadHandler():
         if '%EC' in decoded or '%EB' in decoded:
             korean_filename = decoded.encode('utf-8')
         else:
-            korean_filename = decoded.encode('euc-kr').decode('euc-kr')
+            korean_filename = decoded.encode('euc-kr', errors='ignore')
 
-        filename = self.__sanitize_string(korean_filename)
+        filename = self.__sanitize_string(korean_filename.decode('euc-kr'))
 
         return filename
     
