@@ -1,9 +1,12 @@
 import requests
 import datetime
 
+from common.data_structure import Site, ScrapperPayload
 from bs4 import BeautifulSoup
 
-def from_harpersbazaar(hd, loc, folder_name):
+SITE_INFO = Site(hostname="harpersbazaar.co.kr", name="Harper's Bazaar Korea", location="KR")
+
+def get_data(hd):
     r = requests.get(hd)
     soup = BeautifulSoup(r.text, 'html.parser')
 
@@ -28,6 +31,17 @@ def from_harpersbazaar(hd, loc, folder_name):
     print("Date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
 
+    payload = ScrapperPayload(
+        title=post_title,
+        shortDate=post_date_short,
+        mediaDate=post_date,
+        site=SITE_INFO.name,
+        series=None,
+        writer=None,
+        location=SITE_INFO.location,
+        media=img_list,
+    )
+
     from down.directory import DirectoryHandler
 
-    DirectoryHandler().handle_directory(img_list, post_title, post_date, post_date_short, loc, folder_name)
+    DirectoryHandler().handle_directory(payload)

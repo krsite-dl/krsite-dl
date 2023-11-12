@@ -3,10 +3,8 @@ import configparser
 import sys
 from rich import print
 from urllib.parse import urlparse
-from extractor import direct, generic
-from extractor.kr import dispatch, imbcnews, newsjamm, osen, sbs, sbsnews, mbc, naverpost, navernews, news1, tvreport, topstarnews, kodyssey, tvjtbc, newsen, sportsw, dazedkorea, cosmopolitan, marieclairekorea, lofficielkorea, harpersbazaar, wkorea, elle, vogue, esquirekorea, melon, genie, sbskpop
-from extractor.jp import nataliemu, vivi
-from extractor.sg import lofficielsingapore
+from extractor import direct
+import lazy_import  
 
 # Reading settings from config file
 config = configparser.ConfigParser()
@@ -29,66 +27,22 @@ sitename = ''
 def check_site(url):
     hostname = urlparse(url).hostname
 
-    site_dict = {
-        # KOREAN SITES
-        'KR': [{
-            'dispatch.co.kr': ['Dispatch', dispatch.from_dispatch],
-            'enews.imbc.com': ['iMBC News', imbcnews.from_imbcnews],
-            'mbc.co.kr': ['MBC', mbc.from_mbc],
-            'newsjamm.co.kr': ['News Jamm', newsjamm.from_newsjamm],
-            'osen.mt.co.kr': ['OSEN', osen.from_osen],
-            'osen.co.kr': ['OSEN', osen.from_osen],
-            'programs.sbs.co.kr': ['SBS Program', sbs.from_sbs],
-            'ent.sbs.co.kr': ['SBS News', sbsnews.from_sbsnews],
-            'post.naver.com': ['Naver Post', naverpost.from_naverpost],
-            'naver.me': ['Naver Post', naverpost.from_naverpost],
-            'news.naver.com': ['Naver News', navernews.from_navernews],
-            'news1.kr': ['News1', news1.from_news1],
-            'tvreport.co.kr': ['TV Report', tvreport.from_tvreport],
-            'topstarnews.net': ['Topstarnews', topstarnews.from_topstarnews],
-            'k-odyssey.com': ['K-odyssey', kodyssey.from_kodyssey],
-            'tv.jtbc.co.kr': ['JTBC TV', tvjtbc.from_tvjtbc],
-            'newsen.com': ['Newsen', newsen.from_newsen],
-            'sportsw.kr': ['SportsW', sportsw.from_sportsw],
-            'dazedkorea.com': ['Dazed Korea', dazedkorea.from_dazedkorea],
-            'cosmopolitan.co.kr': ['Cosmopolitan', cosmopolitan.from_cosmopolitan],
-            'marieclairekorea.com': ['Marie Claire Korea', marieclairekorea.from_marieclairekorea],
-            'lofficielkorea.com': ["L'officiel Korea", lofficielkorea.from_lofficielkorea],
-            'harpersbazaar.co.kr': ["Harper's Bazaar Korea", harpersbazaar.from_harpersbazaar],
-            'wkorea.com': ['W Korea', wkorea.from_wkorea],
-            'elle.co.kr': ['Elle Korea', elle.from_elle],
-            'vogue.co.kr': ['Vogue Korea', vogue.from_vogue],
-            'esquirekorea.co.kr': ['Esquire Korea', esquirekorea.from_esquirekorea],
-            'melon.com': ['Melon', melon.from_melon],
-            'genie.co.kr': ['Genie', genie.from_genie],
-            'sbskpop.kr': ['SBS KPOP', sbskpop.from_sbskpop],
-        }],
-        # JAPANESE SITES
-        'JP': [{
-            'natalie.mu': ['Natalie 音楽ナタリー', nataliemu.from_nataliemu],
-            'vivi.tv': ['ViVi', vivi.from_vivi],
-        }],
-        # SINGAPOREAN SITES
-        'SG': [{
-            'lofficielsingapore.com': ["L'officiel Singapore", lofficielsingapore.from_lofficielsingapore],
-        }],
-        # FALLBACK
-        'FALLBACK': [{
-            'generic': ['Generic', generic.from_generic],
-        }]
-    }
-    for country in site_dict:
-        location = country.upper()
-        # print(location)
-        for sites in site_dict[country]:
-            for site, site_info in sites.items():
-                # print(site)
-                if site in hostname:
-                    print(f"[bold blue]Site name {site}[/bold blue]")
-                    print(f"[bold red]Url:[/bold red]\n[italic red]{url}[/italic red]")
-                    site_info[1](url, location, site_info[0])
-                    return
-                
+    sites_available = lazy_import.imported_modules
+
+    for module_name, module in sites_available.items():
+        if hasattr(module, 'SITE_INFO'):
+            site_info = module.SITE_INFO
+            if isinstance(site_info.hostname, str):
+                if module.SITE_INFO.hostname in hostname:
+                    print(f"[cyan]From {module_name}[/cyan]")
+                    print(f"[magenta]Url: {url}[/magenta]")
+                    module.get_data(url)
+            elif isinstance(site_info.hostname, list):
+                if any(item in hostname for item in site_info.hostname):
+                    print(f"[cyan]From {module_name}[/cyan]")
+                    print(f"[magenta]Url: {url}[/magenta]")
+                    module.get_data(url)
+
 
 def main():
     try:

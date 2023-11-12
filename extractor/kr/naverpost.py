@@ -9,7 +9,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 
-def from_naverpost(hd, loc, folder_name):
+from common.data_structure import Site, ScrapperPayload
+
+SITE_INFO = Site(hostname="post.naver.com", name="Naver Post", location="KR")
+
+def get_data(hd):
     hostname = urlparse(hd).hostname
 
     opt = Options()
@@ -139,9 +143,20 @@ def from_naverpost(hd, loc, folder_name):
 
         print("Found %s image(s)" % len(img_list))
 
+        payload = ScrapperPayload(
+            title=post_title,
+            shortDate=post_date_short,
+            mediaDate=post_date,
+            site=SITE_INFO.name,
+            series=post_series,
+            writer=post_writer,
+            location=SITE_INFO.location,
+            media=img_list,
+        )
+
         from down.directory import DirectoryHandler
 
-        DirectoryHandler().handle_directory_naver(img_list, post_title, post_date, post_date_short, post_series, post_writer, folder_name)
+        DirectoryHandler().handle_directory_naver(payload)
 
         
     if f"{hostname}/my.naver" in hd:
@@ -164,7 +179,7 @@ def from_naverpost(hd, loc, folder_name):
         print("[bold green]Naver Post Page[/bold green]")
         naverpost_post(hd)
         
-    elif 'naver.me' in hd:
-        print("[bold green]Accessing Shortened URL[/bold green]")
-        r = requests.get(hd)
-        from_naverpost(r.url, loc, folder_name)
+    # elif 'naver.me' in hd:
+    #     print("[bold green]Accessing Shortened URL[/bold green]")
+    #     r = requests.get(hd)
+    #     get_data(r.url)
