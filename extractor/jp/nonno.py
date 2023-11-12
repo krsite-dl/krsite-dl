@@ -1,33 +1,44 @@
 import requests
 import datetime
+import json
+import re
 
 from client.user_agent import InitUserAgent
 from common.data_structure import Site, ScrapperPayload
-from pytz import timezone
 from bs4 import BeautifulSoup
+from pytz import timezone
+from urllib.parse import urlparse, urlunparse
 
-SITE_INFO = Site(hostname="sportsw.kr", name="SportsW", location="KR")
+SITE_INFO = Site(hostname="nonno.hpplus.jp", name="Non-no", location="JP")
 
 def get_data(hd):
     r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
     soup = BeautifulSoup(r.text, 'html.parser')
 
-    post_title = soup.find('meta', property='og:title')['content'].strip()
-    post_date = soup.find('meta', property='article:published_time')['content'].strip()
-    post_date_short = post_date.replace('-', '')[2:8]
-    post_date = datetime.datetime.strptime(post_date, '%Y-%m-%dT%H:%M:%S%z')
+    # article info
+    info = (soup.find_all('script', type='application/ld+json')[2])
+    info = json.loads(info.string)
+
+    post_title = info['headline']
+    post_date = datetime.datetime.strptime(info['datePublished'], '%Y-%m-%dT%H:%M:%S%z')
+    post_date_short = post_date.strftime('%y%m%d')
     tz = timezone('Asia/Seoul')
     post_date = post_date.astimezone(tz).replace(tzinfo=None)
 
-    content = soup.find('div', class_='viewConts')
+
+    contents = soup.find_all('figure')
 
     img_list = []
-    for img in content.findAll('img'):
-        img_list.append('https://sportsw.kr' + img.get('src').replace('_thum', ''))
+    for content in contents:
+        img = content.find('img')
+        url_parts = urlparse(img['src'])
+        new_url_parts = url_parts._replace(query=None, path=re.sub(r'/q=\d+,\w+=\w+:\w+', '', url_parts.path))
+        img_url = urlunparse(new_url_parts)
+        img_list.append(img_url)
 
     print("Title: %s" % post_title)
     print("Date: %s" % post_date)
-    print("Found %s image(s)" % len(img_list))
+    print("Found: %s image(s)" % len(img_list))
 
     payload = ScrapperPayload(
         title=post_title,

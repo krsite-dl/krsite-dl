@@ -1,10 +1,14 @@
 import requests
+import datetime
 import re
 
 from client.user_agent import InitUserAgent
+from common.data_structure import Site, ScrapperPayload
 from bs4 import BeautifulSoup
 
-def from_melon(hd, loc, folder_name):
+SITE_INFO = Site(hostname="melon.com", name="Melon", location="KR")
+
+def get_data(hd):
     img_list = []
     artist_id = re.search(r'(?<=artistId=)\d+', hd).group(0)
 
@@ -26,6 +30,18 @@ def from_melon(hd, loc, folder_name):
     print("Title: %s" % post_title)
     print("Found %s image(s)" % len(img_list))
 
+    substitute_date = datetime.datetime.now()
+    payload = ScrapperPayload(
+        title=post_title,
+        shortDate=substitute_date.strftime('%y%m%d'),
+        mediaDate=substitute_date,
+        site=SITE_INFO.name,
+        series=None,
+        writer=None,
+        location=SITE_INFO.location,
+        media=img_list,
+    )
+
     from down.directory import DirectoryHandler
 
-    DirectoryHandler().handle_directory(img_list, post_title, None, None, loc, folder_name)
+    DirectoryHandler().handler_directory_melon(payload)

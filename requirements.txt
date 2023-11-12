@@ -6,3 +6,5 @@ bs4
 pytz
 rich
 fake-useragent
+pydantic
+typing_extensions
