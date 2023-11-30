@@ -114,22 +114,4 @@ A: No, you can make request for the site to be supported. Make an issues and the
 
 # Disclaimer
 
-This project is intended solely for the purpose of easily obtaining images from Korean websites where the images are publicly available and not behind any paywall or login. It is essential to understand and adhere to the following:
-
-1. **Purpose**: The primary aim of this project is to provide a convenient means to access publicly available images on Korean websites. It is not intended for engaging in piracy or any illegal activities in any way.
-
-2. **Legal Use**: You must use this project in strict accordance with all applicable laws and regulations. Any illegal activities or misuse of this project are the sole responsibility of the user and not the author.
-
-3. **Accessibility**: All images obtained using this project can also be acquired manually by interacting with the website's pages. This project merely automates the process for ease of access.
-
-4. **User Responsibility**: Reusing, editing, sharing, sending, or redistributing images downloaded using this project is at your own risk. The author disclaims any liability for any consequences or legal issues that may arise from such actions.
-
-5. **Author's Non-Involvement**: The author of this project (hereinafter referred to as "the author") disclaims any involvement in, or responsibility for, any actions or activities undertaken by users of this project that may infringe upon copyrights, terms of service, or any other legal obligations.
-
-6. **Disclaimer of Liability**: The author provides no warranties or guarantees regarding the functionality, accuracy, or fitness for a particular purpose of this project. Users employ this project at their own risk.
-
-7. **Support**: While the author may offer limited support for this project, there is no obligation to do so. Support is offered at the author's discretion.
-
-By using this project, you acknowledge and agree to abide by these terms and conditions. If you do not agree with these terms, you should refrain from using this project.
-
-Please ensure that you use this project responsibly and in compliance with all applicable laws and the terms of service of the websites accessed. The author disclaims any responsibility for any misuse or violations of third-party websites' terms of service or policies.
+This project is intended solely for the purpose of easily obtaining images from Korean websites where the images are publicly available and not behind any paywall or login. Any commercial use of this project is strictly prohibited. By using this project, you agree that you are responsible for your own actions. The author of this project is not responsible for any misuse of the information provided by this project.
