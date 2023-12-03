@@ -20,7 +20,6 @@ parser.add_argument("-a", type=str, help="text file containing site urls")
 parser.add_argument("-ai", type=str, help="text file containing image urls")
 parser.add_argument("--no-windows-filenames", action="store_true", help="(default=False) krsite-dl will keep the original filenames of the images. This includes filenames that are not allowed in Windows OS.")
 parser.add_argument("-d", "--destination", default=destination_dir, type=str, help="The destination path for the downloaded file (unnecessary if you have `krsite-dl.config` unless you want to override the default download path)")
-parser.add_argument("-s", "--select", action="store_true", default=False, help="Select which images to download from the list of images gathered from each url. You probably not wanna use this if you're downloading multiple site URLs at once cause it will prompt you for each url.")
 args = parser.parse_args()
 
 sitename = ''

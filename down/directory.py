@@ -2,7 +2,6 @@ import os
 import re
 from down.download import DownloadHandler
 from common.data_structure import DownloadPayload
-from common.url_selector import select_url
 import krsite_dl as kr
 
 class DirectoryHandler:
@@ -28,11 +27,6 @@ class DirectoryHandler:
             os.makedirs(dirs)
         return dirs
     
-
-    def _media_selector(self, img_list):
-        selected = select_url(img_list)
-        return selected
-
 
     # directory handling for press sites / blogs that have distinct topics
     def handle_directory(self, payload):
@@ -85,9 +79,6 @@ class DirectoryHandler:
         else:
             dirs = self._create_directory(directory_name)
 
-        if kr.args.select:
-            media_list = self._media_selector(media_list)
-
         download_payload = DownloadPayload(
             media=media_list,
             directory=dirs,
@@ -119,9 +110,6 @@ class DirectoryHandler:
         else:
             dirs = self._create_directory(directory_name, post_writer, f'{post_date_short} {title}')
 
-        if kr.args.select:
-            media_list = self._media_selector(media_list)
-
         download_payload = DownloadPayload(
             media=media_list,
             directory=dirs,
@@ -148,9 +136,6 @@ class DirectoryHandler:
 
         dirs = self._create_directory(directory_name, title)
 
-        if kr.args.select:
-            media_list = self._media_selector(media_list)
-
         download_payload = DownloadPayload(
             media=media_list,
             directory=dirs,
@@ -176,9 +161,6 @@ class DirectoryHandler:
 
         dirs = self._create_directory(directory_name, post_date_short)
 
-        if kr.args.select:
-            media_list = self._media_selector(media_list)
-            
         download_payload = DownloadPayload(
             media=media_list,
             directory=dirs,
