@@ -8,3 +8,4 @@ rich
 fake-useragent
 pydantic
 typing_extensions
+inquirer

@@ -1,7 +1,7 @@
 If you like this project, please consider giving it a star! Thanks!
 
 ## Table of Contents
-* [Prerequisite](#prerequisite)
+* [Guides & Installation](#Guides--Installation)
 * [Usage](#usage)
 * [Options](#options)
 * [Supported Sites](#supported-sites)
@@ -9,7 +9,7 @@ If you like this project, please consider giving it a star! Thanks!
 * [FAQ](#faq)
 * [Disclaimer](#disclaimer)
 
-## Prerequisite
+## Guides & Installation
 > [!IMPORTANT]
 > 1. Make sure you have `aria2c` installed and executeable in your system's PATH.
 >
