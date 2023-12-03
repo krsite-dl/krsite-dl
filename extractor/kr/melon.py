@@ -25,7 +25,7 @@ def get_data(hd):
     photo_list = soup.find('div', class_='photo_list')
 
     for item in photo_list.findAll('img'):
-        img_list.append(re.sub(r'(?<=\d)_1000(?=\.jpg)', '_org', re.sub(r'(?<=.jpg).*$', '', item['src'])))
+        img_list.append(re.sub(r'(_\d+)(?=\.jpg)', '_org', re.sub(r'(?<=.jpg).*$', '', item['src'])))
     
     print("Title: %s" % post_title)
     print("Found %s image(s)" % len(img_list))
