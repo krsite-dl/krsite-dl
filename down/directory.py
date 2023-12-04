@@ -56,6 +56,9 @@ class DirectoryHandler:
         # else:
         #     download_handler(img_list, dirs, post_date, loc)
 
+        if kr.args.select:
+            media_list = self._media_selector(media_list)
+
         download_payload = DownloadPayload(
             media=media_list,
             directory=dirs,
