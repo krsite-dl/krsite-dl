@@ -11,15 +11,11 @@ If you like this project, please consider giving it a star! Thanks!
 
 ## Guides & Installation
 > [!IMPORTANT]
-> 1. Make sure you have `aria2c` installed and executeable in your system's PATH.
+> 1. Make sure you have `python3` at least version 3.6 installed and executeable in your system's PATH.
 >
->   Install `aria2c` from https://github.com/aria2/aria2
->
-> 2. Make sure you have `python3` at least version 3.6 installed and executeable in your system's PATH.
->
-> 3. Run `pip3 install -r requirements.txt` to install dependencies
+> 2. Run `pip3 install -r requirements.txt` to install dependencies
 > 
-> 4. There are some sites that requires selenium. User must have [chrome](https://www.google.com/chrome/) and [chromedriver](https://chromedriver.chromium.org/downloads) installed and executeable. The list of sites can be found [here](#supported-sites).
+> 3. There are some sites that requires selenium. User must have [chrome](https://www.google.com/chrome/) and [chromedriver](https://chromedriver.chromium.org/downloads) installed and executeable. The list of sites can be found [here](#supported-sites).
 
 > [!NOTE]
 > To update the script, you need to pull this repository again. You can also run `git pull` if you have git installed.
