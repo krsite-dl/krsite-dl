@@ -4,7 +4,10 @@ import re
 import time
 import pytz
 import subprocess
+import certifi
+import email.utils
 
+from datetime import timezone
 from rich.progress import Progress
 from urllib.parse import unquote, urlparse
 from client.user_agent import InitUserAgent
@@ -14,6 +17,8 @@ class DownloadHandler():
     def __init__(self):
         self.args = kr.args
         self.reserved_pattern = r'[\\/:*?"<>|]'
+        self.session = self._session()
+        self.certificate = self._cert()
 
     
     # sanitize string to remove windows reserved characters
@@ -35,8 +40,7 @@ class DownloadHandler():
 
     # korean filename encoder
     def _encode_kr(self, img_name):
-        # img = img_name.split('/')[-1]
-        decoded = unquote(img_name).strip()
+        decoded = unquote(img_name)
 
         if '%EC' in decoded or '%EB' in decoded:
             korean_filename = decoded.encode('utf-8')
@@ -51,9 +55,9 @@ class DownloadHandler():
     def _get_filename(self, item):
         parsed_url = urlparse(item)
         filename = os.path.basename(unquote(parsed_url.path))
-        base, extension = os.path.splitext(filename)
-
-        return base, extension
+        base, x = os.path.splitext(filename)
+        # print(base, x)
+        return base, x
     
 
     def _process_item(self, item):
@@ -64,47 +68,116 @@ class DownloadHandler():
 
         return url, filename
     
-    
-    def _download_logic(self, filename, uri, dirs, post_date, loc, cert_bool):
-        user_agent = InitUserAgent().get_user_agent()
-        
-        try:
-            with Progress() as progress:
-                process = subprocess.Popen([
-                            'aria2c', '-d', dirs, 
-                            '-c', 
-                            '-j', '2', 
-                            '-o', filename, uri,
-                            '--continue',
-                            '--download-result=full',
-                            f'--check-certificate={cert_bool}',
-                            '-U', user_agent],
-                            stdout=subprocess.PIPE,
-                            encoding='utf-8',
-                            text=True)
-                
-                task = progress.add_task("Downloading...", total=100)
-                
-                for line in process.stdout:
-                    parts = line.split()
-                    if len(parts) >=3 and parts[1].endswith('%)'):
-                        progress.update(task, advance=int(re.search(r'\((\d+)%\)', parts[1]).group(1)))
-                    if 'Download complete' in line:
-                        progress.update(task, completed=100)
 
-            if os.path.exists(dirs + '/' + filename) and post_date is not None:
-                utc = pytz.timezone(self._location(loc))
-                dt = post_date
-                dt = utc.localize(dt)
-                timestamp = int(dt.timestamp())
-                os.utime(dirs + '/' + filename, (timestamp, timestamp))
-                os.utime(dirs, (timestamp, timestamp))
+    def _extension_to_mime(self, ext):
+        extensions = {
+            '.jpg' or '.jpeg': '.jpg',
+            '.JPG' or '.JPEG': '.jpg',
+            '.png': '.png',
+            '.PNG': '.png',
+            '.gif': '.gif',
+            '.GIF': '.gif',
+            '.webp': '.webp',
+            '.WEBP': '.webp',
+        }
+        return extensions.get(ext, '.jpg')
+
+
+    def _session(self):
+        session = requests.Session()
+        session.headers = requests.models.CaseInsensitiveDict(
+            {'User-Agent': InitUserAgent().get_user_agent(), 
+             'Accept-Encoding': 'identity', 
+             'Connection': 'keep-alive'})
+        return session
+    
+
+    def _cert(self):
+        return certifi.where() # get the path of cacert.pem
+    
+    
+    def _download_logic(self, filename, uri, dirs, post_date, loc):
+        try:
+
+            certificate = self.certificate
+            response = self.session.get(uri, stream=True, verify=certificate)
+            
+
+            # get headers
+            headers = response.headers
+            content_type = headers.get('content-type')
+            content_length = headers.get('content-length')
+            last_modified = headers.get('last-modified')
+
+            # get file size
+            if content_length is None:
+                file_size = 0
+            else:
+                file_size = int(content_length)
+
+            print(file_size)
+            # get file extension
+            if content_type is None:
+                pass
+            else:
+                file_extensions = {
+                    'image/jpeg': '.jpg',
+                    'image/png': '.png',
+                    'image/gif': '.gif',
+                    'image/webp': '.webp',
+                }
+
+            file_extension = file_extensions.get(content_type, '.jpg')
+
+            file_part = dirs + '/' + f"{filename}{file_extension}.part"
+            file_real = dirs + '/' + f"{filename}{file_extension}"
+            try:
+                current_size = os.path.getsize(file_part)
+            except FileNotFoundError:
+                current_size = 0
+
+            if current_size < file_size:
+            # download file
+                with open(file_part, 'wb') as f:
+                    with Progress() as progress:
+                        task = progress.add_task("Downloading...", total=100)
+                        for chunk in response.iter_content(chunk_size=None):
+                            current_size += len(chunk)
+                            f.write(chunk)
+                            progress.update(task, completed=current_size)
+
+                os.rename(file_part, file_real)
+
+                #convert GMT to local time for last_modified
+                #Thu, 07 Dec 2023 02:01:31 GMT
+                if last_modified is not None:
+                    dt = email.utils.parsedate_to_datetime(last_modified)
+                    dt = dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
+                    timestamp = int(dt.timestamp())
+                    os.utime(file_real, (timestamp, timestamp))
+                    os.utime(dirs, (timestamp, timestamp))
+                else:
+                    utc = pytz.timezone(self._location(loc))
+                    dt = post_date
+                    dt = utc.localize(dt)
+                    timestamp = int(dt.timestamp())
+                    os.utime(file_real, (timestamp, timestamp))
+                    os.utime(dirs, (timestamp, timestamp))
         except requests.exceptions.SSLError:
             print("[Status] SSL Error. Skipping...")
         except requests.exceptions.HTTPError:
             print("[Status] HTTP Error. Skipping...")
         except requests.exceptions.ConnectionError:
-            print("[Status] Connection Error. Skipping...")
+            # retry 5 times before skipping
+            for i in range(5):
+                print("[Status] Connection Error. Retrying...")
+                time.sleep(1)
+                try:
+                    self._download_logic(filename, uri, dirs, post_date, loc)
+                except requests.exceptions.ConnectionError:
+                    continue
+                else:
+                    break
 
 
     def downloader(self, payload):
@@ -117,18 +190,22 @@ class DownloadHandler():
         
         for img in img_list:
             # get url and separate the filename as a new variable
-            base, extension = self._get_filename(img)
-            img_name = self._encode_kr(base + extension)
+            base, ext = self._get_filename(img)
+            filename = self._encode_kr(base)
+            ext = self._extension_to_mime(ext)
+
+            img_name = f"{filename}{ext}"
 
             print("[Source URL] %s" % img)
             print("[Image Name] %s" % img_name)
 
-            if os.path.exists(dirs + '/' + img_name) and not os.path.exists(dirs + '/' + img_name + '.aria2'):
+            # and not os.path.exists(dirs + '/' + img_name + '.aria2')
+            if os.path.exists(dirs + '/' + img_name):
                 print("[Status] This file already exists. Skipping...")
                 continue
 
                 
-            self._download_logic(img_name, img, dirs, post_date, loc, "true")
+            self._download_logic(filename, img, dirs, post_date, loc)
 
 
     def downloader_naver(self, payload):
@@ -141,24 +218,25 @@ class DownloadHandler():
 
         duplicate_counts = {}
         for img in img_list:
-            base, extension = self._get_filename(img)
-            img_name = self._encode_kr(base + extension)
-            img_ext = img_name.split('.')[-1]
-
-            if img_name in duplicate_counts:
-                duplicate_counts[img_name] += 1
-                img_name = f"{img_name.split('.')[0]} ({duplicate_counts[img_name]}).{img_ext}"
+            base, ext = self._get_filename(img)
+            filename = self._encode_kr(base)
+            ext = self._extension_to_mime(ext)
+        
+            if filename in duplicate_counts:
+                duplicate_counts[filename] += 1
+                img_name = f"{filename} ({duplicate_counts[filename]}{ext})"
             else:
-                duplicate_counts[img_name] = 0
+                duplicate_counts[filename] = 0
+                img_name = f"{filename}{ext}"
 
             print("[Source URL] %s" % img)
             print("[Image Name] %s" % img_name)
 
-            if os.path.exists(dirs + '/' + img_name) and not os.path.exists(dirs + '/' + img_name + '.aria2'):
+            if os.path.exists(dirs + '/' + img_name):
                 print("[Status] This file already exists. Skipping...")
                 continue
 
-            self._download_logic(img_name, img, dirs, post_date, loc, "true")
+            self._download_logic(filename, img, dirs, post_date, loc)
 
 
     def downloader_combine(self, payload):
@@ -171,24 +249,22 @@ class DownloadHandler():
         )
         
         for img in img_list:
-            img_name, img_ext = self._get_filename(img)
-            img_name = self._encode_kr(img_name)
+            img_name, ext = self._get_filename(img)
+            filename = self._encode_kr(img_name)
+            ext = self._extension_to_mime(ext)
             
             if len(img_list) > 1:
-                img_name = f'{post_date_short} {img_name} ({img_list.index(img)+1}){img_ext}'
+                img_name = f'{filename} ({img_list.index(img)+1}){ext}'
             else:
-                img_name = f'{post_date_short} {img_name}{img_ext}'
+                img_name = f'{filename}{ext}'
 
             print("[Source URL] %s" % img)
             print("[Image Name] %s" % img_name)
 
-            if os.path.exists(dirs + '/' + img_name) and not os.path.exists(dirs + '/' + img_name + '.aria2'):
+            if os.path.exists(dirs + '/' + img_name):
                 print("[Status] This file already exists. Skipping...")
                 continue
 
-            if 'topstarnews' in img:
-                cert_bool = 'false'
-            else:
-                cert_bool = 'true'
-
-            self._download_logic(img_name, img, dirs, post_date, loc, cert_bool)
+            self._download_logic(filename, img, dirs, post_date, loc)
+        
+        self.session.close()
