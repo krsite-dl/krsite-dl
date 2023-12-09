@@ -132,7 +132,7 @@ class DownloadHandler():
             if current_size < content_length:
             # download file
                 with open(file_part, 'wb') as f:
-                    with Progress() as prog:
+                    with Progress(refresh_per_second=1) as prog:
                         task = prog.add_task("Downloading...", total=content_length)
                         for chunk in response.iter_content(chunk_size=20480):
                             current_size += len(chunk)
