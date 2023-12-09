@@ -162,16 +162,15 @@ class DownloadHandler():
         except requests.exceptions.HTTPError:
             print("[Status] HTTP Error. Skipping...")
         except requests.exceptions.ConnectionError:
-            # retry 5 times before skipping
-            for i in range(5):
-                print("[Status] Connection Error. Retrying...")
-                time.sleep(1)
-                try:
+            # retry 3 times using its session
+            print("[Status] Connection Error. Retrying...")
+            try:
+                for i in range(3):
+                    print(f"[Status] Retry {i+1}...")
                     self._download_logic(filename, uri, dirs, post_date, loc)
-                except requests.exceptions.ConnectionError:
-                    continue
-                else:
                     break
+            except requests.exceptions.ConnectionError:
+                print("[Status] Max retries exceeded. Skipping...")
 
 
     def downloader(self, payload):
