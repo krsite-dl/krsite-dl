@@ -3,7 +3,6 @@ import os
 import re
 import time
 import pytz
-import subprocess
 import certifi
 import email.utils
 
@@ -98,9 +97,8 @@ class DownloadHandler():
     
     def _download_logic(self, filename, uri, dirs, post_date, loc):
         try:
-
             certificate = self.certificate
-            response = self.session.get(uri, stream=True, verify=certificate)
+            response = self.session.get(uri, verify=certificate, stream=True)
             
 
             # get headers
@@ -109,13 +107,6 @@ class DownloadHandler():
             content_length = headers.get('content-length')
             last_modified = headers.get('last-modified')
 
-            # get file size
-            if content_length is None:
-                file_size = 0
-            else:
-                file_size = int(content_length)
-
-            print(file_size)
             # get file extension
             if content_type is None:
                 pass
@@ -127,24 +118,27 @@ class DownloadHandler():
                     'image/webp': '.webp',
                 }
 
+            content_length = int(content_length)
+
             file_extension = file_extensions.get(content_type, '.jpg')
 
-            file_part = dirs + '/' + f"{filename}{file_extension}.part"
-            file_real = dirs + '/' + f"{filename}{file_extension}"
+            file_part = os.path.join(dirs, f"{filename}{file_extension}.part")
+            file_real = os.path.join(dirs, f"{filename}{file_extension}")
             try:
                 current_size = os.path.getsize(file_part)
             except FileNotFoundError:
                 current_size = 0
 
-            if current_size < file_size:
+            if current_size < content_length:
             # download file
                 with open(file_part, 'wb') as f:
-                    with Progress() as progress:
-                        task = progress.add_task("Downloading...", total=100)
-                        for chunk in response.iter_content(chunk_size=None):
+                    with Progress() as prog:
+                        task = prog.add_task("Downloading...", total=content_length)
+                        for chunk in response.iter_content(chunk_size=20480):
                             current_size += len(chunk)
                             f.write(chunk)
-                            progress.update(task, completed=current_size)
+                            prog.update(task, completed=current_size)
+
 
                 os.rename(file_part, file_real)
 
