@@ -15,7 +15,7 @@ else:
     destination_dir = '.'
 
 parser = argparse.ArgumentParser()
-parser.add_argument("url", nargs='+',type=str, help="valid news/blog url")
+parser.add_argument("url", nargs='*',type=str, help="valid news/blog url")
 parser.add_argument("-a", type=str, help="text file containing site urls")
 parser.add_argument("-ai", type=str, help="text file containing image urls")
 parser.add_argument("--no-windows-filenames", action="store_true", help="(default=False) krsite-dl will keep the original filenames of the images. This includes filenames that are not allowed in Windows OS.")
