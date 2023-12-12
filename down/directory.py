@@ -7,7 +7,7 @@ from common.logger import Logger
 import krsite_dl as kr
 
 class DirectoryHandler:
-    logger = Logger("DirectoryHandler")
+    logger = Logger("directory_handler")
 
     def __init__(self):
         self.args = kr.args
