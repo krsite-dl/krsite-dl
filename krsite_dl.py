@@ -4,6 +4,7 @@ import sys
 from rich import print
 from urllib.parse import urlparse
 from extractor import direct
+from common.logger import Logger
 import lazy_import  
 
 # Reading settings from config file
@@ -46,6 +47,7 @@ def check_site(url):
 
 
 def main():
+    logger = Logger("krsite-dl")
     try:
         if args.a:
             with open(args.a, 'r') as f:
@@ -71,24 +73,27 @@ def main():
                     try:
                         direct.from_direct(line)
                     except FileNotFoundError:
-                        print("File not found: %s" % args.ai)
+                        logger.log_warning("File not found: %s" % args.ai)
                     except IndexError as e:
+                        logger.log_error("Index Error: %s" % e)
                         print("Index Error: %s" % e)
                     except KeyboardInterrupt:
-                        print("\r", end="")
-                        print("KeyboardInterrupt detected. Exiting gracefully.")
+                        logger.log_warning("KeyboardInterrupt detected. Exiting gracefully.")
                         sys.exit(0)
     elif args.a or args.url:
         try:
             for url in args.url:
                 check_site(url)
+
         except AttributeError as e:
-            print("Attribute Error: %s" % e)
+            logger.log_error("Attribute Error: %s" % e)
         except IndexError as e:
+            logger.log_error("Index Error: %s" % e)
             print("Index Error: %s" % e)
         except KeyboardInterrupt:
-            print("\r", end="")
-            print("KeyboardInterrupt detected. Exiting gracefully.")
+            logger.log_warning("KeyboardInterrupt detected. Exiting gracefully.")
+            # print("\r", end="")
+            # print("KeyboardInterrupt detected. Exiting gracefully.")
             sys.exit(0)
 
 
