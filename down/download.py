@@ -15,9 +15,7 @@ from common.logger import Logger
 import krsite_dl as kr
 
 class DownloadHandler():
-    loggerURL = Logger("SourceURL")
-    loggerFile = Logger("FileName")
-    loggerFileExists = Logger("FileExists")
+    logger = Logger("downloader")
     def __init__(self):
         user = User()
 
@@ -77,7 +75,7 @@ class DownloadHandler():
     
 
     def _media_selector(self, img_list):
-        logger = Logger("MediaSelector")
+        logger = Logger("media_selector")
         logger.log_info("Selecting images to download...")
         selected = select_url(img_list)
 
@@ -89,7 +87,7 @@ class DownloadHandler():
     def _file_exists(self, dirs, filename):
         path = os.path.join(dirs, filename)
         if os.path.exists(path):
-            self.loggerFileExists.log_warning(f"This file already exists. Skipping...")
+            self.logger.log_warning(f"File {filename} already exists. Skipping...")
             return True
 
 
@@ -117,81 +115,86 @@ class DownloadHandler():
     
     
     def _download_logic(self, filename, uri, dirs, post_date, loc):
-        try:
-            certificate = self.certificate
-            response = self.session.get(uri, verify=certificate, stream=True)
-            
+        max_retries = 3
+        retry_delay = 5 #seconds
 
-            # get headers
-            headers = response.headers
-            content_type = headers.get('content-type')
-            content_length = headers.get('content-length')
-            last_modified = headers.get('last-modified')
-
-            # get file extension
-            if content_type is None:
-                pass
-            else:
-                file_extensions = {
-                    'image/jpeg': '.jpg',
-                    'image/png': '.png',
-                    'image/gif': '.gif',
-                    'image/webp': '.webp',
-                }
-
-            content_length = int(content_length)
-
-            file_extension = file_extensions.get(content_type, '.jpg')
-
-            file_part = os.path.join(dirs, f"{filename}{file_extension}.part")
-            file_real = os.path.join(dirs, f"{filename}{file_extension}")
+        for attempt in range(1, max_retries+1):
             try:
-                current_size = os.path.getsize(file_part)
-            except FileNotFoundError:
-                current_size = 0
+                certificate = self.certificate
+                response = self.session.get(uri, verify=certificate, stream=True)
+                
 
-            if current_size < content_length:
-            # download file
-                with open(file_part, 'wb') as f:
-                    with Progress(refresh_per_second=1) as prog:
-                        task = prog.add_task("Downloading...", total=content_length)
-                        for chunk in response.iter_content(chunk_size=20480):
-                            current_size += len(chunk)
-                            f.write(chunk)
-                            prog.update(task, completed=current_size)
+                # get headers
+                headers = response.headers
+                content_type = headers.get('content-type')
+                content_length = headers.get('content-length')
+                last_modified = headers.get('last-modified')
 
-
-                os.rename(file_part, file_real)
-
-                #convert GMT to local time for last_modified
-                #Thu, 07 Dec 2023 02:01:31 GMT
-                if last_modified is not None:
-                    dt = email.utils.parsedate_to_datetime(last_modified)
-                    dt = dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
-                    timestamp = int(dt.timestamp())
-                    os.utime(file_real, (timestamp, timestamp))
-                    os.utime(dirs, (timestamp, timestamp))
+                # get file extension
+                if content_type is None:
+                    pass
                 else:
-                    utc = pytz.timezone(self._location(loc))
-                    dt = post_date
-                    dt = utc.localize(dt)
-                    timestamp = int(dt.timestamp())
-                    os.utime(file_real, (timestamp, timestamp))
-                    os.utime(dirs, (timestamp, timestamp))
-        except requests.exceptions.SSLError:
-            print("[Status] SSL Error. Skipping...")
-        except requests.exceptions.HTTPError:
-            print("[Status] HTTP Error. Skipping...")
-        except requests.exceptions.ConnectionError:
-            # retry 3 times using its session
-            print("[Status] Connection Error. Retrying...")
-            try:
-                for i in range(3):
-                    print(f"[Status] Retry {i+1}...")
-                    self._download_logic(filename, uri, dirs, post_date, loc)
+                    file_extensions = {
+                        'image/jpeg': '.jpg',
+                        'image/png': '.png',
+                        'image/gif': '.gif',
+                        'image/webp': '.webp',
+                    }
+
+                content_length = int(content_length)
+
+                file_extension = file_extensions.get(content_type, '.jpg')
+
+                file_part = os.path.join(dirs, f"{filename}{file_extension}.part")
+                file_real = os.path.join(dirs, f"{filename}{file_extension}")
+                try:
+                    current_size = os.path.getsize(file_part)
+                except FileNotFoundError:
+                    current_size = 0
+
+                if current_size < content_length:
+                # download file
+                    with open(file_part, 'wb') as f:
+                        with Progress(refresh_per_second=1) as prog:
+                            task = prog.add_task("Downloading...", total=content_length)
+                            for chunk in response.iter_content(chunk_size=20480):
+                                current_size += len(chunk)
+                                f.write(chunk)
+                                prog.update(task, completed=current_size)
+
+
+                    os.rename(file_part, file_real)
+
+                    #convert GMT to local time for last_modified
+                    #Thu, 07 Dec 2023 02:01:31 GMT
+                    if last_modified is not None:
+                        dt = email.utils.parsedate_to_datetime(last_modified)
+                        dt = dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
+                        timestamp = int(dt.timestamp())
+                        os.utime(file_real, (timestamp, timestamp))
+                        os.utime(dirs, (timestamp, timestamp))
+                    else:
+                        utc = pytz.timezone(self._location(loc))
+                        dt = post_date
+                        dt = utc.localize(dt)
+                        timestamp = int(dt.timestamp())
+                        os.utime(file_real, (timestamp, timestamp))
+                        os.utime(dirs, (timestamp, timestamp))
                     break
+            except requests.exceptions.SSLError:
+                self.logger.log_error(f"SSL Error. Skipping...")
+                break
+            except requests.exceptions.HTTPError:
+                self.logger.log_error(f"HTTP Error. Skipping...")
+                break
             except requests.exceptions.ConnectionError:
-                print("[Status] Max retries exceeded. Skipping...")
+                # retry 3 times using its session
+                if attempt < max_retries:
+                    self.logger.log_error(f"Connection Error. Retrying... ({attempt}/{max_retries})")
+                    time.sleep(retry_delay)
+                else:
+                    self.logger.log_error(f"Max retries exceeded. Skipping...")
+                    break
 
 
     def downloader(self, payload):
@@ -213,8 +216,7 @@ class DownloadHandler():
 
             img_name = f"{filename}{ext}"
 
-            self.loggerURL.log_info(f"{img}")
-            self.loggerFile.log_info(f"{img_name}")
+            self.logger.log_info(f"{img}")
 
             if self._file_exists(dirs, img_name):
                 continue
@@ -248,8 +250,7 @@ class DownloadHandler():
                 duplicate_counts[filename] = 0
                 img_name = f"{filename}{ext}"
 
-            self.loggerURL.log_info(f"{img}")
-            self.loggerFile.log_info(f"{img_name}")
+            self.logger.log_info(f"{img}")
 
             if self._file_exists(dirs, img_name):
                 continue
@@ -281,8 +282,7 @@ class DownloadHandler():
             else:
                 img_name = f'{filename}{ext}'
 
-            self.loggerURL.log_info(f"{img}")
-            self.loggerFile.log_info(f"{img_name}")
+            self.logger.log_info(f"{img}")
 
             if self._file_exists(dirs, img_name):
                 continue
