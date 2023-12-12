@@ -3,21 +3,29 @@ import os
 import re
 import time
 import pytz
-import certifi
 import email.utils
 
 from datetime import timezone
 from rich.progress import Progress
 from urllib.parse import unquote, urlparse
-from client.user_agent import InitUserAgent
+from client.user import User
+from common.url_selector import select_url
+from common.logger import Logger
+
 import krsite_dl as kr
 
 class DownloadHandler():
+    loggerURL = Logger("SourceURL")
+    loggerFile = Logger("FileName")
+    loggerFileExists = Logger("FileExists")
     def __init__(self):
+        user = User()
+
         self.args = kr.args
         self.reserved_pattern = r'[\\/:*?"<>|]'
+        self.user_agent = user.get_user_agent()
+        self.certificate = user.get_certificate()
         self.session = self._session()
-        self.certificate = self._cert()
 
     
     # sanitize string to remove windows reserved characters
@@ -68,6 +76,23 @@ class DownloadHandler():
         return url, filename
     
 
+    def _media_selector(self, img_list):
+        logger = Logger("MediaSelector")
+        logger.log_info("Selecting images to download...")
+        selected = select_url(img_list)
+
+        if not selected:
+            logger.log_info("No images selected.")
+        return selected
+    
+
+    def _file_exists(self, dirs, filename):
+        path = os.path.join(dirs, filename)
+        if os.path.exists(path):
+            self.loggerFileExists.log_warning(f"This file already exists. Skipping...")
+            return True
+
+
     def _extension_to_mime(self, ext):
         extensions = {
             '.jpg' or '.jpeg': '.jpg',
@@ -85,14 +110,10 @@ class DownloadHandler():
     def _session(self):
         session = requests.Session()
         session.headers = requests.models.CaseInsensitiveDict(
-            {'User-Agent': InitUserAgent().get_user_agent(), 
+            {'User-Agent': self.user_agent, 
              'Accept-Encoding': 'identity', 
              'Connection': 'keep-alive'})
         return session
-    
-
-    def _cert(self):
-        return certifi.where() # get the path of cacert.pem
     
     
     def _download_logic(self, filename, uri, dirs, post_date, loc):
@@ -180,6 +201,9 @@ class DownloadHandler():
             payload.date,
             payload.location,
         )
+
+        if kr.args.select:
+            img_list = self._media_selector(img_list)
         
         for img in img_list:
             # get url and separate the filename as a new variable
@@ -189,18 +213,17 @@ class DownloadHandler():
 
             img_name = f"{filename}{ext}"
 
-            print("[Source URL] %s" % img)
-            print("[Image Name] %s" % img_name)
+            self.loggerURL.log_info(f"{img}")
+            self.loggerFile.log_info(f"{img_name}")
 
-            # and not os.path.exists(dirs + '/' + img_name + '.aria2')
-            if os.path.exists(dirs + '/' + img_name):
-                print("[Status] This file already exists. Skipping...")
+            if self._file_exists(dirs, img_name):
                 continue
-
                 
             self._download_logic(filename, img, dirs, post_date, loc)
 
+        self.session.close()
 
+        
     def downloader_naver(self, payload):
         img_list, dirs, post_date, loc = (
             payload.media,
@@ -208,6 +231,9 @@ class DownloadHandler():
             payload.date,
             payload.location,
         )
+
+        if kr.args.select:
+            img_list = self._media_selector(img_list)
 
         duplicate_counts = {}
         for img in img_list:
@@ -222,14 +248,15 @@ class DownloadHandler():
                 duplicate_counts[filename] = 0
                 img_name = f"{filename}{ext}"
 
-            print("[Source URL] %s" % img)
-            print("[Image Name] %s" % img_name)
+            self.loggerURL.log_info(f"{img}")
+            self.loggerFile.log_info(f"{img_name}")
 
-            if os.path.exists(dirs + '/' + img_name):
-                print("[Status] This file already exists. Skipping...")
+            if self._file_exists(dirs, img_name):
                 continue
 
             self._download_logic(filename, img, dirs, post_date, loc)
+
+        self.session.close()
 
 
     def downloader_combine(self, payload):
@@ -240,6 +267,9 @@ class DownloadHandler():
             payload.shortDate,
             payload.location,
         )
+
+        if kr.args.select:
+            img_list = self._media_selector(img_list)
         
         for img in img_list:
             img_name, ext = self._get_filename(img)
@@ -251,11 +281,10 @@ class DownloadHandler():
             else:
                 img_name = f'{filename}{ext}'
 
-            print("[Source URL] %s" % img)
-            print("[Image Name] %s" % img_name)
+            self.loggerURL.log_info(f"{img}")
+            self.loggerFile.log_info(f"{img_name}")
 
-            if os.path.exists(dirs + '/' + img_name):
-                print("[Status] This file already exists. Skipping...")
+            if self._file_exists(dirs, img_name):
                 continue
 
             self._download_logic(filename, img, dirs, post_date, loc)

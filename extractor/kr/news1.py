@@ -1,16 +1,16 @@
-import requests
 import datetime
 
 from pytz import timezone
-from client.user_agent import InitUserAgent
+from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, ScrapperPayload
-from bs4 import BeautifulSoup
 
 SITE_INFO = Site(hostname="news1.kr", name="News1", location="KR")
 
 def get_data(hd):
-    r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
-    soup = BeautifulSoup(r.text, 'html.parser')
+    site_parser = SiteParser()
+    site_requests = SiteRequests()
+    soup = site_parser._parse(site_requests.session.get(hd).text)
+
 
     post_title = soup.find('meta', property='og:title')['content'].strip().encode('latin-1').decode('utf-8', 'ignore')
     post_date = soup.find('meta', property='article:published_time')['content'].strip()
@@ -24,7 +24,8 @@ def get_data(hd):
     img_list = []
     for item in article.findAll('img'):
         if 'kakao' not in item['src']:
-            img_list.append(item['src'].replace('article', 'original'))
+            img_list.append((item['src'].replace('article', 'original'), item['alt'].strip()))
+            # print(item['alt'].strip())
 
     print("Title: %s" % post_title)
     print("Date: %s" % post_date)
@@ -43,4 +44,4 @@ def get_data(hd):
 
     from down.directory import DirectoryHandler
 
-    DirectoryHandler().handle_directory_combine(payload)
+    DirectoryHandler().handler_directory_combine(payload)

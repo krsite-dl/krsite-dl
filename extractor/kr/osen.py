@@ -1,15 +1,15 @@
-import requests
 import datetime
 
-from client.user_agent import InitUserAgent
+from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, ScrapperPayload
-from bs4 import BeautifulSoup
 
 SITE_INFO = Site(hostname=["osen.mt.co.kr", "osen.co.kr"], name="OSEN", location="KR")
 
 def get_data(hd):
-    r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
-    soup = BeautifulSoup(r.text, 'html.parser')
+    site_parser = SiteParser()
+    site_requests = SiteRequests()
+    soup = site_parser._parse(site_requests.session.get(hd).text)
+
     wrap = soup.find('div', class_='detailTitle')
 
     post_title = wrap.find('h1').text
