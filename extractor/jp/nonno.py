@@ -1,19 +1,19 @@
-import requests
 import datetime
 import json
 import re
 
-from client.user_agent import InitUserAgent
-from common.data_structure import Site, ScrapperPayload
-from bs4 import BeautifulSoup
 from pytz import timezone
 from urllib.parse import urlparse, urlunparse
+from common.common_modules import SiteRequests, SiteParser
+from common.data_structure import Site, ScrapperPayload
 
 SITE_INFO = Site(hostname="nonno.hpplus.jp", name="Non-no", location="JP")
 
 def get_data(hd):
-    r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
-    soup = BeautifulSoup(r.text, 'html.parser')
+    site_parser = SiteParser()
+    site_requests = SiteRequests()
+    soup = site_parser._parse(site_requests.session.get(hd).text)
+
 
     # article info
     info = (soup.find_all('script', type='application/ld+json')[2])

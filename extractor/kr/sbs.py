@@ -1,11 +1,10 @@
-import requests
 import datetime
 import time
 import json
 
-from client.user_agent import InitUserAgent
-from common.data_structure import Site, ScrapperPayload
 from rich import print
+from common.common_modules import SiteRequests
+from common.data_structure import Site, ScrapperPayload
 
 SITE_INFO = Site(hostname="programs.sbs.co.kr", name="SBS Program", location="KR")
 
@@ -64,7 +63,7 @@ def get_data(hd):
             '_': token
         }
 
-        r = requests.get(api, params, headers={'User-Agent': InitUserAgent().get_user_agent()})
+        r = SiteRequests(api, params)
         if 'err_code' not in r.text:
             break
 

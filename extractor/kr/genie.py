@@ -1,22 +1,21 @@
-import requests
 import datetime
 import re
 
-from client.user_agent import InitUserAgent
-from common.data_structure import Site, ScrapperPayload
 from rich import print
 from urllib.parse import urlparse
-from bs4 import BeautifulSoup
+from common.common_modules import SiteRequests, SiteParser
+from common.data_structure import Site, ScrapperPayload
 
 SITE_INFO = Site(hostname="genie.co.kr", name="Genie", location="KR")
 
 def get_data(hd):
     hostname = urlparse(hd).hostname
+
+    site_parser = SiteParser()
+    site_requests = SiteRequests()
     def genie_artist():
-        r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
-
-        soup = BeautifulSoup(r.text, 'html.parser')
-
+        soup = site_parser._parse(site_requests.session.get(hd).text)
+        
         artist_edm_release = soup.find('div', class_='artist-edm-list-insert')
 
 
@@ -39,8 +38,7 @@ def get_data(hd):
     def genie_magazine(data):
         mag_date, mag_title, mag_url = data
 
-        r = requests.get(mag_url, headers={'User-Agent': InitUserAgent().get_user_agent()})
-        soup = BeautifulSoup(r.text, 'html.parser')
+        soup = site_parser._parse(site_requests.session.get(hd).text)
 
         magazine_view = soup.find('div', class_='magazine-view')
 
