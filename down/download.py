@@ -114,14 +114,14 @@ class DownloadHandler():
         return session
     
     
-    def _download_logic(self, filename, uri, dirs, post_date, loc):
+    def _download_logic(self, filename, url, dirs, post_date, loc):
         max_retries = 3
         retry_delay = 5 #seconds
 
         for attempt in range(1, max_retries+1):
             try:
                 certificate = self.certificate
-                response = self.session.get(uri, verify=certificate, stream=True)
+                response = self.session.get(url, verify=certificate, stream=True)
                 
 
                 # get headers
@@ -198,7 +198,7 @@ class DownloadHandler():
 
 
     def downloader(self, payload):
-        img_list, dirs, post_date, loc = (
+        medialist, dirs, post_date, loc = (
             payload.media,
             payload.directory,
             payload.date,
@@ -206,28 +206,29 @@ class DownloadHandler():
         )
 
         if kr.args.select:
-            img_list = self._media_selector(img_list)
+            urls = self._media_selector(medialist)
         
-        for img in img_list:
+        for url in urls:
             # get url and separate the filename as a new variable
-            base, ext = self._get_filename(img)
+            base, ext = self._get_filename(url)
             filename = self._encode_kr(base)
             ext = self._extension_to_mime(ext)
 
             img_name = f"{filename}{ext}"
 
-            self.logger.log_info(f"{img}")
+            self.logger.log_info(f"{url}")
+            self.logger.log_info(f"filename: {img_name}")
 
             if self._file_exists(dirs, img_name):
                 continue
                 
-            self._download_logic(filename, img, dirs, post_date, loc)
+            self._download_logic(filename, url, dirs, post_date, loc)
 
         self.session.close()
 
         
     def downloader_naver(self, payload):
-        img_list, dirs, post_date, loc = (
+        medialist, dirs, post_date, loc = (
             payload.media,
             payload.directory,
             payload.date,
@@ -235,11 +236,11 @@ class DownloadHandler():
         )
 
         if kr.args.select:
-            img_list = self._media_selector(img_list)
+            urls = self._media_selector(medialist)
 
         duplicate_counts = {}
-        for img in img_list:
-            base, ext = self._get_filename(img)
+        for url in urls:
+            base, ext = self._get_filename(url)
             filename = self._encode_kr(base)
             ext = self._extension_to_mime(ext)
         
@@ -250,18 +251,19 @@ class DownloadHandler():
                 duplicate_counts[filename] = 0
                 img_name = f"{filename}{ext}"
 
-            self.logger.log_info(f"{img}")
+            self.logger.log_info(f"{url}")
+            self.logger.log_info(f"filename: {img_name}")
 
             if self._file_exists(dirs, img_name):
                 continue
 
-            self._download_logic(filename, img, dirs, post_date, loc)
+            self._download_logic(filename, url, dirs, post_date, loc)
 
         self.session.close()
 
 
     def downloader_combine(self, payload):
-        img_list, dirs, post_date, post_date_short, loc = (
+        medialist, dirs, post_date, post_date_short, loc = (
             payload.media,
             payload.directory,
             payload.date,
@@ -270,23 +272,24 @@ class DownloadHandler():
         )
 
         if kr.args.select:
-            img_list = self._media_selector(img_list)
+            urls = self._media_selector(medialist)
         
-        for img in img_list:
-            img_name, ext = self._get_filename(img)
+        for url in urls:
+            img_name, ext = self._get_filename(url)
             filename = self._encode_kr(img_name)
             ext = self._extension_to_mime(ext)
             
-            if len(img_list) > 1:
-                img_name = f'{filename} ({img_list.index(img)+1}){ext}'
+            if len(urls) > 1:
+                img_name = f'{filename} ({urls.index(url)+1}){ext}'
             else:
                 img_name = f'{filename}{ext}'
 
-            self.logger.log_info(f"{img}")
+            self.logger.log_info(f"{url}")
+            self.logger.log_info(f"filename: {img_name}")
 
             if self._file_exists(dirs, img_name):
                 continue
 
-            self._download_logic(filename, img, dirs, post_date, loc)
+            self._download_logic(filename, url, dirs, post_date, loc)
         
         self.session.close()
