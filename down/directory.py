@@ -1,10 +1,10 @@
+import krsite_dl as kr
 import os
 import re
+
 from down.download import DownloadHandler
 from common.data_structure import DownloadPayload
-from common.url_selector import select_url
 from common.logger import Logger
-import krsite_dl as kr
 
 class DirectoryHandler:
     logger = Logger("directory_handler")
