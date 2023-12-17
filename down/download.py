@@ -87,7 +87,7 @@ class DownloadHandler():
     def _file_exists(self, dirs, filename):
         path = os.path.join(dirs, filename)
         if os.path.exists(path):
-            self.logger.log_warning(f"File {filename} already exists. Skipping...")
+            self.logger.log_warning(f"File: {filename} already exists. Skipping...")
             return True
 
 
@@ -206,9 +206,9 @@ class DownloadHandler():
         )
 
         if kr.args.select:
-            urls = self._media_selector(medialist)
+            medialist = self._media_selector(medialist)
         
-        for url in urls:
+        for url in medialist:
             # get url and separate the filename as a new variable
             base, ext = self._get_filename(url)
             filename = self._encode_kr(base)
@@ -236,10 +236,10 @@ class DownloadHandler():
         )
 
         if kr.args.select:
-            urls = self._media_selector(medialist)
+            medialist = self._media_selector(medialist)
 
         duplicate_counts = {}
-        for url in urls:
+        for url in medialist:
             base, ext = self._get_filename(url)
             filename = self._encode_kr(base)
             ext = self._extension_to_mime(ext)
@@ -272,15 +272,15 @@ class DownloadHandler():
         )
 
         if kr.args.select:
-            urls = self._media_selector(medialist)
+            medialist = self._media_selector(medialist)
         
-        for url in urls:
+        for url in medialist:
             img_name, ext = self._get_filename(url)
             filename = self._encode_kr(img_name)
             ext = self._extension_to_mime(ext)
             
-            if len(urls) > 1:
-                img_name = f'{filename} ({urls.index(url)+1}){ext}'
+            if len(medialist) > 1:
+                img_name = f'{filename} ({medialist.index(url)+1}){ext}'
             else:
                 img_name = f'{filename}{ext}'
 
