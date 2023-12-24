@@ -1,14 +1,11 @@
-import requests
 import datetime
 import time
 
 from rich import print
 from urllib.parse import urlparse
-from selenium import webdriver as wd
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 
+from common.common_modules import SeleniumParser
 from common.data_structure import Site, ScrapperPayload
 
 SITE_INFO = Site(hostname="post.naver.com", name="Naver Post", location="KR")
@@ -16,17 +13,14 @@ SITE_INFO = Site(hostname="post.naver.com", name="Naver Post", location="KR")
 def get_data(hd):
     hostname = urlparse(hd).hostname
 
-    opt = Options()
-    opt.add_argument('--headless')
-    w = wd.Chrome(options=opt)
 
     def naverpost_search(hd):
-        w.get(hd)
+        parser = SeleniumParser()
+        w = parser._requests(hd)
 
         post_list = set()
 
-        btn = w.find_element(By.CLASS_NAME, '_more')
-
+        btn = w.find_element(parser.get_by('CLASS_NAME'), '_more')
         stat = True
         while stat == True:
             try:
@@ -35,9 +29,10 @@ def get_data(hd):
             except:
                 stat = False
 
-                for i in w.find_elements(By.CLASS_NAME, 'link_end'):
+                for i in w.find_elements(parser.get_by('CLASS_NAME'), 'link_end'):
                     post_list.add(i.get_attribute('href'))
-
+        
+        w.quit()
         print("Found %s post(s)" % len(post_list))
 
         for i in post_list:
@@ -45,15 +40,15 @@ def get_data(hd):
 
 
     def naverpost_series(hd):
-        w.get(hd)
+        parser = SeleniumParser()
+        w = parser._requests(hd)
 
         series_list = set()
         
-        sender_name = w.find_element(By.CLASS_NAME, 'name').text
+        sender_name = w.find_element(parser.get_by('CLASS_NAME'), 'name').text
         print("Sender: %s" % sender_name)
 
-        btn = w.find_element(By.CLASS_NAME, '_more')
-
+        btn = w.find_element(parser.get_by('CLASS_NAME'), '_more')
         stat = True
         while stat == True:
             try:
@@ -62,9 +57,10 @@ def get_data(hd):
             except:
                 stat = False
 
-                for i in w.find_elements(By.CLASS_NAME, 'link'):
+                for i in w.find_elements(parser.get_by('CLASS_NAME'), 'link'):
                     series_list.add(i.get_attribute('href'))
         
+        w.quit()
         print("Found %s series" % len(series_list))
         print("------------------\n")
 
@@ -73,12 +69,12 @@ def get_data(hd):
 
 
     def naverpost_list(hd):
-        w.get(hd)
+        parser = SeleniumParser()
+        w = parser._requests(hd)
         
         post_list = set()
 
-        btn = w.find_element(By.CLASS_NAME, '_more')
-
+        btn = w.find_element(parser.get_by('CLASS_NAME'), '_more')
         stat = True
         while stat == True:
             try:
@@ -86,9 +82,10 @@ def get_data(hd):
                 time.sleep(2)
             except:
                 stat = False
-                for i in w.find_elements(By.CLASS_NAME, 'spot_post_area'):
+                for i in w.find_elements(parser.get_by('CLASS_NAME'), 'spot_post_area'):
                     post_list.add(i.get_attribute('href'))
 
+        w.quit()
         print("Found %s post(s)" % len(post_list))
         
         for i in post_list:
@@ -96,27 +93,21 @@ def get_data(hd):
 
 
     def naverpost_post(hd):
-        opt = Options()
-        opt.add_argument('--headless')
-        w = wd.Chrome(options=opt)
-        w.get(hd)
+        parser = SeleniumParser()
+        w = parser._requests(hd)
 
         try:
-            post_writer = w.find_element(By.CLASS_NAME, 'se_author').text
-            post_series = w.find_element(By.CLASS_NAME, 'se_series').text[3:]
-            post_title = w.find_element(By.CLASS_NAME, 'se_textarea').text.replace('\n', ' ')
-            # post_date = w.find_element(By.CLASS_NAME, 'se_publishDate').text
-            post_date = w.find_element(By.XPATH, '//meta[@property="og:createdate"]') # using meta tag for more accurate time
-            # post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d. %H:%M')
+            post_writer = w.find_element(parser.get_by('CLASS_NAME'), 'se_author').text
+            post_series = w.find_element(parser.get_by('CLASS_NAME'), 'se_series').text[3:]
+            post_title = w.find_element(parser.get_by('CLASS_NAME'), 'se_textarea').text.replace('\n', ' ')
+            post_date = w.find_element(parser.get_by('XPATH'), '//meta[@property="og:createdate"]') # using meta tag for more accurate time
             post_date = datetime.datetime.strptime(post_date.get_attribute('content'), '%Y.%m.%d. %H:%M:%S')
             post_date_short = post_date.strftime('%y%m%d')
         except NoSuchElementException:
-            post_writer = w.find_element(By.CLASS_NAME, 'writer.ell').text
-            post_series = w.find_element(By.CLASS_NAME, 'series').text
-            post_title = w.find_element(By.CLASS_NAME, 'title').text.replace('\n', ' ')
-            # post_date = w.find_element(By.CLASS_NAME, 'post_date').text
-            post_date = w.find_element(By.XPATH, '//meta[@property="og:createdate"]') # using meta tag for more accurate time
-            # post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d. %H:%M')
+            post_writer = w.find_element(parser.get_by('CLASS_NAME'), 'writer.ell').text
+            post_series = w.find_element(parser.get_by('CLASS_NAME'), 'series').text
+            post_title = w.find_element(parser.get_by('CLASS_NAME'), 'title').text.replace('\n', ' ')
+            post_date = w.find_element(parser.get_by('XPATH'), '//meta[@property="og:createdate"]') # using meta tag for more accurate time
             post_date = datetime.datetime.strptime(post_date.get_attribute('content'), '%Y.%m.%d. %H:%M:%S')
             post_date_short = post_date.strftime('%y%m%d')
 
@@ -127,15 +118,15 @@ def get_data(hd):
         print("Date: %s" % post_date_short)
         print("Writer: %s" % post_writer)
         
-        for i in w.find_elements(By.CLASS_NAME, 'se_mediaImage'):
+        for i in w.find_elements(parser.get_by('CLASS_NAME'), 'se_mediaImage'):
             if 'storep' not in i.get_attribute('src'):
                 img_list.append(str(i.get_attribute('src').split('?')[0]))
 
-        for i in w.find_elements(By.CLASS_NAME, 'img_attachedfile'):
+        for i in w.find_elements(parser.get_by('CLASS_NAME'), 'img_attachedfile'):
             if 'storep' not in i.get_attribute('src'):
                 img_list.append(str(i.get_attribute('src').split('?')[0]))
 
-        for i in w.find_elements(By.CLASS_NAME, 'se_card_exception_img'):
+        for i in w.find_elements(parser.get_by('CLASS_NAME'), 'se_card_exception_img'):
             if 'storep' not in i.get_attribute('src'):
                 img_list.append(str(i.get_attribute('src').split('?')[0]))
 
@@ -178,8 +169,3 @@ def get_data(hd):
     elif f"{hostname}/viewer/postView.naver" in hd:
         print("[bold green]Naver Post Page[/bold green]")
         naverpost_post(hd)
-        
-    # elif 'naver.me' in hd:
-    #     print("[bold green]Accessing Shortened URL[/bold green]")
-    #     r = requests.get(hd)
-    #     get_data(r.url)
