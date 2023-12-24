@@ -5,7 +5,7 @@
 ### krsite-dl
 | Version | Supported          |
 | ------- | ------------------ |
-| >=2022.12.12 | :white_check_mark: |
+| >=2022.12.25 | :white_check_mark: |
 
 
 ### python3
