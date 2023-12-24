@@ -1,21 +1,23 @@
 import requests
 import datetime
 
-from client.user_agent import InitUserAgent
-from common.data_structure import Site, ScrapperPayload
 from rich import print
 from pytz import timezone
-from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs, urlencode
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+from common.common_modules import SiteRequests, SiteParser
+from common.data_structure import Site, ScrapperPayload
+
 SITE_INFO = Site(hostname="topstarnews.net", name="Topstarnews", location="KR")
 
 def get_data(hd):
+    site_parser = SiteParser()
+    site_requests = SiteRequests()
+    
     def iterate_pages():
-        r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
-        soup = BeautifulSoup(r.text, 'html.parser')
+        soup = site_parser._parse(site_requests.session.get(hd).text)
 
         pagination = soup.find('ul', class_='pagination')
 
@@ -27,11 +29,11 @@ def get_data(hd):
         page = lambda: int(query_params.get('page')[0]) if query_params.get('page') else 1
         # start iterating
         while True:
-            print('Page %s' % page)
+            print(f"Page {page()}")
             query_params['page'] = [str(page)]
             new_query_string = urlencode(query_params, doseq=True)
             new_url = urlparse(base)._replace(query=new_query_string).geturl()
-            print(new_url)
+            # print(new_url)
             grab_post_urls(new_url)
             page += 1
 
@@ -41,8 +43,7 @@ def get_data(hd):
 
 
     def grab_post_urls(page_url):
-        r = requests.get(page_url, headers={'User-Agent': InitUserAgent().get_user_agent()})
-        soup = BeautifulSoup(r.text, 'html.parser')
+        soup = site_parser._parse(site_requests.session.get(hd).text)
 
         section = soup.find('section', class_='article-custom-list')
 
@@ -64,8 +65,7 @@ def get_data(hd):
         session.mount('http://', adapter)
         session.mount('https://', adapter)
         
-        r = session.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
-        soup = BeautifulSoup(r.text, 'html.parser')
+        soup = site_parser._parse(site_requests.session.get(hd).text)
 
         post_title = soup.find('meta', property='og:title')['content'].strip()
         post_dates = soup.find_all('meta', property='article:published_time')

@@ -1,14 +1,17 @@
+import krsite_dl as kr
 import os
 import re
+
 from down.download import DownloadHandler
 from common.data_structure import DownloadPayload
-from common.url_selector import select_url
-import krsite_dl as kr
+from common.logger import Logger
 
 class DirectoryHandler:
+    logger = Logger("directory_handler")
+
     def __init__(self):
         self.args = kr.args
-        self.reserved_pattern = r'[\\/:*?"<>|]' # windows reserved characters
+        self.reserved_pattern = r'[\\/:*?"<>|]' # windows reserved characters    
 
 
     # sanitize string to remove windows reserved characters
@@ -25,13 +28,10 @@ class DirectoryHandler:
     def _create_directory(self, directory_name, *subfolders):
         dirs = os.path.join(self.args.destination, directory_name, *subfolders)
         if not os.path.exists(dirs):
+            self.logger.log_warning(f"Directory not exists")
+            self.logger.log_info(f"Creating directory: {dirs}")
             os.makedirs(dirs)
         return dirs
-    
-
-    def _media_selector(self, img_list):
-        selected = select_url(img_list)
-        return selected
 
 
     # directory handling for press sites / blogs that have distinct topics
@@ -85,9 +85,6 @@ class DirectoryHandler:
         else:
             dirs = self._create_directory(directory_name)
 
-        if kr.args.select:
-            media_list = self._media_selector(media_list)
-
         download_payload = DownloadPayload(
             media=media_list,
             directory=dirs,
@@ -118,9 +115,6 @@ class DirectoryHandler:
             dirs = self._create_directory(directory_name, post_writer, series, f'{post_date_short} {title}')
         else:
             dirs = self._create_directory(directory_name, post_writer, f'{post_date_short} {title}')
-
-        if kr.args.select:
-            media_list = self._media_selector(media_list)
 
         download_payload = DownloadPayload(
             media=media_list,
