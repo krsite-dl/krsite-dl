@@ -1,17 +1,17 @@
-import requests
 import datetime
 import json
 import re
 
-from client.user_agent import InitUserAgent
+from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, ScrapperPayload
-from bs4 import BeautifulSoup
 
 SITE_INFO = Site(hostname="natalie.mu", name="Natalie 音楽ナタリー", location="JP")
 
 def get_data(hd):
-    r = requests.get(hd, headers={'User-Agent': InitUserAgent().get_user_agent()})
-    soup = BeautifulSoup(r.text, 'html.parser')
+    site_parser = SiteParser()
+    site_requests = SiteRequests()
+    soup = site_parser._parse(site_requests.session.get(hd).text)
+
 
     json_raw = soup.find('script', type='application/ld+json')
     json_data = re.sub(r'\\/', '/', bytes(json_raw.string, "utf=8").decode("unicode_escape"))

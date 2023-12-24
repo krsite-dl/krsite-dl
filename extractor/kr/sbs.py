@@ -1,15 +1,16 @@
-import requests
 import datetime
 import time
 import json
 
-from client.user_agent import InitUserAgent
-from common.data_structure import Site, ScrapperPayload
 from rich import print
+from common.common_modules import SiteRequests
+from common.data_structure import Site, ScrapperPayload
 
 SITE_INFO = Site(hostname="programs.sbs.co.kr", name="SBS Program", location="KR")
 
 def get_data(hd):
+    site_req = SiteRequests()
+
     board_no = hd.split('board_no=')[-1].split('&')[0]
     print(f"Board no: {board_no}")
 
@@ -37,7 +38,8 @@ def get_data(hd):
         '65179': ['sbspr_06'],
         '65180': ['sbspr_07'],  
         '65181': ['sbspr_08'],
-        '4295': ['sbssuperconcert_pt']
+        '4295': ['sbssuperconcert_pt'],
+        '80559': ['universeticket_pt']
     }
 
     code_temp = []
@@ -64,13 +66,13 @@ def get_data(hd):
             '_': token
         }
 
-        r = requests.get(api, params, headers={'User-Agent': InitUserAgent().get_user_agent()})
+        r = site_req.session.get(api, params=params)
         if 'err_code' not in r.text:
             break
 
     json_data = r.text
     json_data = json_data.split('boardViewCallback_%s(' % code)[1]
-    json_data = json_data.replace(');', '')
+    json_data = json_data.rstrip(');')
     json_data = json.loads(json_data)
     
     data = json_data['Response_Data_For_Detail']
@@ -79,17 +81,16 @@ def get_data(hd):
     post_date = datetime.datetime.strptime(post_date, '%Y-%m-%d %H:%M:%S')
     post_date_short = post_date.strftime('%y%m%d')
 
-    img_list = []
+    img_list = set()
 
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
 
     for i in data['URL']:
         if 'http' not in i:
-            img_list.append('http:' + str(i))
+            img_list.add('http:' + str(i))
         else:
-            img_list.append(str(i))
-    
+            img_list.add(str(i))
     
     print(f"Found {len(img_list)} image(s)")
 
