@@ -29,6 +29,7 @@ def get_data(hd):
         '70688': ['2021sbsgayo_pt1'],
         '70687': ['2021sbsgayo_pt2'],
         '76371': ['2022sbsgayo_pt'],
+        '80973': ['2023sbsgayo_pt'],
         '58358': ['theshow04_pt'],
         '65174': ['sbspr_01'],
         '65175': ['sbspr_02'],
@@ -39,7 +40,7 @@ def get_data(hd):
         '65180': ['sbspr_07'],  
         '65181': ['sbspr_08'],
         '4295': ['sbssuperconcert_pt'],
-        '80559': ['universeticket_pt']
+        '80559': ['universeticket_pt'],
     }
 
     code_temp = []
