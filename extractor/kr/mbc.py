@@ -1,32 +1,32 @@
 import datetime
 
-from common.common_modules import SeleniumParser
+from common.common_modules import SiteRequests
 from common.data_structure import Site, ScrapperPayload
 
 SITE_INFO = Site(hostname="mbc.co.kr", name="MBC", location="KR")
 
 def get_data(hd):
-    parser = SeleniumParser()
-
     def mbc_post(hd):
-        w = parser._requests(hd)
+        idx = hd.split('idx=')[-1].split('&')[0]
+        api = f'https://mbcinfo.imbc.com/api/photo/m_info?intIdx={idx}'
+        img_api = f'https://mbcinfo.imbc.com/api/download?file='
 
-        post_title = w.find_element(parser.get_by('TAG_NAME'), 'h2').text
-        post_date = w.find_element(parser.get_by('CLASS_NAME'), 'date').text
-        post_date_short = post_date.replace('/', '')[2:8]
-        date_a = post_date[:10]
-        date_b = post_date[-5:]
-        post_date = datetime.datetime.strptime(f"{date_a} {date_b}", '%Y/%m/%d %H:%M')
+        site_req = SiteRequests()
+        r = site_req.session.get(api)
+        json_data = r.json()
+
+        post_title = json_data['list'][0]['title']
+        post_date = json_data['list'][0]['reg_dt']
+        post_date = datetime.datetime.strptime(post_date, '%Y-%m-%d %H:%M')
+        post_date_short = post_date.strftime('%y%m%d')
 
         img_list = []
 
+        for i in json_data['list']:
+            img_list.append(f"{img_api}{i['photo_fullpath']}")
+
         print("Title: %s" % post_title)
         print("Date: %s" % post_date)
-
-        for i in w.find_element(parser.get_by('CLASS_NAME'), 'img_down').find_elements(parser.get_by('TAG_NAME'), 'a'):
-            img_list.append(i.get_attribute('href'))
-
-        w.quit()
 
         print("Found %s image(s)" % len(img_list))
         
