@@ -18,7 +18,7 @@
 | L'Officiel Korea | https://www.lofficielkorea.com/ | Post Page | Image |
 | L'Officiel Singapore | https://www.lofficielsingapore.com/ | Post Page | Image |
 | Marie Claire Korea | https://www.marieclairekorea.com/ | Post Page | Image |
-| MBC PR (MBC와 함께) | https://with.mbc.co.kr/m/pr/photo/view.html | Post Page | Image | Yes |
+| MBC PR (MBC와 함께) | https://with.mbc.co.kr/m/pr/photo/view.html | Post Page | Image |
 | Melon | https://www.melon.com/ | [Artist Page](https://www.melon.com/artist/photo.htm?artistId=3055146) | Image |
 | Nataliemu | https://nataliemu.com/ | Post Page | Image | 
 | Naver Posts (Naver 포스트) | https://post.naver.com/ | [Post Page](https://post.naver.com/viewer/postView.naver?volumeNo=35887849&memberNo=25831870), [Search Result](https://post.naver.com/search/authorPost.naver?keyword=%EC%95%84%EC%9D%B4%EB%B8%8C&memberNo=25831870), [Series List](https://post.naver.com/series.naver?memberNo=25831870), [Series Page](https://post.naver.com/my/series/detail.naver?seriesNo=671644&memberNo=25831870), [Main Page](https://post.naver.com/my.naver?memberNo=25831870&navigationType=push) | Image | Yes |
