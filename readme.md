@@ -36,6 +36,10 @@ User can add `krsite-dl.config` file to set default download path. The `krsite-d
 ### Basic Usage
 ```python3 krsite-dl [OPTIONS] URL [URL...]```
 
+`python3 krsite-dl https://example.com/1/`
+
+`python3 krsite-dl https://example.com/1/ https//example.com/2/`
+
 **Download by specifying the download path**
 
 Alternatively, you can specify the download path by default by using krsite-dl.config file.
@@ -60,6 +64,7 @@ Alternatively, you can specify the download path by default by using krsite-dl.c
 -ai                       Text file containing image urls
 -d                        The destination path for the downloaded file (unnecessary if you have `krsite-dl.config` unless you want to override the default download path)
 --no-windows-filenames    (default=False) krsite-dl will keep the original filenames of the images. This includes filenames that are not allowed in Windows OS.
+-s                        Select which images to download from the list of images gathered from each url. You probably not wanna use this if you're downloading multiple site URLs at once cause it will prompt you for each url.
 ```
 
 ## Issues
@@ -78,7 +83,7 @@ A: The download speed is limited by the site itself and your internet connection
 A: Yes, you can set a default download path by editing the config.ini file. The config.ini file is located in the same directory as the krsite-dl file. You can also set the default download path by using the -d option.
 
 #### Q: Can I download images from multiple sites at once?
-A: Yes, you can download images from multiple sites at once by using the -a option. The -a option takes in a text file containing site urls. Each line in the text file should contain a site url. You can also use the -ai option to download images from multiple sites at once (But this isn't working right now). The -ai option takes in a text file containing image urls. Each line in the text file should contain an image url.
+A: Yes, you can download images from multiple sites at once just by entering sites you want to download in one single command. Alternatively you can use the `-a` option if you wanna provide a text file containing site urls. 
 
 #### Q: Can I download images from a site that is not listed above?
 A: No, you can make request for the site to be supported. Make an issues and then feature request.
