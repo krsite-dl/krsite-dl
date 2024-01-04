@@ -1,4 +1,5 @@
 import requests
+import time
 
 from bs4 import BeautifulSoup
 from client.user import User
@@ -23,8 +24,24 @@ class SiteRequests:
              'Connection': 'keep-alive'})
 
 
-    def get(self, url):
-        self.session.get(url, verify=self.certificate)
+    def get(self, url, retries=5, **kwargs):
+        self.retries = retries
+        exceptions = requests.exceptions
+        logger = Logger()
+        tries = 1
+
+        while True:
+            try:
+                self.session.request(url, verify=self.certificate, **kwargs)
+            except (exceptions.ConnectionError, exceptions.Timeout, exceptions.HTTPError) as e:
+                logger.info(f"{type(e).__name__}. Retrying... ({tries}/{self.retries})")
+                time.sleep(5)
+            finally:
+                tries += 1
+                if tries > self.retries:
+                    logger.info(f"Maximum retries exceeded. Skipping...")
+                    break
+                
         
 
 class SiteParser:
