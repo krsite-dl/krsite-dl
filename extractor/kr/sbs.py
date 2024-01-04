@@ -1,6 +1,7 @@
 import datetime
 import time
 import json
+import re
 
 from rich import print
 from common.common_modules import SiteRequests
@@ -10,52 +11,45 @@ SITE_INFO = Site(hostname="programs.sbs.co.kr", name="SBS Program", location="KR
 
 def get_data(hd):
     site_req = SiteRequests()
-
     board_no = hd.split('board_no=')[-1].split('&')[0]
+    parent_name = re.search(r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){1}/([^/?]+)', hd).group(3)
+    vis_board_no = re.search(r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){3}/([^/?]+)', hd).group(3)
     print(f"Board no: {board_no}")
 
-    code = ''
+    menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/menu/"
 
-    # ADD MORE KEY AND VALUE HERE
-    code_dict = {
-        '69423': ['runningman_photo'],
-        '65942': ['pdnote_hotissue', 'inkigayo_pt01'],
-        '54795': ['inkigayo_pt01'],
-        '68458': ['inkigayo_pt02'],
-        '71199': ['inkigayo_pt03'],
-        '71279': ['inkigayo_pt04'],
-        '71656': ['inkigayo_pt05'],
-        '76748': ['inkigayo_pt06'],
-        '70688': ['2021sbsgayo_pt1'],
-        '70687': ['2021sbsgayo_pt2'],
-        '76371': ['2022sbsgayo_pt'],
-        '80973': ['2023sbsgayo_pt'],
-        '58358': ['theshow04_pt'],
-        '65174': ['sbspr_01'],
-        '65175': ['sbspr_02'],
-        '65176': ['sbspr_03'],
-        '65177': ['sbspr_04'],
-        '65178': ['sbspr_05'],
-        '65179': ['sbspr_06'],
-        '65180': ['sbspr_07'],  
-        '65181': ['sbspr_08'],
-        '4295': ['sbssuperconcert_pt'],
-        '80559': ['universeticket_pt'],
-    }
+    menu_r = site_req.session.get(menu_api + parent_name).json()['menus']
 
-    code_temp = []
+    all_board = []
+    for menu in menu_r:
+        if menu['board_code'] is not None:
+            menu_id = menu['mnuid']
+            board_code = menu['board_code'].split(',')
+            all_board.append({menu_id: board_code})
+            if menu['submenus']:
+                for submenu in menu['submenus']:
+                    if submenu['board_code'] is not None:
+                        menu_id = submenu['mnuid']
+                        board_code = submenu['board_code'].split(',')
+                        all_board.append({menu_id: board_code})
 
-    for key, value in code_dict.items():
-        if key in hd:
-            code_temp.extend(value)
+    code_temp = [] 
+
+    for i in all_board:
+        for key, value in i.items():
+            if key == vis_board_no:
+                for j in value:
+                    code_temp.append(j.strip())
 
     ###########TOKEN############
     current_milli_time = int(round(time.time() * 1000))
     token = str(current_milli_time)
     ############################
 
+    code = ''
+
     for i in code_temp:
-        print(f"[green]Code:[/green] {i}")
+        # print(f"[green]Code:[/green] {i}")
         code = i
         api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/{board_no}"
 
@@ -66,8 +60,9 @@ def get_data(hd):
             'jwt-token': '',
             '_': token
         }
-
+    
         r = site_req.session.get(api, params=params)
+
         if 'err_code' not in r.text:
             break
 
