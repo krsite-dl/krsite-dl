@@ -1,8 +1,8 @@
 import datetime
 import time
+import re
 
 from rich import print
-from urllib.parse import urlparse
 from selenium.common.exceptions import NoSuchElementException
 
 from common.common_modules import SeleniumParser
@@ -10,9 +10,14 @@ from common.data_structure import Site, ScrapperPayload
 
 SITE_INFO = Site(hostname="post.naver.com", name="Naver Post", location="KR")
 
-def get_data(hd):
-    hostname = urlparse(hd).hostname
 
+def get_data(hd):
+    BASE = r"(?:https?://)?(?:m\.)?(post\.naver\.com)"
+    pattern = BASE + r"(/my.)?(?:naver|nhn)"
+    pattern2 = BASE + r"(/search/authorPost.)?(?:naver|nhn)"
+    pattern3 = BASE + r"(/series.)?(?:naver|nhn)"
+    pattern4 = BASE + r"(/my/series/detail.)?(?:naver|nhn)"
+    pattern5 = BASE + r"(/viewer/postView.)?(?:naver|nhn)"
 
     def naverpost_search(hd):
         parser = SeleniumParser()
@@ -148,24 +153,24 @@ def get_data(hd):
         from down.directory import DirectoryHandler
 
         DirectoryHandler().handle_directory_naver(payload)
-
+    
         
-    if f"{hostname}/my.naver" in hd:
+    if re.search(pattern, hd):
         print("[bold green]Naver Post Main Page[/bold green]")
         naverpost_search(hd)
 
-    elif f"{hostname}/search/authorPost.naver" in hd:
+    elif re.search(pattern2, hd):
         print("[bold green]Naver Post Search Result[/bold green]")
         naverpost_search(hd)
 
-    elif f"{hostname}/series.naver" in hd:
+    elif re.search(pattern3, hd):
         print("[bold green]Naver Post Series Page[/bold green]")
         naverpost_series(hd)
 
-    elif f"{hostname}/my/series/detail.naver" in hd:
+    elif re.search(pattern4, hd):
         print("[bold green]Naver Post Series List[/bold green]")
         naverpost_list(hd)
 
-    elif f"{hostname}/viewer/postView.naver" in hd:
+    elif re.search(pattern5, hd):
         print("[bold green]Naver Post Page[/bold green]")
         naverpost_post(hd)
