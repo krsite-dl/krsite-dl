@@ -50,7 +50,7 @@ class SiteParser:
         self.soup = None
 
     
-    def _parse_html(self, html_cont):
+    def _parse(self, html_cont):
         return BeautifulSoup(html_cont, 'html.parser')
     
 
