@@ -2,6 +2,7 @@ import requests
 import time
 
 from bs4 import BeautifulSoup
+from lxml import html
 from client.user import User
 from common.logger import Logger
 
@@ -49,8 +50,8 @@ class SiteParser:
         self.soup = None
 
     
-    def _parse(self, html):
-        return BeautifulSoup(html, 'html.parser')
+    def _parse_html(self, html_cont):
+        return BeautifulSoup(html_cont, 'html.parser')
     
 
 class SeleniumParser:
