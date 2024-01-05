@@ -2,7 +2,6 @@ import requests
 import time
 
 from bs4 import BeautifulSoup
-from lxml import html
 from client.user import User
 from common.logger import Logger
 
