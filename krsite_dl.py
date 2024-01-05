@@ -3,7 +3,6 @@ import configparser
 import sys
 from rich import print
 from urllib.parse import urlparse
-from extractor import direct
 from common.logger import Logger
 import lazy_import  
 

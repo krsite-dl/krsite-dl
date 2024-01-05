@@ -49,8 +49,8 @@ class SiteParser:
         self.soup = None
 
     
-    def _parse(self, html):
-        return BeautifulSoup(html, 'html.parser')
+    def _parse(self, html_cont):
+        return BeautifulSoup(html_cont, 'html.parser')
     
 
 class SeleniumParser:
