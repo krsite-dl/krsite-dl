@@ -6,7 +6,7 @@ from rich import print
 from selenium.common.exceptions import NoSuchElementException
 
 from common.common_modules import SeleniumParser
-from common.data_structure import Site, ScrapperPayload
+from common.data_structure import Site, DataPayload
 
 SITE_INFO = Site(hostname="post.naver.com", name="Naver Post", location="KR")
 
@@ -139,20 +139,18 @@ def get_data(hd):
 
         print("Found %s image(s)" % len(img_list))
 
-        payload = ScrapperPayload(
-            title=post_title,
-            shortDate=post_date_short,
-            mediaDate=post_date,
-            site=SITE_INFO.name,
-            series=post_series,
-            writer=post_writer,
-            location=SITE_INFO.location,
+
+        dir = [SITE_INFO.name, post_writer, post_series, f"{post_date_short} {post_title}"]
+
+        payload = DataPayload(
+            directory_format=dir,
             media=img_list,
+            option='naverpost',
         )
 
         from down.directory import DirectoryHandler
 
-        DirectoryHandler().handle_directory_naver(payload)
+        DirectoryHandler().handle_directory(payload)
     
         
     if re.search(pattern, hd):

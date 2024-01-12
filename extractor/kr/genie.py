@@ -4,7 +4,7 @@ import re
 from rich import print
 from urllib.parse import urlparse
 from common.common_modules import SiteRequests, SiteParser
-from common.data_structure import Site, ScrapperPayload
+from common.data_structure import Site, DataPayload
 
 SITE_INFO = Site(hostname="genie.co.kr", name="Genie", location="KR")
 
@@ -28,7 +28,7 @@ def get_data(hd):
             magazine_list.append([magazine_date, magazine_title, f"https://{hostname}{li.find('a')['href']}"])
 
 
-        print("Artist: %s" % soup.find('meta', property='og:title')['content'].strip().replace(' - genie', ''))
+        print("Artist: %s" % soup.find('meta', property='og:title')['content'].strip().strip(' - genie'))
         print("Found %s magazine(s)" % len(magazine_list))
 
         for i in magazine_list:
@@ -42,27 +42,24 @@ def get_data(hd):
 
         magazine_view = soup.find('div', class_='magazine-view')
 
-        image_list = []
+        img_list = []
         for image in magazine_view.find_all('img'):
             image = re.sub(r'(?<=.jpg).*$', '', image['src'])
-            image_list.append(f"https:{image}")
+            img_list.append(f"https:{image}")
         
         mag_date = datetime.datetime.strptime(mag_date, '%Y.%m.%d')
         mag_date_short = mag_date.strftime('%y%m%d')
 
         print("Title: %s" % mag_title)
         print("Date: %s" % mag_date)
-        print("Found %s image(s)" % len(image_list))
+        print("Found %s image(s)" % len(img_list))
 
-        payload = ScrapperPayload(
-            title=mag_title,
-            shortDate=mag_date_short,
-            mediaDate=mag_date,
-            site=SITE_INFO.name,
-            series=None,
-            writer=None,
-            location=SITE_INFO.location,
-            media=image_list,
+        dir = [SITE_INFO.name, f"{mag_date_short} {mag_title}"]
+
+        payload = DataPayload(
+            directory_format=dir,
+            media=img_list,
+            option=None,
         )
         from down.directory import DirectoryHandler
 

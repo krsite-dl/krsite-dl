@@ -3,7 +3,7 @@ import json
 import re
 
 from common.common_modules import SiteRequests, SiteParser
-from common.data_structure import Site, ScrapperPayload
+from common.data_structure import Site, DataPayload
 
 SITE_INFO = Site(hostname="natalie.mu", name="Natalie 音楽ナタリー", location="JP")
 
@@ -32,15 +32,12 @@ def get_data(hd):
     for item in content.findAll('img'):
         img_list.append(item['data-src'].split('?')[0])
 
-    payload = ScrapperPayload(
-        title=post_title,
-        shortDate=post_date_short,
-        mediaDate=post_date,
-        site=SITE_INFO.name,
-        series=None,
-        writer=None,
-        location=SITE_INFO.location,
+    dir = [SITE_INFO.name, f"{post_date_short} {post_title}"]
+
+    payload = DataPayload(
+        directory_format=dir,
         media=img_list,
+        option=None,
     )
     
     from down.directory import DirectoryHandler
