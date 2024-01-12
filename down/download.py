@@ -136,14 +136,14 @@ class DownloadHandler():
         return None  # Return None if maximum retries exceeded
 
     
-    def _download_logic(self, medialist, dirs, post_date, loc, option=None):
+    def _download_logic(self, medialist, dirs, option=None):
         for url in medialist:
             # get url and separate the filename as a new variable
             base, ext = self._get_filename(url)
             filename = self._encode_kr(base)
             ext = self._extension_to_mime(ext)
             
-            if option == "naver":
+            if option == "naverpost":
                 if filename in self.duplicate_counts:
                     self.duplicate_counts[filename] += 1
                     filename = f"{filename} ({self.duplicate_counts[filename]})"
@@ -227,57 +227,18 @@ class DownloadHandler():
                     timestamp = int(dt.timestamp())
                     os.utime(file_real, (timestamp, timestamp))
                     os.utime(dirs, (timestamp, timestamp))
-                else:
-                    utc = pytz.timezone(self._location(loc))
-                    dt = post_date
-                    dt = utc.localize(dt)
-                    timestamp = int(dt.timestamp())
-                    os.utime(file_real, (timestamp, timestamp))
-                    os.utime(dirs, (timestamp, timestamp))
                 continue
 
-
+    
     def downloader(self, payload):
-        medialist, dirs, post_date, loc = (
+        medialist, dirs, option = (
             payload.media,
             payload.directory,
-            payload.date,
-            payload.location,
-        )
-
-        if kr.args.select:
-            medialist = self._media_selector(medialist)
-        
-        self._download_logic(medialist, dirs, post_date, loc)
-        self.session.close()
-
-        
-    def downloader_naver(self, payload):
-        medialist, dirs, post_date, loc = (
-            payload.media,
-            payload.directory,
-            payload.date,
-            payload.location,
+            payload.option,
         )
 
         if kr.args.select:
             medialist = self._media_selector(medialist)
 
-        self._download_logic(medialist, dirs, post_date, loc, option="naver")
-        self.session.close()
-
-
-    def downloader_combine(self, payload):
-        medialist, dirs, post_date, post_date_short, loc = (
-            payload.media,
-            payload.directory,
-            payload.date,
-            payload.shortDate,
-            payload.location,
-        )
-
-        if kr.args.select:
-            medialist = self._media_selector(medialist)
-        
-        self._download_logic(medialist, dirs, post_date, loc, option="combine")
+        self._download_logic(medialist, dirs, option=option)
         self.session.close()
