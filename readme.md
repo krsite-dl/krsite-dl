@@ -61,7 +61,6 @@ Alternatively, you can specify the download path by default by using krsite-dl.c
 ## Options
 ```
 -a                        Text file containing site urls
--ai                       Text file containing image urls
 -d                        The destination path for the downloaded file (unnecessary if you have `krsite-dl.config` unless you want to override the default download path)
 --no-windows-filenames    (default=False) krsite-dl will keep the original filenames of the images. This includes filenames that are not allowed in Windows OS.
 -s                        Select which images to download from the list of images gathered from each url. You probably not wanna use this if you're downloading multiple site URLs at once cause it will prompt you for each url.
