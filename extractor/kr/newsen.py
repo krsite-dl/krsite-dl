@@ -1,25 +1,21 @@
 import datetime
 
-from common.data_structure import Site, ScrapperPayload
-from selenium import webdriver as wd
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+from common.data_structure import Site, DataPayload
+from common.common_modules import SeleniumParser
 
 SITE_INFO = Site(hostname="newsen.com", name="Newsen", location="KR")
 
 def get_data(hd):
-    opt = Options()
-    opt.add_argument('--headless')
-    w = wd.Chrome(options=opt)
-    w.get(hd)
+    parser = SeleniumParser()
+    w = parser._requests(hd)
 
-    post_title = w.find_element(By.XPATH, '//meta[@property="og:title"]').get_attribute('content').strip()
-    post_date = w.find_element(By.XPATH, '//meta[@property="article:published_time"]').get_attribute('content').strip()
+    post_title = w.find_element(parser.get_by('XPATH'), '//meta[@property="og:title"]').get_attribute('content').strip()
+    post_date = w.find_element(parser.get_by('XPATH'), '//meta[@property="article:published_time"]').get_attribute('content').strip()
     post_date = datetime.datetime.strptime(post_date, '%Y-%m-%d %H:%M:%S')
     post_date_short = post_date.strftime('%y%m%d')
 
-    content = w.find_element(By.CLASS_NAME, 'article')
-    img_elements = content.find_elements(By.TAG_NAME, 'img')
+    content = w.find_element(parser.get_by('CLASS_NAME'), 'article')
+    img_elements = content.find_elements(parser.get_by('TAG_NAME'), 'img')
 
     img_list = []
 
@@ -33,15 +29,12 @@ def get_data(hd):
     print("Date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
 
-    payload = ScrapperPayload(
-        title=post_title,
-        shortDate=post_date_short,
-        mediaDate=post_date,
-        site=SITE_INFO.name,
-        series=None,
-        writer=None,
-        location=SITE_INFO.location,
+    dir = [SITE_INFO.name, f"{post_date_short} {post_title}"]
+
+    payload = DataPayload(
+        directory_format=dir,
         media=img_list,
+        option=None,
     )
 
     from down.directory import DirectoryHandler

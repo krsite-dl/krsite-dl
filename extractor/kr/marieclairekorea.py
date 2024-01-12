@@ -2,7 +2,7 @@ import datetime
 
 from pytz import timezone
 from common.common_modules import SiteRequests, SiteParser
-from common.data_structure import Site, ScrapperPayload
+from common.data_structure import Site, DataPayload
 
 SITE_INFO = Site(hostname="marieclairekorea.com", name="Marie Claire Korea", location="KR")
 
@@ -29,15 +29,12 @@ def get_data(hd):
     print("Date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
 
-    payload = ScrapperPayload(
-        title=post_title,
-        shortDate=post_date_short,
-        mediaDate=post_date,
-        site=SITE_INFO.name,
-        series=None,
-        writer=None,
-        location=SITE_INFO.location,
+    dir = [SITE_INFO.name, f"{post_date_short} {post_title}"]
+
+    payload = DataPayload(
+        directory_format=dir,
         media=img_list,
+        option=None,
     )
 
     from down.directory import DirectoryHandler

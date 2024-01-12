@@ -5,7 +5,7 @@ import re
 
 from rich import print
 from common.common_modules import SiteRequests
-from common.data_structure import Site, ScrapperPayload
+from common.data_structure import Site, DataPayload
 
 SITE_INFO = Site(hostname="programs.sbs.co.kr", name="SBS Program", location="KR")
 
@@ -18,10 +18,12 @@ def get_data(hd):
 
     menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/menu/"
 
-    menu_r = site_req.session.get(menu_api + parent_name).json()['menus']
+    menu_r = site_req.session.get(menu_api + parent_name).json()
+
+    category = menu_r['program']['title']
 
     all_board = []
-    for menu in menu_r:
+    for menu in menu_r['menus']:
         if menu['board_code'] is not None:
             menu_id = menu['mnuid']
             board_code = menu['board_code'].split(',')
@@ -90,15 +92,14 @@ def get_data(hd):
     
     print(f"Found {len(img_list)} image(s)")
 
-    payload = ScrapperPayload(
-        title=post_title,
-        shortDate=post_date_short,
-        mediaDate=post_date,
-        site=SITE_INFO.name,
-        series=None,
-        writer=None,
-        location=SITE_INFO.location,
+
+    
+    dir = [SITE_INFO.name, category, f"{post_date_short} {post_title}"]
+
+    payload = DataPayload(
+        directory_format=dir,
         media=img_list,
+        option=None,
     )
     
     from down.directory import DirectoryHandler

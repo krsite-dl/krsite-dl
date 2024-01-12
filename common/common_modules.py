@@ -42,7 +42,6 @@ class SiteRequests:
                     logger.info(f"Maximum retries exceeded. Skipping...")
                     break
                 
-        
 
 class SiteParser:
     def __init__(self):
@@ -52,6 +51,10 @@ class SiteParser:
     def _parse(self, html_cont):
         return BeautifulSoup(html_cont, 'html.parser')
     
+
+    def _parse_lxml(self, html_cont):
+        return BeautifulSoup(html_cont, 'lxml')
+
 
 class SeleniumParser:
     webdriver_options = Options()
