@@ -1,7 +1,7 @@
 import datetime
 
 from common.common_modules import SiteRequests, SiteParser
-from common.data_structure import Site, ScrapperPayload
+from common.data_structure import Site, DataPayload
 
 SITE_INFO = Site(hostname=["osen.mt.co.kr", "osen.co.kr"], name="OSEN", location="KR")
 
@@ -27,17 +27,14 @@ def get_data(hd):
     print("Post date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
     
-    payload = ScrapperPayload(
-        title=post_title,
-        shortDate=post_date_short,
-        mediaDate=post_date,
-        site=SITE_INFO.name,
-        series=None,
-        writer=None,
-        location=SITE_INFO.location,
+    dir = [SITE_INFO.name, post_date_short]
+
+    payload = DataPayload(
+        directory_format=dir,
         media=img_list,
+        option='combine',
     )
 
     from down.directory import DirectoryHandler
 
-    DirectoryHandler().handle_directory_combine(payload)
+    DirectoryHandler().handle_directory(payload)
