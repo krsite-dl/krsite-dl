@@ -17,7 +17,7 @@ else:
 parser = argparse.ArgumentParser()
 parser.add_argument("url", nargs='*',type=str, help="valid news/blog url")
 parser.add_argument("-a", type=str, help="text file containing site urls")
-parser.add_argument("-ai", type=str, help="text file containing image urls")
+# parser.add_argument("-ai", type=str, help="text file containing image urls")
 parser.add_argument("--no-windows-filenames", action="store_true", help="(default=False) krsite-dl will keep the original filenames of the images. This includes filenames that are not allowed in Windows OS.")
 parser.add_argument("-d", "--destination", default=destination_dir, type=str, help="The destination path for the downloaded file (unnecessary if you have `krsite-dl.config` unless you want to override the default download path)")
 parser.add_argument("-s", "--select", action="store_true", default=False, help="Select which images to download from the list of images gathered from each url. You probably not wanna use this if you're downloading multiple site URLs at once cause it will prompt you for each url.")
@@ -62,24 +62,24 @@ def main():
         print("KeyboardInterrupt detected. Exiting gracefully.")
         sys.exit(0)
 
-    if args.ai:
-        print("*Direct image url mode")
-        with open(args.ai, 'r') as f:
-            for line in f:
-                if line[0] == '#' or line[0] == ';' or line[0] == ']':
-                    continue
-                elif line != '\n':
-                    try:
-                        direct.from_direct(line)
-                    except FileNotFoundError:
-                        logger.log_warning("File not found: %s" % args.ai)
-                    except IndexError as e:
-                        logger.log_error("Index Error: %s" % e)
-                        print("Index Error: %s" % e)
-                    except KeyboardInterrupt:
-                        logger.log_warning("KeyboardInterrupt detected. Exiting gracefully.")
-                        sys.exit(0)
-    elif args.a or args.url:
+    # if args.ai:
+    #     print("*Direct image url mode")
+    #     with open(args.ai, 'r') as f:
+    #         for line in f:
+    #             if line[0] == '#' or line[0] == ';' or line[0] == ']':
+    #                 continue
+    #             elif line != '\n':
+    #                 try:
+    #                     direct.from_direct(line)
+    #                 except FileNotFoundError:
+    #                     logger.log_warning("File not found: %s" % args.ai)
+    #                 except IndexError as e:
+    #                     logger.log_error("Index Error: %s" % e)
+    #                     print("Index Error: %s" % e)
+    #                 except KeyboardInterrupt:
+    #                     logger.log_warning("KeyboardInterrupt detected. Exiting gracefully.")
+    #                     sys.exit(0)
+    if args.a or args.url:
         try:
             for url in args.url:
                 check_site(url)
@@ -91,8 +91,6 @@ def main():
             print("Index Error: %s" % e)
         except KeyboardInterrupt:
             logger.log_warning("KeyboardInterrupt detected. Exiting gracefully.")
-            # print("\r", end="")
-            # print("KeyboardInterrupt detected. Exiting gracefully.")
             sys.exit(0)
 
 
