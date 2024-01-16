@@ -1,0 +1,2 @@
+- name: Traffic to Badge
+  uses: yi-Xu-0100/traffic-to-badge@v1.4.0
