@@ -8,7 +8,7 @@ from selenium.common.exceptions import NoSuchElementException
 from common.common_modules import SeleniumParser
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="post.naver.com", name="Naver Post", location="KR")
+SITE_INFO = Site(hostname="post.naver.com", name="Naver Post")
 
 
 def get_data(hd):

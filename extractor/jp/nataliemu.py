@@ -5,7 +5,7 @@ import re
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="natalie.mu", name="Natalie 音楽ナタリー", location="JP")
+SITE_INFO = Site(hostname="natalie.mu", name="Natalie 音楽ナタリー")
 
 def get_data(hd):
     site_parser = SiteParser()

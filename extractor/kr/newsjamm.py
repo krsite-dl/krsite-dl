@@ -3,7 +3,7 @@ import datetime
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="newsjamm.co.kr", name="Newsjamm", location="KR")
+SITE_INFO = Site(hostname="newsjamm.co.kr", name="Newsjamm")
 
 def get_data(hd):
     site_parser = SiteParser()

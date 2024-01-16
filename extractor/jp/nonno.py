@@ -7,7 +7,7 @@ from urllib.parse import urlparse, urlunparse
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="nonno.hpplus.jp", name="Non-no", location="JP")
+SITE_INFO = Site(hostname="nonno.hpplus.jp", name="Non-no")
 
 def get_data(hd):
     site_parser = SiteParser()

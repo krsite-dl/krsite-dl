@@ -3,7 +3,7 @@ import datetime
 from common.common_modules import SiteRequests
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="mbc.co.kr", name="MBC", location="KR")
+SITE_INFO = Site(hostname="mbc.co.kr", name="MBC")
 
 def get_data(hd):
     idx = hd.split('idx=')[-1].split('&')[0]

@@ -4,7 +4,7 @@ from pytz import timezone
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="sportsw.kr", name="SportsW", location="KR")
+SITE_INFO = Site(hostname="sportsw.kr", name="SportsW")
 
 def get_data(hd):
     site_parser = SiteParser()

@@ -6,7 +6,7 @@ from pytz import timezone
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="vivi.tv", name="Vivi", location="JP")
+SITE_INFO = Site(hostname="vivi.tv", name="Vivi")
 
 def get_data(hd):
     site_parser = SiteParser()

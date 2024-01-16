@@ -3,7 +3,7 @@ import datetime
 from common.data_structure import Site, DataPayload
 from common.common_modules import SeleniumParser
 
-SITE_INFO = Site(hostname="newsen.com", name="Newsen", location="KR")
+SITE_INFO = Site(hostname="newsen.com", name="Newsen")
 
 def get_data(hd):
     parser = SeleniumParser()

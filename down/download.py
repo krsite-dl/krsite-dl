@@ -2,7 +2,6 @@ import requests
 import os
 import re
 import time
-import pytz
 import email.utils
 
 from datetime import timezone
@@ -34,16 +33,6 @@ class DownloadHandler():
         if not self.args.no_windows_filenames:
             string = re.sub(self.reserved_pattern, '', string)
         return string
-    
-
-    # location list for timezone
-    def _location(self, loc):
-        # list country codes here as json so i can call them by matching its keys
-        country_codes = {
-            "KR": "Asia/Seoul", "JP": "Asia/Tokyo", "SG": "Asia/Singapore"
-        }
-
-        return country_codes.get(loc, "UTC")
         
 
     # korean filename encoder
@@ -101,14 +90,10 @@ class DownloadHandler():
 
     def _extension_to_mime(self, ext):
         extensions = {
-            '.jpg' or '.jpeg': '.jpg',
-            '.JPG' or '.JPEG': '.jpg',
-            '.png': '.png',
-            '.PNG': '.png',
-            '.gif': '.gif',
-            '.GIF': '.gif',
-            '.webp': '.webp',
-            '.WEBP': '.webp',
+            '.jpg' or '.jpeg' or '.JPG' or '.JPEG': '.jpg',
+            '.png' or '.PNG': '.png',
+            '.gif' or '.GIF': '.gif',
+            '.webp' or '.WEBP': '.webp',
         }
         return extensions.get(ext, '.jpg')
 
