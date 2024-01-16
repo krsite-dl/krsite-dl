@@ -55,26 +55,30 @@ User can add `krsite-dl.conf` file to set default download path. You can put the
 ### Basic Usage
 ```python3 krsite_dl.py [-h] [-c CONFIG] [-a A] [-d DESTINATION] [-s] [--no-windows-filenames] [url ...]```
 
-`python3 krsite-dl https://example.com/1/`
+`python3 krsite-dl.py https://example.com/1/`
 
-`python3 krsite-dl https://example.com/1/ https//example.com/2/`
+`python3 krsite-dl.py https://example.com/1/ https//example.com/2/`
 
 **Download by specifying the download path**
 
 Alternatively, you can specify the download path by default by using krsite-dl.config file.
 
-```python3 krsite-dl https://example.com -d ~/Pictures/```
+```python3 krsite-dl.py https://example.com -d ~/Pictures/```
+
+**Download by specifying the config path**
+
+```python3 krsite-dl.py -c ~/krsite-dl.conf https://example.com```
 
 
 **Downloading from multiple sites in a text file**
 
-```python3 krsite-dl -a ~/Pictures/list.txt -d ~/Pictures```
+```python3 krsite-dl.py -a ~/Pictures/list.txt -d ~/Pictures```
 
 ### Selecting an image to download
 
 **This will prompt you a list of images to download**
 
-```python3 krsite-dl https://example.com -s```
+```python3 krsite-dl.py https://example.com -s```
 
 
 ## Options
