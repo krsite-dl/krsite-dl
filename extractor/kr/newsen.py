@@ -1,16 +1,23 @@
+"""Extractor for https://newsen.com"""
+
 import datetime
 
 from common.data_structure import Site, DataPayload
 from common.common_modules import SeleniumParser
+from down.directory import DirectoryHandler
 
-SITE_INFO = Site(hostname="newsen.com", name="Newsen", location="KR")
+SITE_INFO = Site(hostname="newsen.com", name="Newsen")
+
 
 def get_data(hd):
+    """Get data"""
     parser = SeleniumParser()
     w = parser._requests(hd)
 
-    post_title = w.find_element(parser.get_by('XPATH'), '//meta[@property="og:title"]').get_attribute('content').strip()
-    post_date = w.find_element(parser.get_by('XPATH'), '//meta[@property="article:published_time"]').get_attribute('content').strip()
+    post_title = w.find_element(parser.get_by(
+        'XPATH'), '//meta[@property="og:title"]').get_attribute('content').strip()
+    post_date = w.find_element(parser.get_by(
+        'XPATH'), '//meta[@property="article:published_time"]').get_attribute('content').strip()
     post_date = datetime.datetime.strptime(post_date, '%Y-%m-%d %H:%M:%S')
     post_date_short = post_date.strftime('%y%m%d')
 
@@ -21,13 +28,14 @@ def get_data(hd):
 
     for img_element in img_elements:
         if not 'button' in img_element.get_attribute('src'):
-            img_list.append(img_element.get_attribute('src').replace('https', 'http'))
+            img_list.append(img_element.get_attribute(
+                'src').replace('https', 'http'))
 
     w.quit()
 
-    print("Title: %s" % post_title)
-    print("Date: %s" % post_date)
-    print("Found %s image(s)" % len(img_list))
+    print(f"Title: {post_title}")
+    print(f"Date: {post_date}")
+    print(f"Found {len(img_list)} image(s)")
 
     dir = [SITE_INFO.name, f"{post_date_short} {post_title}"]
 
@@ -36,7 +44,5 @@ def get_data(hd):
         media=img_list,
         option=None,
     )
-
-    from down.directory import DirectoryHandler
 
     DirectoryHandler().handle_directory(payload)

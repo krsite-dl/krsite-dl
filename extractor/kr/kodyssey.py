@@ -1,16 +1,20 @@
+"""Extractor for https://k-odyssey.com"""
+
 import datetime
 import re
 
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
+from down.directory import DirectoryHandler
 
-SITE_INFO = Site(hostname="k-odyssey.com", name="K-odyssey", location="KR")
+SITE_INFO = Site(hostname="k-odyssey.com", name="K-odyssey")
+
 
 def get_data(hd):
+    """Get data"""
     site_parser = SiteParser()
     site_requests = SiteRequests()
     soup = site_parser._parse(site_requests.session.get(hd).text)
-
 
     img_list = []
 
@@ -20,16 +24,16 @@ def get_data(hd):
     content = soup.find('div', class_='sliderkit-panels')
 
     for i in content.find_all('img'):
-        img_list.append('https://k-odyssey.com' + i['src'].replace('_thum', ''))
-
+        img_list.append('https://k-odyssey.com' +
+                        i['src'].replace('_thum', ''))
 
     post_date = re.sub('[\u3131-\uD7A3]+|\/|-|\s+', '', post_date)
     post_date = post_date[:8] + ' ' + post_date[8:]
     post_date = datetime.datetime.strptime(post_date, '%Y%m%d %H:%M:%S')
 
-    print("Title: %s" % post_title)
-    print("Date: %s" % post_date_short)
-    print("Found %s image(s)" % len(img_list))
+    print(f"Title: {post_title}")
+    print(f"Date: {post_date}")
+    print(f"Found {len(img_list)} image(s)")
 
     dir = [SITE_INFO.name, post_date_short, post_title]
 
@@ -39,6 +43,4 @@ def get_data(hd):
         option=None,
     )
 
-    from down.directory import DirectoryHandler
-
-    DirectoryHandler().handle_directory_alternate(payload)
+    DirectoryHandler().handle_directory(payload)

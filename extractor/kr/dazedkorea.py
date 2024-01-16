@@ -1,15 +1,18 @@
+"""Extractor for https://dazedkorea.com"""
+
 import datetime
 
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
+from down.directory import DirectoryHandler
 
-SITE_INFO = Site(hostname="dazedkorea.com", name="Dazed Korea", location="KR")
+SITE_INFO = Site(hostname="dazedkorea.com", name="Dazed Korea")
+
 
 def get_data(hd):
     site_parser = SiteParser()
     site_requests = SiteRequests()
     soup = site_parser._parse(site_requests.session.get(hd).text)
-
 
     post_title = soup.find('h1', class_='title').text.strip()
     post_summary = soup.find('h2', class_='summary').text.strip()
@@ -20,14 +23,14 @@ def get_data(hd):
     content = soup.find('div', class_='article-body')
 
     img_list = []
-    
+
     for item in content.findAll('img'):
         img_list.append('http://dazedkorea.com' + item.get('src'))
 
-    print("Title: %s" % post_title)
-    print("Summary: %s" % post_summary)
-    print("Date: %s" % post_date)
-    print("Found %s image(s)" % len(img_list))
+    print(f"Title: {post_title}")
+    print(f"Summary: {post_summary}")
+    print(f"Date: {post_date}")
+    print(f"Found {len(img_list)} image(s)")
 
     dir = [SITE_INFO.name, f"{post_date_short} {post_title}"]
 
@@ -36,7 +39,5 @@ def get_data(hd):
         media=img_list,
         option=None,
     )
-
-    from down.directory import DirectoryHandler
 
     DirectoryHandler().handle_directory(payload)

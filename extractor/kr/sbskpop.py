@@ -1,17 +1,22 @@
+"""Extractor for https://sbskpop.kr"""
+
 import datetime
 
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
+from down.directory import DirectoryHandler
 
-SITE_INFO = Site(hostname="sbskpop.kr", name="SBS KPOP", location="KR")
+SITE_INFO = Site(hostname="sbskpop.kr", name="SBS KPOP")
+
 
 def get_data(hd):
+    """Get data"""
     site_parser = SiteParser()
     site_requests = SiteRequests()
     soup = site_parser._parse(site_requests.session.get(hd).text)
 
-
-    post_title = soup.find('meta', property='og:description')['content'].strip()
+    post_title = soup.find('meta', property='og:description')[
+        'content'].strip()
     post_date = datetime.datetime.strptime(post_title[:8], '%y.%m.%d')
     post_date_short = post_date.strftime('%Y%m%d')[2:]
 
@@ -30,7 +35,7 @@ def get_data(hd):
                 if sources and sources[-1] == '':
                     sources.pop()
                 max_source = max(
-                    sources, 
+                    sources,
                     key=lambda s: int(s.strip().split(' ')[-1][:-1]), default=None
                 )
                 # print(max_source)
@@ -42,9 +47,9 @@ def get_data(hd):
                         # print(highest_width_url)
                         img_list.append(highest_width_url)
 
-    print("Post title: %s" % post_title)
-    print("Post date: %s" % post_date)
-    print("Found %s image(s)" % len(img_list))
+    print(f"Title: {post_title}")
+    print(f"Date: {post_date}")
+    print(f"Found {len(img_list)} image(s)")
 
     # print(img_list)
 
@@ -55,7 +60,5 @@ def get_data(hd):
         media=img_list,
         option=None,
     )
-
-    from down.directory import DirectoryHandler
 
     DirectoryHandler().handle_directory(payload)

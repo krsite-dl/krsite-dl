@@ -2,7 +2,6 @@ import requests
 import os
 import re
 import time
-import pytz
 import email.utils
 
 from datetime import timezone
@@ -14,11 +13,13 @@ from common.logger import Logger
 
 import krsite_dl as kr
 
+
 class DownloadHandler():
     logger = Logger("downloader")
     duplicate_counts = {}
     MAX_RETRIES = 3
-    RETRY_DELAY = 5 #seconds
+    RETRY_DELAY = 5  # seconds
+
     def __init__(self):
         user = User()
 
@@ -28,25 +29,15 @@ class DownloadHandler():
         self.certificate = user.get_certificate()
         self.session = self._session()
 
-    
     # sanitize string to remove windows reserved characters
+
     def __sanitize_string(self, string):
         if not self.args.no_windows_filenames:
             string = re.sub(self.reserved_pattern, '', string)
         return string
-    
-
-    # location list for timezone
-    def _location(self, loc):
-        # list country codes here as json so i can call them by matching its keys
-        country_codes = {
-            "KR": "Asia/Seoul", "JP": "Asia/Tokyo", "SG": "Asia/Singapore"
-        }
-
-        return country_codes.get(loc, "UTC")
-        
 
     # korean filename encoder
+
     def _encode_kr(self, img_name):
         decoded = unquote(img_name)
 
@@ -58,20 +49,18 @@ class DownloadHandler():
         filename = self.__sanitize_string(korean_filename.decode('euc-kr'))
 
         return filename
-    
 
     def _get_filename(self, item):
         # check if its url or not
         if not item.startswith('http'):
             base, x = os.path.splitext(item)
             return base, x
-        
+
         parsed_url = urlparse(item)
         filename = os.path.basename(unquote(parsed_url.path))
         base, x = os.path.splitext(filename)
         # print(base, x)
         return base, x
-    
 
     def _process_item(self, item):
         if isinstance(item, list) and len(item) == 2:
@@ -80,7 +69,6 @@ class DownloadHandler():
             url, filename = item, self._get_filename(item)
 
         return url, filename
-    
 
     def _media_selector(self, img_list):
         logger = Logger("media_selector")
@@ -90,37 +78,30 @@ class DownloadHandler():
         if not selected:
             logger.log_info("No images selected.")
         return selected
-    
 
     def _file_exists(self, dirs, filename):
         path = os.path.join(dirs, filename)
         if os.path.exists(path):
-            self.logger.log_warning(f"File: {filename} already exists. Skipping...")
+            self.logger.log_warning(
+                f"File: {filename} already exists. Skipping...")
             return True
-
 
     def _extension_to_mime(self, ext):
         extensions = {
-            '.jpg' or '.jpeg': '.jpg',
-            '.JPG' or '.JPEG': '.jpg',
-            '.png': '.png',
-            '.PNG': '.png',
-            '.gif': '.gif',
-            '.GIF': '.gif',
-            '.webp': '.webp',
-            '.WEBP': '.webp',
+            '.jpg' or '.jpeg' or '.JPG' or '.JPEG': '.jpg',
+            '.png' or '.PNG': '.png',
+            '.gif' or '.GIF': '.gif',
+            '.webp' or '.WEBP': '.webp',
         }
         return extensions.get(ext, '.jpg')
-
 
     def _session(self):
         session = requests.Session()
         session.headers = requests.models.CaseInsensitiveDict(
-            {'User-Agent': self.user_agent, 
-             'Accept-Encoding': 'identity', 
+            {'User-Agent': self.user_agent,
+             'Accept-Encoding': 'identity',
              'Connection': 'keep-alive'})
         return session
-    
 
     def _retry_request(self, url, certificate, session):
         for attempt in range(1, self.MAX_RETRIES + 1):
@@ -128,21 +109,21 @@ class DownloadHandler():
                 response = session.get(url, verify=certificate, stream=True)
                 return response
             except (requests.exceptions.SSLError, requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as e:
-                self.logger.log_error(f"{type(e).__name__}. Retrying... ({attempt}/{self.MAX_RETRIES})")
+                self.logger.log_error(
+                    f"{type(e).__name__}. Retrying... ({attempt}/{self.MAX_RETRIES})")
                 time.sleep(self.RETRY_DELAY)
                 session.close()
                 session = self._session()
 
         return None  # Return None if maximum retries exceeded
 
-    
     def _download_logic(self, medialist, dirs, option=None):
         for url in medialist:
             # get url and separate the filename as a new variable
             base, ext = self._get_filename(url)
             filename = self._encode_kr(base)
             ext = self._extension_to_mime(ext)
-            
+
             if option == "naverpost":
                 if filename in self.duplicate_counts:
                     self.duplicate_counts[filename] += 1
@@ -180,7 +161,7 @@ class DownloadHandler():
                     'image/webp': '.webp',
                 }
 
-            content_length = int(content_length) # get the content length
+            content_length = int(content_length)  # get the content length
 
             # if filename is provided on content_disposition, use it
             if content_disposition is not None:
@@ -190,7 +171,7 @@ class DownloadHandler():
                 filename = self._encode_kr(base)
 
             file_extension = file_extensions.get(content_type, '.jpg')
-    
+
             # print out information about the source and filename
             self.logger.log_info(f"{url}")
 
@@ -207,20 +188,20 @@ class DownloadHandler():
                 current_size = 0
 
             if current_size < content_length:
-            # download file
+                # download file
                 with open(file_part, 'wb') as f:
                     with Progress(refresh_per_second=1) as prog:
-                        task = prog.add_task("Downloading...", total=content_length)
+                        task = prog.add_task(
+                            "Downloading...", total=content_length)
                         for chunk in response.iter_content(chunk_size=20480):
                             current_size += len(chunk)
                             f.write(chunk)
                             prog.update(task, completed=current_size)
 
-
                 os.rename(file_part, file_real)
 
-                #convert GMT to local time for last_modified
-                #Thu, 07 Dec 2023 02:01:31 GMT
+                # convert GMT to local time for last_modified
+                # Thu, 07 Dec 2023 02:01:31 GMT
                 if last_modified is not None:
                     dt = email.utils.parsedate_to_datetime(last_modified)
                     dt = dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
@@ -229,7 +210,6 @@ class DownloadHandler():
                     os.utime(dirs, (timestamp, timestamp))
                 continue
 
-    
     def downloader(self, payload):
         medialist, dirs, option = (
             payload.media,

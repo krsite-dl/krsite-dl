@@ -1,5 +1,5 @@
 import logging
-from colorlog import ColoredFormatter
+
 
 class LowercaseLevelFormatter(logging.Formatter):
     def format(self, record):
@@ -19,14 +19,11 @@ class Logger:
         self.console_handler.setFormatter(self.formatter)
         self.logger.addHandler(self.console_handler)
 
-
     def log_info(self, msg, *args, **kwargs):
         self.logger.info(f"{msg}", *args, **kwargs)
 
-
     def log_warning(self, msg, *args, **kwargs):
         self.logger.warning(f"{msg}", *args, **kwargs)
-
 
     def log_error(self, msg, *args, **kwargs):
         self.logger.error(f"{msg}", *args, **kwargs)

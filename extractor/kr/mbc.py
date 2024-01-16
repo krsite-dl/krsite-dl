@@ -1,11 +1,16 @@
+"""Extractor for https://mbc.co.kr/"""
+
 import datetime
 
 from common.common_modules import SiteRequests
 from common.data_structure import Site, DataPayload
+from down.directory import DirectoryHandler
 
-SITE_INFO = Site(hostname="mbc.co.kr", name="MBC", location="KR")
+SITE_INFO = Site(hostname="mbc.co.kr", name="MBC")
+
 
 def get_data(hd):
+    """Get data"""
     idx = hd.split('idx=')[-1].split('&')[0]
     api = f'https://mbcinfo.imbc.com/api/photo/m_info?intIdx={idx}'
     img_api = f'https://mbcinfo.imbc.com/api/download?file='
@@ -24,11 +29,10 @@ def get_data(hd):
     for i in json_data['list']:
         img_list.append(f"{img_api}{i['photo_fullpath']}")
 
-    print("Title: %s" % post_title)
-    print("Date: %s" % post_date)
+    print(f"Title: {post_title}")
+    print(f"Date: {post_date}")
+    print(f"Found {len(img_list)} image(s)")
 
-    print("Found %s image(s)" % len(img_list))
-    
     dir = [SITE_INFO.name, f"{post_date_short} {post_title}"]
 
     payload = DataPayload(
@@ -36,7 +40,5 @@ def get_data(hd):
         media=img_list,
         option=None,
     )
-
-    from down.directory import DirectoryHandler
 
     DirectoryHandler().handle_directory(payload)

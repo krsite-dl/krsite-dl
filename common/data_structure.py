@@ -1,11 +1,10 @@
-from pydantic import BaseModel, constr
+from pydantic import BaseModel
 from typing import Optional
-import datetime
+
 
 class Site(BaseModel):
     hostname: str | list[str]
     name: str
-    location: constr(pattern=r"^(KR|JP|SG)$", max_length=2, min_length=2, strip_whitespace=True)
 
 
 class DownloadPayload(BaseModel):
