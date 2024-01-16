@@ -1,3 +1,5 @@
+"""Extractor for https://post.naver.com"""
+
 import datetime
 import time
 import re
@@ -7,11 +9,13 @@ from selenium.common.exceptions import NoSuchElementException
 
 from common.common_modules import SeleniumParser
 from common.data_structure import Site, DataPayload
+from down.directory import DirectoryHandler
 
-SITE_INFO = Site(hostname="post.naver.com", name="Naver Post", location="KR")
+SITE_INFO = Site(hostname="post.naver.com", name="Naver Post")
 
 
 def get_data(hd):
+    """Get data"""
     BASE = r"(?:https?://)?(?:m\.)?(post\.naver\.com)"
     pattern = BASE + r"(/my.)?(?:naver|nhn)"
     pattern2 = BASE + r"(/search/authorPost.)?(?:naver|nhn)"
@@ -20,6 +24,7 @@ def get_data(hd):
     pattern5 = BASE + r"(/viewer/postView.)?(?:naver|nhn)"
 
     def naverpost_search(hd):
+        """Get data from search result"""
         parser = SeleniumParser()
         w = parser._requests(hd)
 
@@ -36,20 +41,20 @@ def get_data(hd):
 
                 for i in w.find_elements(parser.get_by('CLASS_NAME'), 'link_end'):
                     post_list.add(i.get_attribute('href'))
-        
+
         w.quit()
-        print("Found %s post(s)" % len(post_list))
+        print(f"Found {len(post_list)} post(s)")
 
         for i in post_list:
             naverpost_post(i)
 
-
     def naverpost_series(hd):
+        """Get data from series page"""
         parser = SeleniumParser()
         w = parser._requests(hd)
 
         series_list = set()
-        
+
         sender_name = w.find_element(parser.get_by('CLASS_NAME'), 'name').text
         print("Sender: %s" % sender_name)
 
@@ -64,19 +69,19 @@ def get_data(hd):
 
                 for i in w.find_elements(parser.get_by('CLASS_NAME'), 'link'):
                     series_list.add(i.get_attribute('href'))
-        
+
         w.quit()
-        print("Found %s series" % len(series_list))
+        print(f"Found {len(series_list)} series")
         print("------------------\n")
 
         for i in series_list:
             naverpost_list(i)
 
-
     def naverpost_list(hd):
+        """Get data from series list"""
         parser = SeleniumParser()
         w = parser._requests(hd)
-        
+
         post_list = set()
 
         btn = w.find_element(parser.get_by('CLASS_NAME'), '_more')
@@ -91,38 +96,45 @@ def get_data(hd):
                     post_list.add(i.get_attribute('href'))
 
         w.quit()
-        print("Found %s post(s)" % len(post_list))
-        
+        print(f"Found {post_list} post(s)")
+
         for i in post_list:
             naverpost_post(i)
 
-
     def naverpost_post(hd):
+        """Get post data"""
         parser = SeleniumParser()
         w = parser._requests(hd)
 
         try:
-            post_writer = w.find_element(parser.get_by('CLASS_NAME'), 'se_author').text
-            post_series = w.find_element(parser.get_by('CLASS_NAME'), 'se_series').text[3:]
-            post_title = w.find_element(parser.get_by('CLASS_NAME'), 'se_textarea').text.replace('\n', ' ')
-            post_date = w.find_element(parser.get_by('XPATH'), '//meta[@property="og:createdate"]') # using meta tag for more accurate time
-            post_date = datetime.datetime.strptime(post_date.get_attribute('content'), '%Y.%m.%d. %H:%M:%S')
+            post_writer = w.find_element(
+                parser.get_by('CLASS_NAME'), 'se_author').text
+            post_series = w.find_element(parser.get_by(
+                'CLASS_NAME'), 'se_series').text[3:]
+            post_title = w.find_element(parser.get_by(
+                'CLASS_NAME'), 'se_textarea').text.replace('\n', ' ')
+            # using meta tag for more accurate time
+            post_date = w.find_element(parser.get_by(
+                'XPATH'), '//meta[@property="og:createdate"]')
+            post_date = datetime.datetime.strptime(
+                post_date.get_attribute('content'), '%Y.%m.%d. %H:%M:%S')
             post_date_short = post_date.strftime('%y%m%d')
         except NoSuchElementException:
-            post_writer = w.find_element(parser.get_by('CLASS_NAME'), 'writer.ell').text
-            post_series = w.find_element(parser.get_by('CLASS_NAME'), 'series').text
-            post_title = w.find_element(parser.get_by('CLASS_NAME'), 'title').text.replace('\n', ' ')
-            post_date = w.find_element(parser.get_by('XPATH'), '//meta[@property="og:createdate"]') # using meta tag for more accurate time
-            post_date = datetime.datetime.strptime(post_date.get_attribute('content'), '%Y.%m.%d. %H:%M:%S')
+            post_writer = w.find_element(
+                parser.get_by('CLASS_NAME'), 'writer.ell').text
+            post_series = w.find_element(
+                parser.get_by('CLASS_NAME'), 'series').text
+            post_title = w.find_element(parser.get_by(
+                'CLASS_NAME'), 'title').text.replace('\n', ' ')
+            # using meta tag for more accurate time
+            post_date = w.find_element(parser.get_by(
+                'XPATH'), '//meta[@property="og:createdate"]')
+            post_date = datetime.datetime.strptime(
+                post_date.get_attribute('content'), '%Y.%m.%d. %H:%M:%S')
             post_date_short = post_date.strftime('%y%m%d')
 
         img_list = []
 
-        print("\nSeries: %s" % post_series)
-        print("Title: %s" % post_title)
-        print("Date: %s" % post_date_short)
-        print("Writer: %s" % post_writer)
-        
         for i in w.find_elements(parser.get_by('CLASS_NAME'), 'se_mediaImage'):
             if 'storep' not in i.get_attribute('src'):
                 img_list.append(str(i.get_attribute('src').split('?')[0]))
@@ -137,10 +149,13 @@ def get_data(hd):
 
         w.quit()
 
-        print("Found %s image(s)" % len(img_list))
+        print(f"\nSeries: {post_series}")
+        print(f"Title: {post_title}")
+        print(f"Date: {post_date}")
+        print(f"Found {len(img_list)} image(s)")
 
-
-        dir = [SITE_INFO.name, post_writer, post_series, f"{post_date_short} {post_title}"]
+        dir = [SITE_INFO.name, post_writer, post_series,
+               f"{post_date_short} {post_title}"]
 
         payload = DataPayload(
             directory_format=dir,
@@ -148,11 +163,8 @@ def get_data(hd):
             option='naverpost',
         )
 
-        from down.directory import DirectoryHandler
-
         DirectoryHandler().handle_directory(payload)
-    
-        
+
     if re.search(pattern, hd):
         print("[bold green]Naver Post Main Page[/bold green]")
         naverpost_search(hd)
