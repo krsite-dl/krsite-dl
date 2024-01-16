@@ -3,7 +3,7 @@ import re
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="melon.com", name="Melon", location="KR")
+SITE_INFO = Site(hostname="melon.com", name="Melon")
 
 def get_data(hd):
     img_list = []

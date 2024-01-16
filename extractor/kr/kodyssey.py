@@ -4,7 +4,7 @@ import re
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="k-odyssey.com", name="K-odyssey", location="KR")
+SITE_INFO = Site(hostname="k-odyssey.com", name="K-odyssey")
 
 def get_data(hd):
     site_parser = SiteParser()
@@ -41,4 +41,4 @@ def get_data(hd):
 
     from down.directory import DirectoryHandler
 
-    DirectoryHandler().handle_directory_alternate(payload)
+    DirectoryHandler().handle_directory(payload)

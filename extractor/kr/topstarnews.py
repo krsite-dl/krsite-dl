@@ -1,11 +1,8 @@
-import requests
 import datetime
 
 from rich import print
 from pytz import timezone
 from urllib.parse import urlparse, parse_qs, urlencode
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
@@ -58,13 +55,7 @@ def get_data(hd):
             post_page(post)
 
 
-    def post_page(hd):
-        session = requests.Session()
-        retry = Retry(connect=3, backoff_factor=0.5)
-        adapter = HTTPAdapter(max_retries=retry)
-        session.mount('http://', adapter)
-        session.mount('https://', adapter)
-        
+    def post_page(hd):        
         soup = site_parser._parse(site_requests.session.get(hd).text)
 
         post_title = soup.find('meta', property='og:title')['content'].strip()

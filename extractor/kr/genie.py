@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="genie.co.kr", name="Genie", location="KR")
+SITE_INFO = Site(hostname="genie.co.kr", name="Genie")
 
 def get_data(hd):
     hostname = urlparse(hd).hostname

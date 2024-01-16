@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="isplus.com", name="Ilgan Sports", location="KR")
+SITE_INFO = Site(hostname="isplus.com", name="Ilgan Sports")
 
 def get_data(hd):
     host = f"{urlparse(hd).scheme}://{urlparse(hd).netloc}"
@@ -44,4 +44,4 @@ def get_data(hd):
     )
 
     from down.directory import DirectoryHandler
-    DirectoryHandler().handler_directory_combine(payload)
+    DirectoryHandler().handle_directory(payload)

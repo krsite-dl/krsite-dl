@@ -4,7 +4,7 @@ import json
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="lofficielsingapore.com", name="L'Officiel Singapore", location="SG")
+SITE_INFO = Site(hostname="lofficielsingapore.com", name="L'Officiel Singapore")
 
 def get_data(hd):
     img_list = []

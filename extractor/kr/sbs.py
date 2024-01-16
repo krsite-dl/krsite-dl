@@ -7,7 +7,7 @@ from rich import print
 from common.common_modules import SiteRequests
 from common.data_structure import Site, DataPayload
 
-SITE_INFO = Site(hostname="programs.sbs.co.kr", name="SBS Program", location="KR")
+SITE_INFO = Site(hostname="programs.sbs.co.kr", name="SBS Program")
 
 def get_data(hd):
     site_req = SiteRequests()

@@ -48,4 +48,4 @@ def get_data(hd):
 
     from down.directory import DirectoryHandler
 
-    DirectoryHandler().handle_directory_alternate(payload)
+    DirectoryHandler().handle_directory(payload)
