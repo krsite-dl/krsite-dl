@@ -1,12 +1,18 @@
+"""Extractor for https://lofficielsingapore.com"""""
+
 import datetime
 import json
 
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
+from down.directory import DirectoryHandler
 
-SITE_INFO = Site(hostname="lofficielsingapore.com", name="L'Officiel Singapore")
+SITE_INFO = Site(hostname="lofficielsingapore.com",
+                 name="L'Officiel Singapore")
+
 
 def get_data(hd):
+    """Get data"""
     img_list = []
 
     site_parser = SiteParser()
@@ -27,7 +33,8 @@ def get_data(hd):
     post_date = post_date.replace(tzinfo=None)
 
     # get post cover
-    img_list.append(post_infos['postCover'][0]['coverImage']['url'].split('?')[0])
+    img_list.append(post_infos['postCover'][0]
+                    ['coverImage']['url'].split('?')[0])
     post_blocks = post_infos['postBlocks']
     for post_block in post_blocks:
         if post_block['__typename'] == 'ImageBoxRecord':
@@ -40,7 +47,7 @@ def get_data(hd):
     print("Title: %s" % post_title)
     print("Date: %s" % post_date)
     print("Found %s image(s)" % len(img_list))
-    
+
     dir = [SITE_INFO.name, f"{post_date_short} {post_title}"]
 
     payload = DataPayload(
@@ -48,7 +55,5 @@ def get_data(hd):
         media=img_list,
         option=None,
     )
-
-    from down.directory import DirectoryHandler
 
     DirectoryHandler().handle_directory(payload)

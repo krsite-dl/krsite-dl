@@ -1,3 +1,5 @@
+"""Extractor for https://isplus.com"""
+
 import datetime
 import re
 
@@ -5,15 +7,17 @@ from pytz import timezone
 from urllib.parse import urlparse
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
+from down.directory import DirectoryHandler
 
 SITE_INFO = Site(hostname="isplus.com", name="Ilgan Sports")
 
+
 def get_data(hd):
+    """Get data"""
     host = f"{urlparse(hd).scheme}://{urlparse(hd).netloc}"
     site_parser = SiteParser()
     site_requests = SiteRequests()
     soup = site_parser._parse(site_requests.session.get(hd).text)
-
 
     post_title = soup.find('meta', property='og:title')['content']
     post_date = soup.find('meta', property='article:modified_time')['content']
@@ -31,9 +35,9 @@ def get_data(hd):
             img = re.sub(re.compile(r'\.\d+x\.\d+'), '', img.get('src'))
             img_list.append(f"{host}{img}")
 
-    print("Title: %s" % post_title)
-    print("Date: %s" % post_date)
-    print("Found %s image(s)" % len(img_list))
+    print(f"Title: {post_title}")
+    print(f"Date: {post_date}")
+    print(f"Found {len(img_list)} image(s)")
 
     dir = [SITE_INFO.name, post_date_short, post_title]
 
@@ -43,5 +47,4 @@ def get_data(hd):
         option=None,
     )
 
-    from down.directory import DirectoryHandler
     DirectoryHandler().handle_directory(payload)

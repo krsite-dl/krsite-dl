@@ -1,11 +1,16 @@
+"""Extractor for https://osen.co.kr"""
+
 import datetime
 
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
+from down.directory import DirectoryHandler
 
 SITE_INFO = Site(hostname=["osen.mt.co.kr", "osen.co.kr"], name="OSEN")
 
+
 def get_data(hd):
+    """Get data"""
     site_parser = SiteParser()
     site_requests = SiteRequests()
     soup = site_parser._parse(site_requests.session.get(hd).text)
@@ -23,10 +28,10 @@ def get_data(hd):
     post_date = datetime.datetime.strptime(post_date, '%Y-%m-%d %H:%M')
     post_date_short = post_date.strftime('%Y%m%d')[2:]
 
-    print("Post title: %s" % post_title)
-    print("Post date: %s" % post_date)
-    print("Found %s image(s)" % len(img_list))
-    
+    print(f"Title: {post_title}")
+    print(f"Date: {post_date}")
+    print(f"Found {len(img_list)} image(s)")
+
     dir = [SITE_INFO.name, post_date_short]
 
     payload = DataPayload(
@@ -34,7 +39,5 @@ def get_data(hd):
         media=img_list,
         option='combine',
     )
-
-    from down.directory import DirectoryHandler
 
     DirectoryHandler().handle_directory(payload)
