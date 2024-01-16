@@ -1,4 +1,4 @@
-[![CodeQL](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/github-code-scanning/codeql)
+[![CodeQL](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/github-code-scanning/codeql) [![Dependency Review](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/dependency-review.yml)
 
 If you like this project, please consider giving it a star! Thanks!
 
