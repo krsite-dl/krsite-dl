@@ -1,3 +1,5 @@
+[![CodeQL](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/github-code-scanning/codeql)
+
 If you like this project, please consider giving it a star! Thanks!
 
 ## Table of Contents
