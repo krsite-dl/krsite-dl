@@ -3,11 +3,13 @@
 import datetime
 import time
 import re
+import json
+import html
 
 from rich import print
 from selenium.common.exceptions import NoSuchElementException
 
-from common.common_modules import SeleniumParser
+from common.common_modules import SeleniumParser, SiteRequests
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -103,52 +105,25 @@ def get_data(hd):
 
     def naverpost_post(hd):
         """Get post data"""
-        parser = SeleniumParser()
-        w = parser._requests(hd)
+        site_requests = SiteRequests()
+        site = site_requests.session.get(hd).text
 
-        try:
-            post_writer = w.find_element(
-                parser.get_by('CLASS_NAME'), 'se_author').text
-            post_series = w.find_element(parser.get_by(
-                'CLASS_NAME'), 'se_series').text[3:]
-            post_title = w.find_element(parser.get_by(
-                'CLASS_NAME'), 'se_textarea').text.replace('\n', ' ')
-            # using meta tag for more accurate time
-            post_date = w.find_element(parser.get_by(
-                'XPATH'), '//meta[@property="og:createdate"]')
-            post_date = datetime.datetime.strptime(
-                post_date.get_attribute('content'), '%Y.%m.%d. %H:%M:%S')
-            post_date_short = post_date.strftime('%y%m%d')
-        except NoSuchElementException:
-            post_writer = w.find_element(
-                parser.get_by('CLASS_NAME'), 'writer.ell').text
-            post_series = w.find_element(
-                parser.get_by('CLASS_NAME'), 'series').text
-            post_title = w.find_element(parser.get_by(
-                'CLASS_NAME'), 'title').text.replace('\n', ' ')
-            # using meta tag for more accurate time
-            post_date = w.find_element(parser.get_by(
-                'XPATH'), '//meta[@property="og:createdate"]')
-            post_date = datetime.datetime.strptime(
-                post_date.get_attribute('content'), '%Y.%m.%d. %H:%M:%S')
-            post_date_short = post_date.strftime('%y%m%d')
+        post_writer = html.unescape(site.split("meta property=\"og:author\" content=\"")[1].split("\"")[0])
+        post_series = html.unescape(re.sub(r'<i[^>]*>.*?</i>', '', site.split('<div class="se_series">')[1].split('</div>')[0]).strip())
+        post_title = html.unescape(site.split("meta property=\"og:title\" content=\"")[1].split("\"")[0])
+        post_date = site.split("meta property=\"og:createdate\" content=\"")[1].split("\"")[0]
+        post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d. %H:%M:%S')
+        post_date_short = post_date.strftime('%y%m%d')
 
         img_list = []
+        for item in site.split("data-linkdata=\'")[1:]:
+            linkdata = json.loads(item.split("\'>\n")[0])
+            if 'storep' not in linkdata['src']:
+                src = linkdata['src'].split('?')[0]
+                img_list.append(src)
 
-        for i in w.find_elements(parser.get_by('CLASS_NAME'), 'se_mediaImage'):
-            if 'storep' not in i.get_attribute('src'):
-                img_list.append(str(i.get_attribute('src').split('?')[0]))
 
-        for i in w.find_elements(parser.get_by('CLASS_NAME'), 'img_attachedfile'):
-            if 'storep' not in i.get_attribute('src'):
-                img_list.append(str(i.get_attribute('src').split('?')[0]))
-
-        for i in w.find_elements(parser.get_by('CLASS_NAME'), 'se_card_exception_img'):
-            if 'storep' not in i.get_attribute('src'):
-                img_list.append(str(i.get_attribute('src').split('?')[0]))
-
-        w.quit()
-
+        print(f"\nWriter: {post_writer}")
         print(f"\nSeries: {post_series}")
         print(f"Title: {post_title}")
         print(f"Date: {post_date}")
