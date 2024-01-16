@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
+
 class Site(BaseModel):
     hostname: str | list[str]
     name: str

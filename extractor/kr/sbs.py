@@ -1,3 +1,5 @@
+"""Extractor for https://programs.sbs.co.kr/"""
+
 import datetime
 import time
 import json
@@ -6,14 +8,19 @@ import re
 from rich import print
 from common.common_modules import SiteRequests
 from common.data_structure import Site, DataPayload
+from down.directory import DirectoryHandler
 
 SITE_INFO = Site(hostname="programs.sbs.co.kr", name="SBS Program")
 
+
 def get_data(hd):
+    """Get data"""
     site_req = SiteRequests()
     board_no = hd.split('board_no=')[-1].split('&')[0]
-    parent_name = re.search(r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){1}/([^/?]+)', hd).group(3)
-    vis_board_no = re.search(r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){3}/([^/?]+)', hd).group(3)
+    parent_name = re.search(
+        r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){1}/([^/?]+)', hd).group(3)
+    vis_board_no = re.search(
+        r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){3}/([^/?]+)', hd).group(3)
     print(f"Board no: {board_no}")
 
     menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/menu/"
@@ -35,7 +42,7 @@ def get_data(hd):
                         board_code = submenu['board_code'].split(',')
                         all_board.append({menu_id: board_code})
 
-    code_temp = [] 
+    code_temp = []
 
     for i in all_board:
         for key, value in i.items():
@@ -43,7 +50,7 @@ def get_data(hd):
                 for j in value:
                     code_temp.append(j.strip())
 
-    ###########TOKEN############
+    ########### TOKEN############
     current_milli_time = int(round(time.time() * 1000))
     token = str(current_milli_time)
     ############################
@@ -62,7 +69,7 @@ def get_data(hd):
             'jwt-token': '',
             '_': token
         }
-    
+
         r = site_req.session.get(api, params=params)
 
         if 'err_code' not in r.text:
@@ -72,7 +79,7 @@ def get_data(hd):
     json_data = json_data.split('boardViewCallback_%s(' % code)[1]
     json_data = json_data.rstrip(');')
     json_data = json.loads(json_data)
-    
+
     data = json_data['Response_Data_For_Detail']
     post_title = data['TITLE'].strip()
     post_date = data['REG_DATE'].strip()
@@ -81,19 +88,16 @@ def get_data(hd):
 
     img_list = set()
 
-    print(f"Title: {post_title}")
-    print(f"Date: {post_date}")
-
     for i in data['URL']:
         if 'http' not in i:
             img_list.add('http:' + str(i))
         else:
             img_list.add(str(i))
-    
+
+    print(f"Title: {post_title}")
+    print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")
 
-
-    
     dir = [SITE_INFO.name, category, f"{post_date_short} {post_title}"]
 
     payload = DataPayload(
@@ -101,7 +105,5 @@ def get_data(hd):
         media=img_list,
         option=None,
     )
-    
-    from down.directory import DirectoryHandler
 
     DirectoryHandler().handle_directory(payload)

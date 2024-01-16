@@ -1,18 +1,22 @@
+"""Extractor for https://melon.com"""
+
 import re
 
 from common.common_modules import SiteRequests, SiteParser
 from common.data_structure import Site, DataPayload
+from down.directory import DirectoryHandler
 
 SITE_INFO = Site(hostname="melon.com", name="Melon")
 
+
 def get_data(hd):
+    """Get data"""
     img_list = []
     artist_id = re.search(r'(?<=artistId=)\d+', hd).group(0)
 
     site_parser = SiteParser()
     site_requests = SiteRequests()
     soup = site_parser._parse(site_requests.session.get(hd).text)
-
 
     post_title = soup.find('meta', property='og:title')['content'].strip()
 
@@ -23,11 +27,12 @@ def get_data(hd):
     photo_list = soup.find('div', class_='photo_list')
 
     for item in photo_list.findAll('img'):
-        img_list.append(re.sub(r'(_\d+)(?=\.jpg)', '_org', re.sub(r'(?<=.jpg).*$', '', item['src'])))
-    
-    print("Title: %s" % post_title)
-    print("Found %s image(s)" % len(img_list))
-    
+        img_list.append(re.sub(r'(_\d+)(?=\.jpg)', '_org',
+                        re.sub(r'(?<=.jpg).*$', '', item['src'])))
+
+    print(f"Title: {post_title}")
+    print(f"Found {len(img_list)} image(s)")
+
     dir = [SITE_INFO.name, post_title]
 
     payload = DataPayload(
@@ -35,7 +40,5 @@ def get_data(hd):
         media=img_list,
         option=None,
     )
-
-    from down.directory import DirectoryHandler
 
     DirectoryHandler().handle_directory(payload)
