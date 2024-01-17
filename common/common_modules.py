@@ -5,14 +5,8 @@ from bs4 import BeautifulSoup
 from client.user import User
 from common.logger import Logger
 
-from selenium import webdriver as wd
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
-
-class SiteRequests:
+class Requests:
     def __init__(self):
         user = User()
 
@@ -50,40 +44,3 @@ class SiteParser:
 
     def _parse(self, html_cont):
         return BeautifulSoup(html_cont, 'html.parser')
-
-    def _parse_lxml(self, html_cont):
-        return BeautifulSoup(html_cont, 'lxml')
-
-
-class SeleniumParser:
-    webdriver_options = Options()
-    select_by = By()
-
-    def __init__(self):
-        self.webdriver_options.add_argument('--headless')
-        self.webdriver = wd.Chrome(options=self.webdriver_options)
-
-    def _requests(self, url):
-        self.webdriver.get(url)
-        return self.webdriver
-
-    def find_element(self, el, value):
-        return self.webdriver.find_element(el, value)
-
-    def find_elements(self, el, value):
-        return self.webdriver.find_elements(el, value)
-
-    def get_by(self, attribute):
-        return getattr(self.select_by, attribute)
-
-    def click(self, el):
-        return el.click()
-
-    def wait(self, el, timeout):
-        return WebDriverWait(el, timeout)
-
-    def visibility_of(self, el):
-        return EC.visibility_of(el)
-
-    def presence_of_element_located(self, el):
-        return EC.presence_of_element_located(el)
