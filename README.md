@@ -15,16 +15,14 @@ If you like this project, please consider giving it a star! Thanks!
 > 1. Make sure you have `python3` at least version 3.6 installed and executeable in your system's PATH.
 >
 > 2. Run `pip3 install -r requirements.txt` to install dependencies
-> 
-> 3. There are some sites that requires selenium. User must have [chrome](https://www.google.com/chrome/) and [chromedriver](https://chromedriver.chromium.org/downloads) installed and executeable. The list of sites can be found [here](#supported-sites).
+
 
 > [!NOTE]
 > To update the script, you need to pull this repository again. You can also run `git pull` if you have git installed.
 > Make sure to run another `pip install -r requirements.txt` to install any new dependencies.
-> In case you ran into a `chromedriver` error, you need to update your `chromedriver`. You can download the latest chrome driver [here](https://chromedriver.chromium.org/downloads).
 
 ## Usage
-User can add `krsite-dl.conf` file to set default download path. You can put the file in the following locations for automatic detection.
+User can add `krsite-dl.conf` file to set default download path. You can put the file in the following locations for automatic detection. This will get overridden by config path specified by `-c` option.
 
 ### Windows
 
@@ -96,15 +94,12 @@ utility:
                         File path to your config file
   -a A                  Text file containing site urls
   -d DESTINATION, --destination DESTINATION
-                        The destination path for the downloaded file (unnecessary if you have `krsite-dl.config` unless you want
-                        to override the default download path)
-  -s, --select          Select which images to download from the list of images gathered from each url. You probably not wanna
-                        use this if you're downloading multiple site URLs at once cause it will prompt you for each url.
+                        The destination path for the downloaded file.
+  -s, --select          Select which images to download from each url.
 
 misc:
   --no-windows-filenames
-                        (default=False) krsite-dl will keep the original filenames of the images. This includes filenames that
-                        are not allowed in Windows OS.
+                        (default=False) krsite-dl will not sanitize filenames
 ```
 
 ## Issues
