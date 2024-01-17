@@ -23,9 +23,49 @@ def get_data(hd):
     pattern4 = BASE + r"(/my/series/detail.)?(?:naver|nhn)"
     pattern5 = BASE + r"(/viewer/postView.)?(?:naver|nhn)"
 
-    def naverpost_search(hd):
-        """Get data from search result"""
-        print("Not supported yet")
+    def naverpost_main(hd):
+        """Get data from main page"""
+        member_no = hd.split('memberNo=')[1].split('&')[0]
+
+        main_api = 'https://post.naver.com/async/my.naver'
+        params = {
+            'memberNo': member_no,
+            'postListViewType': 0,
+            'isExpertMy': 'true',
+            'fromNo': 1,
+            'totalCount': 0,
+        }
+
+        site_requests = Requests()
+
+        post = set()
+
+        while True:
+            req = site_requests.session.get(
+                main_api, params=params).text
+
+            nfn_val = req.split('"nextFromNo":')[1].split(',')[0].strip('"')
+            html_cont = req.split('"html":"')[1].split('","')[0]
+            html_cont = html.unescape(html_cont)
+            html_cont = html_cont.replace('\\n', '').replace(
+                '\\t', '').replace('\\', '')
+
+            for i in html_cont.split('<a href="')[1:]:
+                p = i.split('"')[0]
+                if 'commentsView' not in p and '#' not in p:
+                    post.add("https://post.naver.com" + p)
+
+            params['fromNo'] = nfn_val
+
+            if nfn_val == "":
+                break
+        
+        site_requests.session.close()
+        print(f"Found {len(post)} post(s)")
+
+        for i in post:
+            naverpost_post(i)
+
 
     def naverpost_series(hd):
         """Get data from series page"""
@@ -65,6 +105,7 @@ def get_data(hd):
 
         for i in series:
             naverpost_list(i)
+
 
     def naverpost_list(hd):
         """Get data from series list"""
@@ -134,13 +175,19 @@ def get_data(hd):
         post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d. %H:%M:%S')
         post_date_short = post_date.strftime('%y%m%d')
 
+
         img_list = []
-        for item in site.split("data-linkdata=\'")[1:]:
-            linkdata = json.loads(item.split("\'>\n")[0])
-            if 'src' in linkdata:
-                if 'storep' not in linkdata['src']:
+
+        pattern = re.compile(r"data-linkdata='([^']+)'")
+        matches = pattern.findall(site)
+        for match in matches:
+            try:
+                linkdata = json.loads(match)
+                if 'src' in linkdata and 'storep' not in linkdata['src']:
                     src = linkdata['src'].split('?')[0]
                     img_list.append(src)
+            except json.JSONDecodeError as e:
+                print(f"Error decoding JSON: {e}")
 
         for item in site.split("data-realImagePath=")[1:]:
             if 'storep' not in item:
@@ -168,11 +215,12 @@ def get_data(hd):
 
     if re.search(pattern, hd):
         print("[bold green]Naver Post Main Page[/bold green]")
-        naverpost_search(hd)
+        naverpost_main(hd)
 
     elif re.search(pattern2, hd):
         print("[bold green]Naver Post Search Result[/bold green]")
-        naverpost_search(hd)
+        # naverpost_search(hd)
+        print("Not supported yet")
 
     elif re.search(pattern3, hd):
         print("[bold green]Naver Post Series Page[/bold green]")
