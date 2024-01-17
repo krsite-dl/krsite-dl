@@ -2,7 +2,7 @@
 
 import re
 
-from common.common_modules import SiteRequests, SiteParser
+from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -15,7 +15,7 @@ def get_data(hd):
     artist_id = re.search(r'(?<=artistId=)\d+', hd).group(0)
 
     site_parser = SiteParser()
-    site_requests = SiteRequests()
+    site_requests = Requests()
     soup = site_parser._parse(site_requests.session.get(hd).text)
 
     post_title = soup.find('meta', property='og:title')['content'].strip()

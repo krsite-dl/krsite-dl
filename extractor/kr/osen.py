@@ -2,7 +2,7 @@
 
 import datetime
 
-from common.common_modules import SiteRequests, SiteParser
+from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -12,7 +12,7 @@ SITE_INFO = Site(hostname=["osen.mt.co.kr", "osen.co.kr"], name="OSEN")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = SiteRequests()
+    site_requests = Requests()
     soup = site_parser._parse(site_requests.session.get(hd).text)
 
     wrap = soup.find('div', class_='detailTitle')

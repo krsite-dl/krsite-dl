@@ -5,7 +5,7 @@ import re
 
 from pytz import timezone
 from urllib.parse import urlparse
-from common.common_modules import SiteRequests, SiteParser
+from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -16,7 +16,7 @@ def get_data(hd):
     """Get data"""
     host = f"{urlparse(hd).scheme}://{urlparse(hd).netloc}"
     site_parser = SiteParser()
-    site_requests = SiteRequests()
+    site_requests = Requests()
     soup = site_parser._parse(site_requests.session.get(hd).text)
 
     post_title = soup.find('meta', property='og:title')['content']

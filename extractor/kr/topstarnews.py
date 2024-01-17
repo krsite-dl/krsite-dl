@@ -6,7 +6,7 @@ from rich import print
 from pytz import timezone
 from urllib.parse import urlparse, parse_qs, urlencode
 
-from common.common_modules import SiteRequests, SiteParser
+from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -16,7 +16,7 @@ SITE_INFO = Site(hostname="topstarnews.net", name="Topstarnews", location="KR")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = SiteRequests()
+    site_requests = Requests()
 
     def iterate_pages():
         """Iterate pages until the end"""
