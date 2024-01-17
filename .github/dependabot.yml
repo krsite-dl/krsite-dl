@@ -17,4 +17,4 @@ updates:
       - "pip dependencies"
     reviewers:
       - "zer0kn0wledge"
-    open-pull-request-limit: 10
+    open-pull-requests-limit: 10
