@@ -11,8 +11,8 @@ SITE_INFO = Site(hostname="dispatch.co.kr", name="Dispatch", location="KR")
 
 def get_data(hd):
     site_parser = SiteParser()
-    site_requests = Requests()
-    soup = site_parser._parse(site_requests.session.get(hd).text)
+    site_req = Requests()
+    soup = site_parser._parse(site_req.session.get(hd).text)
 
     img_list = []
     post_date = soup.find('div', class_='post-date').text.strip()
@@ -39,6 +39,7 @@ def get_data(hd):
         post_date = datetime.datetime.strptime(
             post_date.replace('오후', 'PM'), '%Y%m%d %p %I:%M')
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")

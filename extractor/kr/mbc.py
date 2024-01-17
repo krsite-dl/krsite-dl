@@ -29,6 +29,7 @@ def get_data(hd):
     for i in json_data['list']:
         img_list.append(f"{img_api}{i['photo_fullpath']}")
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")

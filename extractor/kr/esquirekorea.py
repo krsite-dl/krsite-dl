@@ -11,8 +11,8 @@ SITE_INFO = Site(hostname="esquirekorea.co.kr", name="Esquire Korea")
 
 def get_data(hd):
     site_parser = SiteParser()
-    site_requests = Requests()
-    soup = site_parser._parse(site_requests.session.get(hd).text)
+    site_req = Requests()
+    soup = site_parser._parse(site_req.session.get(hd).text)
 
     post_title = soup.find('meta', property='og:title')['content'].strip()
     post_date = soup.find('meta', property='article:published_time')[
@@ -33,6 +33,7 @@ def get_data(hd):
         img_list.append(head_img['style'].split(
             'url(')[1].split(')')[0].replace('"', ''))
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")

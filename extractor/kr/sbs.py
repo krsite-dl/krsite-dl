@@ -94,6 +94,7 @@ def get_data(hd):
         else:
             img_list.add(str(i))
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")

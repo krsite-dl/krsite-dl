@@ -36,12 +36,12 @@ def get_data(hd):
             'totalCount': 0,
         }
 
-        site_requests = Requests()
+        site_req = Requests()
 
         post = set()
 
         while True:
-            req = site_requests.session.get(
+            req = site_req.session.get(
                 main_api, params=params).text
 
             nfn_val = req.split('"nextFromNo":')[1].split(',')[0].strip('"')
@@ -60,7 +60,7 @@ def get_data(hd):
             if nfn_val == "":
                 break
         
-        site_requests.session.close()
+        site_req.session.close()
         print(f"Found {len(post)} post(s)")
 
         for i in post:
@@ -78,12 +78,12 @@ def get_data(hd):
             'isExpertMy': 'true',
         }
 
-        site_requests = Requests()
+        site_req = Requests()
 
         series = []
 
         while True:
-            req = site_requests.session.get(
+            req = site_req.session.get(
                 series_list_api, params=params).text
 
             nfn_val = req.split('"nextFromNo":')[1].split(',')[0].strip('"')
@@ -100,7 +100,7 @@ def get_data(hd):
             if nfn_val == "":
                 break
 
-        site_requests.session.close()
+        site_req.session.close()
         print(f"Found {len(series)} series(s)")
 
         for i in series:
@@ -123,12 +123,12 @@ def get_data(hd):
             'totalCount': 0,
         }
 
-        site_requests = Requests()
+        site_req = Requests()
 
         post = []
 
         while True:
-            req = site_requests.session.get(post_list_api, params=params).text
+            req = site_req.session.get(post_list_api, params=params).text
             nfn_val = req.split('"nextFromNo":')[1].split(',')[0].strip('"')
             html_cont = req.split('"html":"')[1].split('","')[0]
             html_cont = html.unescape(html_cont)
@@ -143,7 +143,7 @@ def get_data(hd):
             if nfn_val == "":
                 break
 
-        site_requests.session.close()
+        site_req.session.close()
         print(f"Found {len(post)} post(s)")
 
         for i in post:
@@ -151,8 +151,8 @@ def get_data(hd):
 
     def naverpost_post(hd):
         """Get post data"""
-        site_requests = Requests()
-        site = site_requests.session.get(hd).text
+        site_req = Requests()
+        site = site_req.session.get(hd).text
 
         post_writer = html.unescape(site.split(
             "meta property=\"og:author\" content=\"")[1]
@@ -194,7 +194,7 @@ def get_data(hd):
                 src = item.split('?')[0]
                 img_list.append(src)
 
-        site_requests.session.close()
+        site_req.session.close()
 
         print(f"Writer: {post_writer}")
         print(f"Series: {post_series}")

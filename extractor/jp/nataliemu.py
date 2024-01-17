@@ -15,8 +15,8 @@ SITE_INFO = Site(hostname="natalie.mu", name="Natalie 音楽ナタリー")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = Requests()
-    soup = site_parser._parse(site_requests.session.get(hd).text)
+    site_req = Requests()
+    soup = site_parser._parse(site_req.session.get(hd).text)
 
     json_raw = soup.find('script', type='application/ld+json')
     json_data = re.sub(r'\\/', '/', bytes(json_raw.string,
@@ -35,6 +35,7 @@ def get_data(hd):
     for item in content.findAll('img'):
         img_list.append(item['data-src'].split('?')[0])
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")

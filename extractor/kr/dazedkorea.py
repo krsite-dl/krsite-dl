@@ -11,8 +11,8 @@ SITE_INFO = Site(hostname="dazedkorea.com", name="Dazed Korea")
 
 def get_data(hd):
     site_parser = SiteParser()
-    site_requests = Requests()
-    soup = site_parser._parse(site_requests.session.get(hd).text)
+    site_req = Requests()
+    soup = site_parser._parse(site_req.session.get(hd).text)
 
     post_title = soup.find('h1', class_='title').text.strip()
     post_summary = soup.find('h2', class_='summary').text.strip()
@@ -27,6 +27,7 @@ def get_data(hd):
     for item in content.findAll('img'):
         img_list.append('http://dazedkorea.com' + item.get('src'))
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Summary: {post_summary}")
     print(f"Date: {post_date}")

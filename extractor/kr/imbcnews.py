@@ -13,8 +13,8 @@ SITE_INFO = Site(hostname="enews.imbc.com", name="iMBC News")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = Requests()
-    soup = site_parser._parse(site_requests.session.get(hd).text)
+    site_req = Requests()
+    soup = site_parser._parse(site_req.session.get(hd).text)
 
     post_title = soup.find('h2').text.strip()
     post_date = soup.find('span', class_='date').text.strip()
@@ -33,6 +33,7 @@ def get_data(hd):
     post_date = re.sub('[\u3131-\uD7A3]+', '', post_date)
     post_date = datetime.datetime.strptime(post_date, '%Y-%m-%d %H:%M')
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")
