@@ -3,7 +3,7 @@
 import datetime
 import json
 
-from common.common_modules import SiteRequests, SiteParser
+from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -16,7 +16,7 @@ def get_data(hd):
     img_list = []
 
     site_parser = SiteParser()
-    site_requests = SiteRequests()
+    site_requests = Requests()
     soup = site_parser._parse(site_requests.session.get(hd).text)
 
     next_data = soup.find('script', id='__NEXT_DATA__').contents[0]

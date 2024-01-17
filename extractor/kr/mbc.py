@@ -2,7 +2,7 @@
 
 import datetime
 
-from common.common_modules import SiteRequests
+from common.common_modules import Requests
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -15,7 +15,7 @@ def get_data(hd):
     api = f'https://mbcinfo.imbc.com/api/photo/m_info?intIdx={idx}'
     img_api = f'https://mbcinfo.imbc.com/api/download?file='
 
-    site_req = SiteRequests()
+    site_req = Requests()
     r = site_req.session.get(api)
     json_data = r.json()
 

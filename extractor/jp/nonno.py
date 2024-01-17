@@ -6,7 +6,7 @@ import re
 
 from pytz import timezone
 from urllib.parse import urlparse, urlunparse
-from common.common_modules import SiteRequests, SiteParser
+from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -16,7 +16,7 @@ SITE_INFO = Site(hostname="nonno.hpplus.jp", name="Non-no")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = SiteRequests()
+    site_requests = Requests()
     soup = site_parser._parse(site_requests.session.get(hd).text)
 
     # article info

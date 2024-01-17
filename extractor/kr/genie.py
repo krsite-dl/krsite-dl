@@ -5,7 +5,7 @@ import re
 
 from rich import print
 from urllib.parse import urlparse
-from common.common_modules import SiteRequests, SiteParser
+from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -17,7 +17,7 @@ def get_data(hd):
     hostname = urlparse(hd).hostname
 
     site_parser = SiteParser()
-    site_requests = SiteRequests()
+    site_requests = Requests()
 
     def genie_artist():
         soup = site_parser._parse(site_requests.session.get(hd).text)

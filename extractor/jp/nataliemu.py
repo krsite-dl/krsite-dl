@@ -4,7 +4,7 @@ import datetime
 import json
 import re
 
-from common.common_modules import SiteRequests, SiteParser
+from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -15,7 +15,7 @@ SITE_INFO = Site(hostname="natalie.mu", name="Natalie 音楽ナタリー")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = SiteRequests()
+    site_requests = Requests()
     soup = site_parser._parse(site_requests.session.get(hd).text)
 
     json_raw = soup.find('script', type='application/ld+json')

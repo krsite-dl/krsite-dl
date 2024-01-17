@@ -6,7 +6,7 @@ import json
 import re
 
 from rich import print
-from common.common_modules import SiteRequests
+from common.common_modules import Requests
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -15,7 +15,7 @@ SITE_INFO = Site(hostname="programs.sbs.co.kr", name="SBS Program")
 
 def get_data(hd):
     """Get data"""
-    site_req = SiteRequests()
+    site_req = Requests()
     board_no = hd.split('board_no=')[-1].split('&')[0]
     parent_name = re.search(
         r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){1}/([^/?]+)', hd).group(3)
