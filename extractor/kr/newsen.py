@@ -11,7 +11,7 @@ SITE_INFO = Site(hostname="newsen.com", name="Newsen")
 
 def get_data(hd):
     """Get data"""
-    print("Not supported yet")
+    print("Broken")
     # parser = SeleniumParser()
     # w = parser._requests(hd)
 

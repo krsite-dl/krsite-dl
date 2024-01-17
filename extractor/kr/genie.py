@@ -17,10 +17,10 @@ def get_data(hd):
     hostname = urlparse(hd).hostname
 
     site_parser = SiteParser()
-    site_requests = Requests()
+    site_req = Requests()
 
     def genie_artist():
-        soup = site_parser._parse(site_requests.session.get(hd).text)
+        soup = site_parser._parse(site_req.session.get(hd).text)
 
         artist_edm_release = soup.find('div', class_='artist-edm-list-insert')
 
@@ -34,9 +34,10 @@ def get_data(hd):
                 [magazine_date, magazine_title,
                  f"https://{hostname}{li.find('a')['href']}"])
 
-        print("Artist: %s" % soup.find('meta', property='og:title')
-              ['content'].strip().strip(' - genie'))
-        print("Found %s magazine(s)" % len(magazine_list))
+        site_req.session.close()
+        print(f"Artist: {soup.find('meta', property='og:title')
+              ['content'].strip().strip(' - genie')}")
+        print(f"Found {len(magazine_list)} magazine(s)")
 
         for i in magazine_list:
             genie_magazine(i)
@@ -45,7 +46,7 @@ def get_data(hd):
         """Get magazine data"""
         mag_date, mag_title, mag_url = data
 
-        soup = site_parser._parse(site_requests.session.get(hd).text)
+        soup = site_parser._parse(site_req.session.get(hd).text)
 
         magazine_view = soup.find('div', class_='magazine-view')
 

@@ -13,8 +13,8 @@ SITE_INFO = Site(hostname="news1.kr", name="News1")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = Requests()
-    soup = site_parser._parse(site_requests.session.get(hd).text)
+    site_req = Requests()
+    soup = site_parser._parse(site_req.session.get(hd).text)
 
     post_title = soup.find('meta', property='og:title')[
         'content'].strip().encode('latin-1').decode('utf-8', 'ignore')
@@ -34,6 +34,7 @@ def get_data(hd):
                 'article', 'original'), item['alt'].strip()))
             # print(item['alt'].strip())
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")

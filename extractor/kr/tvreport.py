@@ -13,8 +13,8 @@ SITE_INFO = Site(hostname="tvreport.co.kr", name="TV Report")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = Requests()
-    soup = site_parser._parse(site_requests.session.get(hd).text)
+    site_req = Requests()
+    soup = site_parser._parse(site_req.session.get(hd).text)
 
     img_list = []
 
@@ -29,6 +29,7 @@ def get_data(hd):
     post_date = datetime.datetime.strptime(post_date, '%Y%m%d %H:%M:%S')
     post_date_short = post_date.strftime('%y%m%d')
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")

@@ -13,8 +13,8 @@ SITE_INFO = Site(hostname="sportsw.kr", name="SportsW")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = Requests()
-    soup = site_parser._parse(site_requests.session.get(hd).text)
+    site_req = Requests()
+    soup = site_parser._parse(site_req.session.get(hd).text)
 
     post_title = soup.find('meta', property='og:title')['content'].strip()
     post_date = soup.find('meta', property='article:published_time')[
@@ -31,6 +31,7 @@ def get_data(hd):
         img_list.append('https://sportsw.kr' +
                         img.get('src').replace('_thum', ''))
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")

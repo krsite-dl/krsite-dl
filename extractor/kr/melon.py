@@ -15,14 +15,14 @@ def get_data(hd):
     artist_id = re.search(r'(?<=artistId=)\d+', hd).group(0)
 
     site_parser = SiteParser()
-    site_requests = Requests()
-    soup = site_parser._parse(site_requests.session.get(hd).text)
+    site_req = Requests()
+    soup = site_parser._parse(site_req.session.get(hd).text)
 
     post_title = soup.find('meta', property='og:title')['content'].strip()
 
     init_url = f'https://www.melon.com/artist/photoPaging.htm?startIndex=1&pageSize=5000&orderBy=NEW&listType=0&artistId={artist_id}'
 
-    soup = site_parser._parse(site_requests.session.get(init_url).text)
+    soup = site_parser._parse(site_req.session.get(init_url).text)
 
     photo_list = soup.find('div', class_='photo_list')
 
@@ -30,6 +30,7 @@ def get_data(hd):
         img_list.append(re.sub(r'(_\d+)(?=\.jpg)', '_org',
                         re.sub(r'(?<=.jpg).*$', '', item['src'])))
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Found {len(img_list)} image(s)")
 
