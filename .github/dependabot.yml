@@ -12,7 +12,7 @@ updates:
       time: "09:00"
       timezone: "Asia/Seoul"
     target-branch: "dev"
-    versioning-strategy: widen
+    versioning-strategy: auto
     labels:
       - "pip dependencies"
     reviewers:
