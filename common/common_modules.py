@@ -1,5 +1,6 @@
 import requests
 import time
+import urllib.parse as urlparse
 
 from bs4 import BeautifulSoup
 from client.user import User
@@ -44,3 +45,11 @@ class SiteParser:
 
     def _parse(self, html_cont):
         return BeautifulSoup(html_cont, 'html.parser')
+
+
+class Encode:
+    def __init__(self):
+        self.encode = None
+
+    def _encode_kr(self, string):
+        return urlparse.unquote(string, encoding='utf-8')
