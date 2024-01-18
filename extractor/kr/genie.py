@@ -19,27 +19,29 @@ def get_data(hd):
     site_parser = SiteParser()
     site_req = Requests()
 
-    def genie_artist():
-        soup = site_parser._parse(site_req.session.get(hd).text)
+    def genie_artist(hd):
+        r = site_req.session.get(hd).text
 
-        artist_edm_release = soup.find('div', class_='artist-edm-list-insert')
+        artist_edm_release = r.split('artist-edm-list-insert">')[1].split('</div>')[0]
 
-        magazine_list = []
+        magazine_list = set()
 
-        for li in artist_edm_release.find_all('li'):
-            p = li.find_all('p')
-            magazine_date = p[0].text.strip()
-            magazine_title = p[1].text.strip()
-            magazine_list.append(
-                [magazine_date, magazine_title,
-                 f"https://{hostname}{li.find('a')['href']}"])
+        pattern = re.compile(r'<li[^>]*>(.*?)</li>', re.DOTALL)
+        matches = pattern.findall(artist_edm_release)
+        for match in matches:
+            href_p = re.compile(r'href="(.*?)"')
+            href = href_p.findall(match)[0]
+            date_p = re.compile(r'<p class="date">(.*?)</p>', re.DOTALL)
+            date = date_p.findall(match)[0]
+            title_p = re.compile(r'<p>(.*?)</p>')
+            title = title_p.findall(match)[0]
+            magazine_list.add((date, title, f"https://{hostname}{href}"))
 
         site_req.session.close()
-        artist = soup.find('meta', property='og:title')
-        ['content'].strip().strip(' - genie')
+        artist = r.split("meta property=\"og:title\" content=\"")[1].split("\"")[0].strip(" - genie")
         print(f"Artist: {artist}")
         print(f"Found {len(magazine_list)} magazine(s)")
-
+        print(magazine_list)
         for i in magazine_list:
             genie_magazine(i)
 
@@ -47,7 +49,7 @@ def get_data(hd):
         """Get magazine data"""
         mag_date, mag_title, mag_url = data
 
-        soup = site_parser._parse(site_req.session.get(hd).text)
+        soup = site_parser._parse(site_req.session.get(mag_url).text)
 
         magazine_view = soup.find('div', class_='magazine-view')
 
@@ -56,6 +58,7 @@ def get_data(hd):
             image = re.sub(r'(?<=.jpg).*$', '', image['src'])
             img_list.append(f"https:{image}")
 
+        mag_date = re.sub(r'\s+', '', mag_date)
         mag_date = datetime.datetime.strptime(mag_date, '%Y.%m.%d')
         mag_date_short = mag_date.strftime('%y%m%d')
 
@@ -75,4 +78,4 @@ def get_data(hd):
 
     if f"{hostname}/detail/artistInfo" in hd:
         print("[bold blue]From Artist[/bold blue]")
-        genie_artist()
+        genie_artist(hd)
