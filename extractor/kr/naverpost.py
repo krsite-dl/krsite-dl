@@ -108,7 +108,6 @@ def get_data(hd):
         site_req.session.close()
         print(f"Found {len(post)} post(s)")
 
-        print(post)
         for i in post:
             naverpost_post(i)
 
