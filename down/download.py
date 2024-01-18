@@ -113,6 +113,7 @@ class DownloadHandler():
                     requests.exceptions.ConnectionError,
                     requests.exceptions.Timeout,
                     requests.exceptions.TooManyRedirects,
+                    requests.exceptions.ChunkedEncodingError,
                     requests.exceptions.RequestException) as e:
                 self.logger.log_error(
                     f"{type(e).__name__}. Retrying... ({attempt}/{self.MAX_RETRIES})")
