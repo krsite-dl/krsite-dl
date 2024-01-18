@@ -22,7 +22,8 @@ def get_data(hd):
     def genie_artist(hd):
         r = site_req.session.get(hd).text
 
-        artist_edm_release = r.split('artist-edm-list-insert">')[1].split('</div>')[0]
+        artist_edm_release = r.split(
+            'artist-edm-list-insert">')[1].split('</div>')[0]
 
         magazine_list = set()
 
@@ -38,10 +39,10 @@ def get_data(hd):
             magazine_list.add((date, title, f"https://{hostname}{href}"))
 
         site_req.session.close()
-        artist = r.split("meta property=\"og:title\" content=\"")[1].split("\"")[0].strip(" - genie")
+        artist = r.split("meta property=\"og:title\" content=\"")[
+            1].split("\"")[0].strip(" - genie")
         print(f"Artist: {artist}")
         print(f"Found {len(magazine_list)} magazine(s)")
-        print(magazine_list)
         for i in magazine_list:
             genie_magazine(i)
 
