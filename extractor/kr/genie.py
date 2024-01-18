@@ -35,8 +35,9 @@ def get_data(hd):
                  f"https://{hostname}{li.find('a')['href']}"])
 
         site_req.session.close()
-        print(f"Artist: {soup.find('meta', property='og:title')
-              ['content'].strip().strip(' - genie')}")
+        artist = soup.find('meta', property='og:title')
+        ['content'].strip().strip(' - genie')
+        print(f"Artist: {artist}")
         print(f"Found {len(magazine_list)} magazine(s)")
 
         for i in magazine_list:
