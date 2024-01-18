@@ -112,8 +112,8 @@ class DownloadHandler():
                     requests.exceptions.HTTPError,
                     requests.exceptions.ConnectionError,
                     requests.exceptions.Timeout,
-                    requests.exceptions.RequestException,
-                    requests.exceptions.TooManyRedirects) as e:
+                    requests.exceptions.TooManyRedirects,
+                    requests.exceptions.RequestException) as e:
                 self.logger.log_error(
                     f"{type(e).__name__}. Retrying... ({attempt}/{self.MAX_RETRIES})")
                 time.sleep(self.RETRY_DELAY)

@@ -28,7 +28,12 @@ class Requests:
         while True:
             try:
                 self.session.request(url, verify=self.certificate, **kwargs)
-            except (exceptions.ConnectionError, exceptions.Timeout, exceptions.HTTPError) as e:
+            except (exceptions.SSLError,
+                    exceptions.HTTPError,
+                    exceptions.ConnectionError,
+                    exceptions.Timeout,
+                    exceptions.TooManyRedirects,
+                    exceptions.RequestException) as e:
                 logger.info(
                     f"{type(e).__name__}. Retrying... ({tries}/{self.retries})")
                 time.sleep(5)
