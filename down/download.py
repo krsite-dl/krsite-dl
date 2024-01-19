@@ -1,4 +1,5 @@
 import requests
+import urllib3
 import os
 import re
 import time
@@ -108,7 +109,14 @@ class DownloadHandler():
             try:
                 response = session.get(url, verify=certificate, stream=True)
                 return response
-            except (requests.exceptions.SSLError, requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as e:
+            except (requests.exceptions.SSLError,
+                    requests.exceptions.HTTPError,
+                    requests.exceptions.ConnectionError,
+                    requests.exceptions.Timeout,
+                    requests.exceptions.TooManyRedirects,
+                    requests.exceptions.ChunkedEncodingError,
+                    requests.exceptions.RequestException,
+                    urllib3.exceptions.IncompleteRead) as e:
                 self.logger.log_error(
                     f"{type(e).__name__}. Retrying... ({attempt}/{self.MAX_RETRIES})")
                 time.sleep(self.RETRY_DELAY)
@@ -193,7 +201,7 @@ class DownloadHandler():
                     with Progress(refresh_per_second=1) as prog:
                         task = prog.add_task(
                             "Downloading...", total=content_length)
-                        for chunk in response.iter_content(chunk_size=20480):
+                        for chunk in response.iter_content(chunk_size=4194304):
                             current_size += len(chunk)
                             f.write(chunk)
                             prog.update(task, completed=current_size)
@@ -209,6 +217,7 @@ class DownloadHandler():
                     os.utime(file_real, (timestamp, timestamp))
                     os.utime(dirs, (timestamp, timestamp))
                 continue
+        self.duplicate_counts.clear()
 
     def downloader(self, payload):
         medialist, dirs, option = (
