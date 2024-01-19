@@ -1,4 +1,5 @@
 import requests
+import urllib3
 import os
 import re
 import time
@@ -114,7 +115,8 @@ class DownloadHandler():
                     requests.exceptions.Timeout,
                     requests.exceptions.TooManyRedirects,
                     requests.exceptions.ChunkedEncodingError,
-                    requests.exceptions.RequestException) as e:
+                    requests.exceptions.RequestException,
+                    urllib3.exceptions.IncompleteRead) as e:
                 self.logger.log_error(
                     f"{type(e).__name__}. Retrying... ({attempt}/{self.MAX_RETRIES})")
                 time.sleep(self.RETRY_DELAY)
