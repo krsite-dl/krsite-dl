@@ -2,7 +2,7 @@
 
 import datetime
 
-from common.common_modules import SiteRequests, SiteParser
+from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -12,8 +12,8 @@ SITE_INFO = Site(hostname="sbskpop.kr", name="SBS KPOP")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = SiteRequests()
-    soup = site_parser._parse(site_requests.session.get(hd).text)
+    site_req = Requests()
+    soup = site_parser._parse(site_req.session.get(hd).text)
 
     post_title = soup.find('meta', property='og:description')[
         'content'].strip()
@@ -47,6 +47,7 @@ def get_data(hd):
                         # print(highest_width_url)
                         img_list.append(highest_width_url)
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")

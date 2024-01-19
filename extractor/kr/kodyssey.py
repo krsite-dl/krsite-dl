@@ -3,7 +3,7 @@
 import datetime
 import re
 
-from common.common_modules import SiteRequests, SiteParser
+from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -13,8 +13,8 @@ SITE_INFO = Site(hostname="k-odyssey.com", name="K-odyssey")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = SiteRequests()
-    soup = site_parser._parse(site_requests.session.get(hd).text)
+    site_req = Requests()
+    soup = site_parser._parse(site_req.session.get(hd).text)
 
     img_list = []
 
@@ -31,6 +31,7 @@ def get_data(hd):
     post_date = post_date[:8] + ' ' + post_date[8:]
     post_date = datetime.datetime.strptime(post_date, '%Y%m%d %H:%M:%S')
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")

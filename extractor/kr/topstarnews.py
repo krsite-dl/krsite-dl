@@ -6,7 +6,7 @@ from rich import print
 from pytz import timezone
 from urllib.parse import urlparse, parse_qs, urlencode
 
-from common.common_modules import SiteRequests, SiteParser
+from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -16,11 +16,11 @@ SITE_INFO = Site(hostname="topstarnews.net", name="Topstarnews", location="KR")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = SiteRequests()
+    site_req = Requests()
 
     def iterate_pages():
         """Iterate pages until the end"""
-        soup = site_parser._parse(site_requests.session.get(hd).text)
+        soup = site_parser._parse(site_req.session.get(hd).text)
 
         pagination = soup.find('ul', class_='pagination')
 
@@ -48,7 +48,7 @@ def get_data(hd):
 
     def grab_post_urls(page_url):
         """Grab post urls from a page"""
-        soup = site_parser._parse(site_requests.session.get(hd).text)
+        soup = site_parser._parse(site_req.session.get(hd).text)
 
         section = soup.find('section', class_='article-custom-list')
 
@@ -65,7 +65,7 @@ def get_data(hd):
 
     def post_page(hd):
         """Grab post data"""
-        soup = site_parser._parse(site_requests.session.get(hd).text)
+        soup = site_parser._parse(site_req.session.get(hd).text)
 
         post_title = soup.find('meta', property='og:title')['content'].strip()
         post_dates = soup.find_all('meta', property='article:published_time')
@@ -107,3 +107,5 @@ def get_data(hd):
     else:
         print('[yellow]Iterating pages[/yellow]')
         iterate_pages()
+
+    site_req.session.close()

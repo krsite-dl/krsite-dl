@@ -3,7 +3,7 @@
 import datetime
 import re
 
-from common.common_modules import SiteRequests, SiteParser
+from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -13,8 +13,8 @@ SITE_INFO = Site(hostname="ent.sbs.co.kr", name="SBS News")
 def get_data(hd):
     """Get data"""
     site_parser = SiteParser()
-    site_requests = SiteRequests()
-    soup = site_parser._parse(site_requests.session.get(hd).text)
+    site_req = Requests()
+    soup = site_parser._parse(site_req.session.get(hd).text)
 
     post_title = soup.find('h1', class_='cth_title').text.strip()
     post_date = soup.find('span', class_='cth_text').text
@@ -27,6 +27,7 @@ def get_data(hd):
     for i in content.find_all('img'):
         img_list.append(i.get('data-v-src'))
 
+    site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")
