@@ -5,7 +5,7 @@
 ### krsite-dl
 | Version | Supported          |
 | ------- | ------------------ |
-| >=2023.12.25 | :white_check_mark: |
+| >=2024.01.19 | :white_check_mark: |
 
 
 ### python3
@@ -13,7 +13,7 @@ Supports stable versions of python3
 
 | Version | Supported          |
 | ------- | ------------------ |
-| >=3.10  | :white_check_mark: |
+| >=3.7  | :white_check_mark: |
 | < 3.10  | :x:                |
 
 ## Reporting a Vulnerability
