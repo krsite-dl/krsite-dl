@@ -12,9 +12,11 @@ If you like this project, please consider giving it a star! Thanks!
 
 ## Guides & Installation
 > [!IMPORTANT]
-> 1. Make sure you have `python3` at least version 3.6 installed and executeable in your system's PATH.
+> 1. Make sure you have `python3` at least version 3.7 installed and executeable in your system's PATH.
 >
-> 2. Run `pip3 install -r requirements.txt` to install dependencies
+> 2. Clone this repository `git clone -b master git@github.com:danrynr/krsite-dl.git`
+>
+> 3. Run `pip3 install -r requirements.txt` to install dependencies
 
 
 > [!NOTE]
@@ -113,4 +115,4 @@ misc:
 
 # Disclaimer
 
-This program is solely intended for the purpose of easily obtaining images from Korean websites where the images are publicly available and not behind any paywall or login. By using this program, you agree that you are responsible for your own actions. The author and maintainer of this program is not responsible for any loss or damage caused by the use of this program.
+This program is solely intended for the purpose of easily obtaining images from Korean websites where the images are publicly available and not behind any paywall or login. By using this program, you agree that you are responsible for your own actions and your action afterwards. The author and maintainer of this program is not responsible for any loss or damage caused by the use of this program.
