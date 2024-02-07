@@ -1,6 +1,7 @@
 import requests
 import time
 import urllib.parse as urlparse
+import urllib3
 
 from bs4 import BeautifulSoup
 from client.user import User
@@ -22,6 +23,7 @@ class Requests:
     def get(self, url, retries=5, **kwargs):
         self.retries = retries
         exceptions = requests.exceptions
+        exceptions2 = urllib3.exceptions
         logger = Logger()
         tries = 1
 
@@ -33,7 +35,9 @@ class Requests:
                     exceptions.ConnectionError,
                     exceptions.Timeout,
                     exceptions.TooManyRedirects,
-                    exceptions.RequestException) as e:
+                    exceptions.RequestException,
+                    exceptions2.IncompleteRead,
+                    exceptions2.ProtocolError) as e:
                 logger.info(
                     f"{type(e).__name__}. Retrying... ({tries}/{self.retries})")
                 time.sleep(5)

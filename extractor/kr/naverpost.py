@@ -224,6 +224,12 @@ def get_data(hd):
 
         img_list = []
 
+        pattern0 = re.compile(r'style="background-image: url\(([^)]+)\)')
+        matches = pattern0.findall(site)
+        for match in matches:
+            src = match.split('?')[0]
+            img_list.append(src)
+
         pattern = re.compile(r"data-linkdata='([^']+)'")
         matches = pattern.findall(site)
         for match in matches:
@@ -262,7 +268,7 @@ def get_data(hd):
             option='naverpost',
         )
 
-        DirectoryHandler().handle_directory(payload)
+        # DirectoryHandler().handle_directory(payload)
 
     if re.search(pattern, hd):
         print("[bold green]Naver Post Main Page[/bold green]")
