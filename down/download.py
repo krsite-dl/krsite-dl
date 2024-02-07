@@ -116,7 +116,8 @@ class DownloadHandler():
                     requests.exceptions.TooManyRedirects,
                     requests.exceptions.ChunkedEncodingError,
                     requests.exceptions.RequestException,
-                    urllib3.exceptions.IncompleteRead) as e:
+                    urllib3.exceptions.IncompleteRead,
+                    urllib3.exceptions.ProtocolError) as e:
                 self.logger.log_error(
                     f"{type(e).__name__}. Retrying... ({attempt}/{self.MAX_RETRIES})")
                 time.sleep(self.RETRY_DELAY)
