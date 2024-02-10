@@ -268,7 +268,7 @@ def get_data(hd):
             option='naverpost',
         )
 
-        # DirectoryHandler().handle_directory(payload)
+        DirectoryHandler().handle_directory(payload)
 
     if re.search(pattern, hd):
         print("[bold green]Naver Post Main Page[/bold green]")
