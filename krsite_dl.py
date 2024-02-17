@@ -1,149 +1,113 @@
+
 import argparse
 import configparser
-import platform
 import os
+import platform
 import sys
-
+from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlparse
-from rich import print
-from common.logger import Logger
+from rich.progress import Progress
 import lazy_import
-
-parser = argparse.ArgumentParser()
-utility_group = parser.add_argument_group("utility")
-parser.add_argument("url",
-                    nargs='*',
-                    type=str,
-                    help="valid news/blog url")
-utility_group.add_argument("-c", "--config",
-                           type=str,
-                           help="File path to your config file")
-utility_group.add_argument("-a",
-                           type=str,
-                           help="Text file containing site urls")
-utility_group.add_argument("-d", "--destination",
-                           type=str,
-                           help="The destination path for the downloaded file.")
-utility_group.add_argument("-s", "--select",
-                           action="store_true",
-                           default=False,
-                           help="Select which images to download from each url.")
-misc_group = parser.add_argument_group("misc")
-misc_group.add_argument("--no-windows-filenames",
-                        action="store_true",
-                        help="(default=False) krsite-dl will not sanitize filenames")
-args = parser.parse_args()
+from common.logger import Logger
 
 
-def read_config(fpath):
-    # Reading settings from config file
-    if os.path.exists(fpath):
+class ConfigManager:
+    @staticmethod
+    def read_config(fpath):
+        if not os.path.exists(fpath):
+            return {}
         config = configparser.ConfigParser()
         config.read(fpath)
-        conf = {}
         if config.has_section('Settings'):
-            download_dir = config['Settings']['base_dir']
-            conf['destination_dir'] = download_dir
-        return conf
+            return dict(config.items('Settings'))
+        return {}
+
+    @staticmethod
+    def search_config():
+        config_locations = {
+            "Windows": [
+                os.path.join(os.getenv('APPDATA'), 'krsite-dl.conf'),
+                os.path.join(os.getenv('USERPROFILE'), 'krsite-dl', 'krsite-dl.conf'),
+                os.path.join(os.getenv('USERPROFILE'), 'krsite-dl.conf'),
+            ],
+            "Linux": [
+                '/etc/krsite-dl.conf',
+                os.path.join(os.path.expanduser('~/.config/krsite-dl'), 'krsite-dl.conf'),
+                os.path.join(os.path.expanduser('~'), 'krsite-dl.conf'),
+            ]
+        }
+        system = platform.system()
+        for location in config_locations.get(system, []):
+            if os.path.exists(location):
+                return ConfigManager.read_config(location)
+        return {}
 
 
-def search_config():
-    if platform.system() == "Windows":
-        config_locations = [
-            os.path.join(os.getenv('APPDATA'),
-                         os.path.expanduser('~'),
-                         'krsite-dl.conf'),
-            os.path.join(os.getenv('USERPROFILE'),
-                         os.path.expanduser('~'),
-                         'krsite-dl', 'krsite-dl.conf'),
-            os.path.join(os.getenv('USERPROFILE'),
-                         os.path.expanduser('~'),
-                         'krsite-dl.conf'),
-        ]
-        for config_location in config_locations:
-            if os.path.exists(config_location):
-                return read_config(config_location)
-    elif platform.system() == "Linux":
-        config_locations = [
-            '/etc/krsite-dl.conf',
-            os.path.join(os.path.expanduser('~/.config/krsite-dl'),
-                         'krsite-dl.conf'),
-            os.path.join(os.path.expanduser('~'),
-                         'krsite-dl.conf'),
-        ]
-        for config_location in config_locations:
-            if os.path.exists(config_location):
-                return read_config(config_location)
+class SiteHandler:
+    def __init__(self):
+        self.sites_available = lazy_import.imported_modules
 
-
-_conf_d = search_config()
-if args.destination:
-    pass
-else:
-    if _conf_d is None:
-        args.destination = os.path.join(os.path.expanduser('~'), 'Pictures')
-    else:
-        if _conf_d.get('destination_dir'):
-            args.destination = _conf_d.get('destination_dir')
-        if args.config:
-            args.destination = read_config(args.config).get('destination_dir')
-    if args.config:
-        args.destination = read_config(args.config).get('destination_dir')
-# print(args.destination)
-
-
-def check_site(url):
-    hostname = urlparse(url).hostname
-
-    sites_available = lazy_import.imported_modules
-
-    for module_name, module in sites_available.items():
-        if hasattr(module, 'SITE_INFO'):
-            site_info = module.SITE_INFO
-            if isinstance(site_info.hostname, str):
-                if module.SITE_INFO.hostname in hostname:
-                    print(f"[cyan]From {module_name}[/cyan]")
-                    print(f"[magenta]Url: {url}[/magenta]")
-                    module.get_data(url)
-            elif isinstance(site_info.hostname, list):
-                if any(item in hostname for item in site_info.hostname):
+    def check_site(self, url):
+        hostname = urlparse(url).hostname
+        for module_name, module in self.sites_available.items():
+            if hasattr(module, 'SITE_INFO'):
+                site_info = module.SITE_INFO
+                if isinstance(site_info.hostname, (str, list)) and hostname in site_info.hostname:
                     print(f"[cyan]From {module_name}[/cyan]")
                     print(f"[magenta]Url: {url}[/magenta]")
                     module.get_data(url)
 
 
-"""Main function"""
+def parse_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("url", nargs='*', type=str, help="valid news/blog url")
+    parser.add_argument("-c", "--config", type=str, help="File path to your config file")
+    parser.add_argument("-a", type=str, help="Text file containing site urls")
+    parser.add_argument("-d", "--destination", type=str, help="The destination path for the downloaded file.")
+    parser.add_argument("-s", "--select", action="store_true", default=False, help="Select which images to download from each url.")
+    parser.add_argument("--no-windows-filenames", action="store_true", help="(default=False) krsite-dl will not sanitize filenames")
+    parser.add_argument("--parallel", type=int, default=5, help="Number of parallel downloads")
+    return parser.parse_args()
 
 
 def main():
+    args = parse_arguments()
     logger = Logger("krsite-dl")
+    config_manager = ConfigManager()
+    site_handler = SiteHandler()
 
-    try:
+    # Load configuration
+    config = config_manager.search_config() or {}
+    destination_dir = args.destination or config.get('destination_dir', os.path.join(os.path.expanduser('~'), 'Pictures'))
+
+    # Setup ThreadPoolExecutor for parallel downloads
+    with ThreadPoolExecutor(max_workers=args.parallel) as executor:
+        futures = []
+
+        def download_site(url):
+            try:
+                site_handler.check_site(url)
+            except Exception as e:
+                logger.log_warning(f"An error occurred while downloading {url}: {e}")
+
         if args.a:
             with open(args.a, 'r', encoding='utf-8') as f:
                 for line in f:
-                    if line[0] == '#' or line[0] == ';' or line[0] == ']':
+                    if line.startswith(('#', ';', ']')):
                         continue
-                    check_site(line.strip())
-    except FileNotFoundError:
-        logger.log_warning(f"File not found: {args.a}")
-    except KeyboardInterrupt:
-        logger.log_warning("KeyboardInterrupt detected. Exiting gracefully.")
-        sys.exit(0)
+                    futures.append(executor.submit(download_site, line.strip()))
 
-    if args.a or args.url:
-        try:
-            for url in args.url:
-                check_site(url)
+        for url in args.url:
+            futures.append(executor.submit(download_site, url))
 
-        except AttributeError as e:
-            logger.log_error(f"Attribute Error: {e}")
-        except IndexError as e:
-            logger.log_error(f"Index Error: {e}")
-        except KeyboardInterrupt:
-            logger.log_warning(
-                "KeyboardInterrupt detected. Exiting gracefully.")
-            sys.exit(0)
+        # Progress bar
+        with Progress() as progress:
+            task = progress.add_task("[cyan]Downloading...", total=len(futures))
+            for future in futures:
+                result = future.result()  # Blocks until the future is done
+                progress.update(task, advance=1)
+
+    print(f"Download destination: {destination_dir}")
 
 
 if __name__ == '__main__':
