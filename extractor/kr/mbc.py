@@ -12,8 +12,6 @@ SITE_INFO = Site(hostname="mbc.co.kr", name="MBC")
 
 def get_data(hd):
     """Get data"""
-    # https://with.mbc.co.kr/m/pr/press/view.html?idx=32262
-    # https://with.mbc.co.kr/pr/press/view.html?idx=32262
 
     BASE = r"(?:https?://)?(with\.mbc\.co\.kr)?(\.m)?"
     pattern = BASE + r"(/pr.press/view.html)"
