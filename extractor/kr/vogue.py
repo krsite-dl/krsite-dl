@@ -1,6 +1,7 @@
 """Extractor for https://vogue.co.kr"""
 
 import datetime
+import re
 
 from pytz import timezone
 from common.common_modules import Requests, SiteParser
@@ -25,8 +26,7 @@ def get_data(hd):
     post_date = post_date.astimezone(tz).replace(tzinfo=None)
 
     content = soup.find('div', class_='contt')
-
-    # print(content)
+    content2 = soup.find('div', class_='masonry_grid')
 
     img_list = []
 
@@ -34,6 +34,17 @@ def get_data(hd):
         if item.get('data-src') is not None:
             i = item.get('data-src')
             img_list.append(i.split('-')[0] + '.' + i.split('.')[-1])
+
+    for item in content2.findAll('img'):
+        if item.get('data-src') is not None:
+            i = item.get('data-src')
+            img_list.append(i.split('-')[0] + '.' + i.split('.')[-1])
+
+    pattern0 = re.compile(r'style="background-image: url\(([^)]+)\)')
+    matches = pattern0.findall(soup.text)
+    for match in matches:
+        src = match.split('-')[0] + '.' + i.split('.')[-1]
+        img_list.append(src)
 
     site_req.session.close()
     print(f"Title: {post_title}")
