@@ -28,9 +28,6 @@ def get_data(hd):
     content = soup.find('div', class_='contt')
     content2 = soup.find('div', class_='masonry_grid')
 
-    # print(content)
-    # print(content2)
-
     img_list = []
 
     for item in content.findAll('img'):
