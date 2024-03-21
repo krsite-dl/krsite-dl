@@ -60,7 +60,6 @@ def get_data(hd):
 
     print(code_temp)
     
-    # Crafting API Payload
     for i in code_temp:
         code = i
         api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/{board_no}"
@@ -73,7 +72,7 @@ def get_data(hd):
             '_': token
         }
 
-        r = site_req.session.get(api, params=params) # GET Request to API
+        r = site_req.session.get(api, params=params)
 
         if 'err_code' not in r.text:
             break
