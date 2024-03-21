@@ -1,6 +1,11 @@
-[![CodeQL](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/github-code-scanning/codeql) [![Dependency Review](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/dependency-review.yml)
-
-If you like this project, please consider giving it a star! Thanks!
+[![Visitors](https://visitor-badge.laobi.icu/badge?page_id=danrynr.krsite-dl)](https://github.com/danrynr/krsite-dl)
+[![Stars](https://img.shields.io/github/stars/danrynr/krsite-dl)]()
+[![Forks](https://img.shields.io/github/forks/danrynr/krsite-dl
+)]()
+<br>
+[![CodeQL](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/danrynr/krsite-dl) [![Dependency Review](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/danrynr/krsite-dl)
+[![License](https://img.shields.io/github/license/danrynr/krsite-dl
+)](https://github.com/danrynr/krsite-dl)
 
 ## Table of Contents
 * [Guides & Installation](#Guides--Installation)

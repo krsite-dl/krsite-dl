@@ -23,24 +23,25 @@ def get_data(hd):
         r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){3}/([^/?]+)', hd).group(3)
     print(f"Board no: {board_no}")
 
+
+    # Get all board information
     menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/menu/"
-
     menu_r = site_req.session.get(menu_api + parent_name).json()
-
     category = menu_r['program']['title']
-
     all_board = []
-    for menu in menu_r['menus']:
+
+    def iterate_menu(menu):
         if menu['board_code'] is not None:
             menu_id = menu['mnuid']
             board_code = menu['board_code'].split(',')
             all_board.append({menu_id: board_code})
-            if menu['submenus']:
-                for submenu in menu['submenus']:
-                    if submenu['board_code'] is not None:
-                        menu_id = submenu['mnuid']
-                        board_code = submenu['board_code'].split(',')
-                        all_board.append({menu_id: board_code})
+
+    for menu in menu_r['menus']:
+        iterate_menu(menu)
+        # Check if there are submenus
+        if menu['submenus']:
+            for submenu in menu['submenus']:
+                iterate_menu(submenu)
 
     code_temp = []
 
@@ -57,8 +58,9 @@ def get_data(hd):
 
     code = ''
 
+    print(code_temp)
+    
     for i in code_temp:
-        # print(f"[green]Code:[/green] {i}")
         code = i
         api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/{board_no}"
 
