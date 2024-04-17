@@ -1,10 +1,10 @@
 # REQUIRED PACKAGE
 # RUN `pip install -r requirements.txt` to install all the required packages
-requests
-bs4
-pytz
-rich
-fake-useragent
-pydantic
-typing_extensions
-inquirer
+requests>=2.31.0
+bs4>=0.0.2
+pytz>=2024.1
+rich>=13.7.1
+fake-useragent>=1.5.1
+pydantic>=2.6.4
+typing_extensions>=4.10.0
+inquirer>=3.2.4
