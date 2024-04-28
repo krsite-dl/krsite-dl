@@ -1,3 +1,11 @@
+"""
+Module: data_structure.py
+Author: danrynr
+
+Description:
+This module provides all the data structures used in the project.
+"""
+
 from pydantic import BaseModel
 from typing import Optional
 
