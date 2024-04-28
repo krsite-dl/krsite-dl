@@ -37,7 +37,7 @@ def get_data(hd):
     dir = [SITE_INFO.name, post_title]
 
     # Since we got the full list of images from the beginning, reverse it to get the latest image first
-    img_list.reverse() 
+    # img_list.reverse() 
 
     payload = DataPayload(
         directory_format=dir,
