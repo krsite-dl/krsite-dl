@@ -44,9 +44,9 @@ def get_data(hd):
         print(f"Artist: {artist}")
         print(f"Found {len(magazine_list)} magazine(s)")
         for i in magazine_list:
-            genie_magazine(i)
+            genie_magazine(i, artist)
 
-    def genie_magazine(data):
+    def genie_magazine(data, *args):
         """Get magazine data"""
         mag_date, mag_title, mag_url = data
 
@@ -67,7 +67,9 @@ def get_data(hd):
         print(f"Date: {mag_date}")
         print(f"Found {len(img_list)} image(s)")
 
-        dir = [SITE_INFO.name, f"{mag_date_short} {mag_title}"]
+        artist = args[0]
+
+        dir = [SITE_INFO.name, f"{artist}", f"{mag_date_short} {mag_title}"]
 
         payload = DataPayload(
             directory_format=dir,
