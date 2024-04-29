@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+
+"""
+Module: krsite_dl.py
+Author: danrynr
+
+Description:
+This module is the main entry point for the application.
+"""
+
 import argparse
 import configparser
 import platform
@@ -120,9 +130,9 @@ def main():
 
     try:
         if args.a:
-            with open(args.a, 'r', encoding='utf-8') as f:
+            with open(args.a, 'r') as f:
                 for line in f:
-                    if line[0] == '#' or line[0] == ';' or line[0] == ']':
+                    if line.startswith('#', ';', ']'):
                         continue
                     check_site(line.strip())
     except FileNotFoundError:
