@@ -58,7 +58,7 @@ def get_data(hd):
 
     code = ''
 
-    print(code_temp)
+    # print(code_temp)
     
     for i in code_temp:
         code = i
