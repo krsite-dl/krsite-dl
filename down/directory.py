@@ -21,6 +21,7 @@ class DirectoryHandler:
         for string in strings:
             if not self.args.no_windows_filenames:
                 string = re.sub(self.reserved_pattern, '', string)
+                string = re.sub(r'\.+?$', '', string) # remove trailing dots
             sanitized_strings.append(string)
         return sanitized_strings
 
