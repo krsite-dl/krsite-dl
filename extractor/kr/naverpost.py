@@ -222,35 +222,39 @@ def get_data(hd):
         post_date = datetime.datetime.strptime(post_date, '%Y.%m.%d. %H:%M:%S')
         post_date_short = post_date.strftime('%y%m%d')
 
-        img_list = []
+        img_list = set()
 
+        # [ IMAGE FROM DIFFERENT POST LAYOUT ]
+        # Get Image from header
         pattern0 = re.compile(r'style="background-image: url\(([^)]+)\)')
         matches = pattern0.findall(site)
         for match in matches:
-            src = match.split('?')[0]
-            img_list.append(src)
+            src = match.split('?')[0].strip('\'"')
+            img_list.add(src)
 
+        # Get Image from new post layout
         pattern = re.compile(r"data-linkdata='([^']+)'")
         matches = pattern.findall(site)
         for match in matches:
             try:
                 linkdata = json.loads(match)
                 if 'src' in linkdata and 'storep' not in linkdata['src']:
-                    src = linkdata['src'].split('?')[0]
-                    img_list.append(src)
+                    src = linkdata['src'].split('?')[0].strip('\'"')
+                    img_list.add(src)
             except json.JSONDecodeError as e:
                 print(f"Error decoding JSON: {e}")
 
+        # Get Image from older post layout
         pattern2 = re.compile(r'data-realImagePath="([^"]+)"')
         matches2 = pattern2.findall(site)
         for match in matches2:
             if 'storep' not in match:
-                src = match.split('?')[0]
-                img_list.append(src)
+                src = match.split('?')[0].strip('\'"')
+                img_list.add(src)
         # for item in site.split("data-realImagePath=")[1:]:
         #     if 'storep' not in item:
         #         src = item.split('?')[0]
-        #         img_list.append(src)
+        #         img_list.add(src)
 
         site_req.session.close()
         print(f"Writer: {post_writer}")
