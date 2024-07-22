@@ -132,7 +132,7 @@ def main():
         if args.a:
             with open(args.a, 'r') as f:
                 for line in f:
-                    if line.startswith('#', ';', ']'):
+                    if line.startswith(('#', ';', ']')):
                         continue
                     check_site(line.strip())
     except FileNotFoundError:
