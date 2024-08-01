@@ -4,7 +4,7 @@ import datetime
 import re
 import html
 
-from common.common_modules import Requests, SiteParser
+from common.common_modules import Requests
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -12,7 +12,6 @@ SITE_INFO = Site(hostname="tistory.com", name="Tistory", location="KR")
 
 
 def get_data(hd):
-    site_parser = SiteParser()
     site_req = Requests()
     site = site_req.session.get(hd).text
 
