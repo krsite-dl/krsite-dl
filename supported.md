@@ -31,6 +31,7 @@
 | SBS Program | https://programs.sbs.co.kr/ | Post Page | Image |
 | SBS News | https://news.sbs.co.kr/ | Post Page | Image |
 | SBS KPOP | https://sbskpop.kr/ | Post Page | Image |
+| Tistory | https://www.tistory.com/ | Post Page | Image |
 | Topstarnews | https://www.topstarnews.net/ | Post Page, Search Result Page, [HD Posts Page](https://www.topstarnews.net/news/articleList.html?sc_article_type=C&view_type=tm) | Image 🚧 |
 | TV Report (TV리포트) | https://tvreport.co.kr/ | Post Page | Image |
 | TV JTBC | https://tv.jtbc.co.kr/ | Post Page | Image |
