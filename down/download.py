@@ -64,7 +64,7 @@ class DownloadHandler():
         return base, x
 
     def _process_item(self, item):
-        if isinstance(item, list) and len(item) == 2:
+        if isinstance(item, (list, dict, tuple)) and len(item) == 2:
             url, filename = item[0], item[1]
         else:
             url, filename = item, self._get_filename(item)
@@ -129,9 +129,19 @@ class DownloadHandler():
     def _download_logic(self, medialist, dirs, option=None):
         for url in medialist:
             # get url and separate the filename as a new variable
-            base, ext = self._get_filename(url)
-            filename = self._encode_kr(base)
-            ext = self._extension_to_mime(ext)
+
+            if option == "defined":
+                print("here")
+                # each list has a url with its predefined filename
+                url, name = self._process_item(url)
+                name = self._encode_kr(name)
+                base, ext = self._get_filename(name)
+                filename = base
+            else:
+                # split the filename and extension from url
+                base, ext = self._get_filename(url)
+                # encode the filename to appropriate format
+                filename = self._encode_kr(base)
 
             if option == "naverpost":
                 if filename in self.duplicate_counts:
@@ -145,7 +155,6 @@ class DownloadHandler():
 
             # request
             certificate = self.certificate
-            # response = self.session.get(url, verify=certificate, stream=True)
             response = self._retry_request(url, certificate, self.session)
 
             if response is None:
