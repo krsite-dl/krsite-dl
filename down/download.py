@@ -132,13 +132,16 @@ class DownloadHandler():
 
             if option == "defined":
                 print("here")
-                url, name = self._process_item(url) # each list has a url with its predefined filename
+                # each list has a url with its predefined filename
+                url, name = self._process_item(url)
                 name = self._encode_kr(name)
                 base, ext = self._get_filename(name)
                 filename = base
             else:
-                base, ext = self._get_filename(url) # split the filename and extension from url
-                filename = self._encode_kr(base) # encode the filename to appropriate format
+                # split the filename and extension from url
+                base, ext = self._get_filename(url)
+                # encode the filename to appropriate format
+                filename = self._encode_kr(base)
 
             if option == "naverpost":
                 if filename in self.duplicate_counts:

@@ -12,6 +12,7 @@ from certifi import where
 
 class User:
     """User class to get user agent and certificate location"""
+
     def __init__(self):
         self.ua = UserAgent(
             browsers=['firefox', 'chrome'],

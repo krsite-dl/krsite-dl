@@ -21,6 +21,7 @@ from common.logger import Logger
 
 class Requests:
     """Send HTTP requests using requests module"""
+
     def __init__(self):
         user = User()
 
@@ -57,12 +58,14 @@ class Requests:
             finally:
                 tries += 1
                 if tries > self.retries:
-                    logger.info(f"Maximum retries of ({self.retries}) exceeded. Skipping...")
+                    logger.info(
+                        f"Maximum retries of ({self.retries}) exceeded. Skipping...")
                     break
 
 
 class SiteParser:
     """Parse HTML content using BeautifulSoup"""
+
     def __init__(self):
         self.soup = None
 
@@ -72,6 +75,7 @@ class SiteParser:
 
 class Encode:
     """Encode percent encoded string to utf-8"""
+
     def __init__(self):
         self.encode = None
 
