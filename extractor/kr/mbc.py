@@ -20,7 +20,6 @@ def get_data(hd):
     idx = hd.split('idx=')[-1].split('&')[0]
     img_api = f'https://mbcinfo.imbc.com/api/download?file='
 
-    
     def mbc_photo(idx):
         api = f'https://mbcinfo.imbc.com/api/photo/m_info?intIdx={idx}'
 
@@ -53,7 +52,6 @@ def get_data(hd):
 
         DirectoryHandler().handle_directory(payload)
 
-    
     def mbc_press(idx):
         api = f'https://mbcinfo.imbc.com/api/press/info?intIdx={idx}'
 
