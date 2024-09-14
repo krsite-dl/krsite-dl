@@ -128,8 +128,10 @@ class DownloadHandler():
 
     def _download_logic(self, medialist, dirs, option=None):
         for url in medialist:
-            # get url and separate the filename as a new variable
+            # print out information about the source and filename
+            self.logger.log_info(f"{url}")
 
+            # get url and separate the filename as a new variable
             if option == "defined":
                 print("here")
                 # each list has a url with its predefined filename
@@ -161,6 +163,21 @@ class DownloadHandler():
                 self.logger.log_error(f"Max retries exceeded. Skipping...")
                 continue
 
+            # Check if it returns code 4xx or 5xx
+            try:
+                response.raise_for_status()
+            except requests.exceptions.HTTPError:
+                if 400 <= response.status_code < 500:
+                    self.logger.log_error(
+                        f"Client Error Code {response.status_code} - {response.reason}")
+                    continue
+
+                if 500 <= response.status_code:
+                    self.logger.log_error(
+                        f"Server Error Code {response.status_code} - {response.reason}")
+                    continue
+
+
             # get headers
             headers = response.headers
             content_type = headers.get('content-type')
@@ -189,9 +206,6 @@ class DownloadHandler():
                 filename = self._encode_kr(base)
 
             file_extension = file_extensions.get(content_type, '.jpg')
-
-            # print out information about the source and filename
-            self.logger.log_info(f"{url}")
 
             # check if file already exists
             if self._file_exists(dirs, f"{filename}{file_extension}"):
