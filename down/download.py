@@ -127,9 +127,13 @@ class DownloadHandler():
         return None  # Return None if maximum retries exceeded
 
     def _download_logic(self, medialist, dirs, option=None):
+        self.successful_requests = 0
+        self.total_requests = len(medialist)
+        self.skipped_due_to_existence = 0
         for url in medialist:
             # print out information about the source and filename
-            self.logger.log_info(f"{url}")
+            if kr.args.verbose:
+                self.logger.log_info(f"{url}")
 
             # get url and separate the filename as a new variable
             if option == "defined":
@@ -166,6 +170,7 @@ class DownloadHandler():
             # Check if it returns code 4xx or 5xx
             try:
                 response.raise_for_status()
+                self.successful_requests += 1
             except requests.exceptions.HTTPError:
                 if 400 <= response.status_code < 500:
                     self.logger.log_error(
@@ -209,6 +214,7 @@ class DownloadHandler():
 
             # check if file already exists
             if self._file_exists(dirs, f"{filename}{file_extension}"):
+                self.skipped_due_to_existence += 1
                 continue
 
             self.logger.log_info(f"filename: {filename}{file_extension}")
@@ -242,6 +248,10 @@ class DownloadHandler():
                     os.utime(dirs, (timestamp, timestamp))
                 continue
         self.duplicate_counts.clear()
+        self.logger.log_info(
+            f"Downloaded {self.successful_requests}/{self.total_requests} file(s)")
+        self.logger.log_info(
+            f"Skipped {self.skipped_due_to_existence} file(s) due to existence")
 
     def downloader(self, payload):
         medialist, dirs, option = (

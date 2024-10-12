@@ -38,6 +38,9 @@ utility_group.add_argument("-s", "--select",
                            action="store_true",
                            default=False,
                            help="Select which images to download from each url.")
+utility_group.add_argument("-v", "--verbose",
+                            action="store_true",
+                            help="Increase output verbosity")
 misc_group = parser.add_argument_group("misc")
 misc_group.add_argument("--no-windows-filenames",
                         action="store_true",
