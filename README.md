@@ -1,11 +1,11 @@
-[![Visitors](https://visitor-badge.laobi.icu/badge?page_id=danrynr.krsite-dl)](https://github.com/danrynr/krsite-dl)
-[![Stars](https://img.shields.io/github/stars/danrynr/krsite-dl)]()
-[![Forks](https://img.shields.io/github/forks/danrynr/krsite-dl
+[![Visitors](https://visitor-badge.laobi.icu/badge?page_id=krsite-dl.krsite-dl)](https://github.com/krsite-dl/krsite-dl)
+[![Stars](https://img.shields.io/github/stars/krsite-dl/krsite-dl)]()
+[![Forks](https://img.shields.io/github/forks/krsite-dl/krsite-dl
 )]()
 <br>
-[![CodeQL](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/danrynr/krsite-dl) [![Dependency Review](https://github.com/zer0kn0wledge/krsite-dl/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/danrynr/krsite-dl)
-[![License](https://img.shields.io/github/license/danrynr/krsite-dl
-)](https://github.com/danrynr/krsite-dl)
+[![CodeQL](https://github.com/krsite-dl/krsite-dl/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/krsite-dl/krsite-dl) [![Dependency Review](https://github.com/krsite-dl/krsite-dl/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/krsite-dl/krsite-dl)
+[![License](https://img.shields.io/github/license/krsite-dl/krsite-dl
+)](https://github.com/krsite-dl/krsite-dl)
 
 ## Table of Contents
 * [Guides & Installation](#Guides--Installation)
@@ -19,7 +19,7 @@
 > [!IMPORTANT]
 > 1. Make sure you have `python3` at least version 3.7 installed and executeable in your system's PATH.
 >
-> 2. Clone this repository `git clone -b master git@github.com:danrynr/krsite-dl.git`
+> 2. Clone this repository `git clone -b master git@github.com:krsite-dl/krsite-dl.git`
 >
 > 3. Run `pip3 install -r requirements.txt` to install dependencies
 
