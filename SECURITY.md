@@ -17,4 +17,4 @@ Supports stable versions of python3
 
 ## Reporting a Vulnerability
 
-If you find a vulnerability, please report it to the [issues](https://github.com/zer0kn0wledge/krsite-dl/issues)
+If you find a vulnerability, please report it to the [issues](https://github.com/krsite-dl/krsite-dl/issues)
