@@ -130,6 +130,8 @@ class DownloadHandler():
         self.successful_requests = 0
         self.total_requests = len(medialist)
         self.skipped_due_to_existence = 0
+        self.error_requests = 0
+
         for url in medialist:
             # print out information about the source and filename
             if kr.args.verbose:
@@ -170,8 +172,8 @@ class DownloadHandler():
             # Check if it returns code 4xx or 5xx
             try:
                 response.raise_for_status()
-                self.successful_requests += 1
             except requests.exceptions.HTTPError:
+                self.error_requests += 1
                 if 400 <= response.status_code < 500:
                     self.logger.log_error(
                         f"Client Error Code {response.status_code} - {response.reason}")
@@ -217,6 +219,8 @@ class DownloadHandler():
                 self.skipped_due_to_existence += 1
                 continue
 
+            self.successful_requests += 1
+
             self.logger.log_info(f"filename: {filename}{file_extension}")
             file_part = os.path.join(dirs, f"{filename}{file_extension}.part")
             file_real = os.path.join(dirs, f"{filename}{file_extension}")
@@ -249,9 +253,14 @@ class DownloadHandler():
                 continue
         self.duplicate_counts.clear()
         self.logger.log_info(
-            f"Downloaded {self.successful_requests}/{self.total_requests} file(s)")
-        self.logger.log_info(
-            f"Skipped {self.skipped_due_to_existence} file(s) due to existence")
+            f"Downloaded {self.successful_requests}/{self.total_requests} file(s) in this session")
+        if self.skipped_due_to_existence > 0:
+            self.logger.log_info(
+                f"Skipped {self.skipped_due_to_existence} file(s) due to existence")
+        if self.error_requests > 0:
+            self.logger.log_info(
+                f"Failed to download {self.error_requests} file(s) due to errors"
+            )
 
     def downloader(self, payload):
         medialist, dirs, option = (
