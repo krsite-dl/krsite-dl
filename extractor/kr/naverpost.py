@@ -270,6 +270,7 @@ def get_data(hd):
             directory_format=dir,
             media=img_list,
             option='naverpost',
+            custom_headers={'Referer': 'https://post.naver.com/'}
         )
 
         DirectoryHandler().handle_directory(payload)

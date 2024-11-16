@@ -37,10 +37,11 @@ class DirectoryHandler:
         return dirs
 
     def handle_directory(self, payload):
-        directory_format, media_list, option = (
+        directory_format, media_list, option, c_headers = (
             payload.directory_format,
             payload.media,
             payload.option,
+            payload.custom_headers
         )
 
         # sanitize directory name
@@ -52,6 +53,7 @@ class DirectoryHandler:
             media=media_list,
             directory=dirs,
             option=option,
+            custom_headers=c_headers
         )
 
         DownloadHandler().downloader(download_payload)

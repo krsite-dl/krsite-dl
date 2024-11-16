@@ -104,10 +104,10 @@ class DownloadHandler():
              'Connection': 'keep-alive'})
         return session
 
-    def _retry_request(self, url, certificate, session):
+    def _retry_request(self, url, certificate, session, r_headers=None):
         for attempt in range(1, self.MAX_RETRIES + 1):
             try:
-                response = session.get(url, verify=certificate, stream=True)
+                response = session.get(url, verify=certificate, headers=r_headers, stream=True)
                 return response
             except (requests.exceptions.SSLError,
                     requests.exceptions.HTTPError,
@@ -126,7 +126,7 @@ class DownloadHandler():
 
         return None  # Return None if maximum retries exceeded
 
-    def _download_logic(self, medialist, dirs, option=None):
+    def _download_logic(self, medialist, dirs, option=None, custom_headers=None):
         self.successful_requests = 0
         self.total_requests = len(medialist)
         self.skipped_due_to_existence = 0
@@ -163,7 +163,7 @@ class DownloadHandler():
 
             # request
             certificate = self.certificate
-            response = self._retry_request(url, certificate, self.session)
+            response = self._retry_request(url, certificate, self.session, custom_headers)
 
             if response is None:
                 self.logger.log_error(f"Max retries exceeded. Skipping...")
@@ -263,14 +263,15 @@ class DownloadHandler():
             )
 
     def downloader(self, payload):
-        medialist, dirs, option = (
+        medialist, dirs, option, r_headers = (
             payload.media,
             payload.directory,
             payload.option,
+            payload.custom_headers
         )
 
         if kr.args.select:
             medialist = self._media_selector(medialist)
 
-        self._download_logic(medialist, dirs, option=option)
+        self._download_logic(medialist, dirs, option=option, custom_headers=r_headers)
         self.session.close()

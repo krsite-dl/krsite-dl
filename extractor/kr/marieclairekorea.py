@@ -41,6 +41,7 @@ def get_data(hd):
         directory_format=dir,
         media=img_list,
         option=None,
+        custom_headers=None
     )
 
     DirectoryHandler().handle_directory(payload)

@@ -106,6 +106,7 @@ def get_data(hd):
         directory_format=dir,
         media=img_list,
         option=None,
+        custom_headers={'Referer': 'https://programs.sbs.co.kr'}
     )
 
     DirectoryHandler().handle_directory(payload)
