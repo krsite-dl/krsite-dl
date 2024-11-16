@@ -60,6 +60,7 @@ def get_data(hd):
         directory_format=dir,
         media=img_list,
         option=None,
+        custom_headers={'Referer': 'https://sbskpop.kr'}
     )
 
     DirectoryHandler().handle_directory(payload)
