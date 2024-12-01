@@ -87,15 +87,6 @@ class DownloadHandler():
                 f"File: {filename} already exists. Skipping...")
             return True
 
-    def _extension_to_mime(self, ext):
-        extensions = {
-            '.jpg' or '.jpeg' or '.JPG' or '.JPEG': '.jpg',
-            '.png' or '.PNG': '.png',
-            '.gif' or '.GIF': '.gif',
-            '.webp' or '.WEBP': '.webp',
-        }
-        return extensions.get(ext, '.jpg')
-
     def _session(self):
         session = requests.Session()
         session.headers = requests.models.CaseInsensitiveDict(
@@ -139,7 +130,6 @@ class DownloadHandler():
 
             # get url and separate the filename as a new variable
             if option == "defined":
-                print("here")
                 # each list has a url with its predefined filename
                 url, name = self._process_item(url)
                 name = self._encode_kr(name)
