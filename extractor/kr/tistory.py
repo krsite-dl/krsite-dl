@@ -35,9 +35,14 @@ def get_data(hd):
 
     pattern = re.compile(r'<img\s[^>]*>')
     matches = pattern.findall(article)
+    counter = 1
     for match in matches:
         img = match.split('src="')[1].split('"')[0]
-        img_name = match.split('data-filename="')[1].split('"')[0]
+        try:
+            img_name = match.split('data-filename="')[1].split('"')[0]
+        except IndexError:
+            img_name = f'{counter}'
+            counter += 1
         img_list.append((img, img_name))
 
     site_req.session.close()
