@@ -38,21 +38,17 @@ def get_data(hd):
                     sources,
                     key=lambda s: int(s.strip().split(' ')[-1][:-1]), default=None
                 )
-                # print(max_source)
 
                 if max_source:
                     highest_width_url = max_source.strip().split(' ')[0]
 
                     if highest_width_url:
-                        # print(highest_width_url)
                         img_list.append(highest_width_url)
 
     site_req.session.close()
     print(f"Title: {post_title}")
     print(f"Date: {post_date}")
     print(f"Found {len(img_list)} image(s)")
-
-    # print(img_list)
 
     dir = [SITE_INFO.name, f"{post_date_short} {post_title}"]
 

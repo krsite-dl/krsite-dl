@@ -251,10 +251,6 @@ def get_data(hd):
             if 'storep' not in match:
                 src = match.split('?')[0].strip('\'"')
                 img_list.add(src)
-        # for item in site.split("data-realImagePath=")[1:]:
-        #     if 'storep' not in item:
-        #         src = item.split('?')[0]
-        #         img_list.add(src)
 
         site_req.session.close()
         print(f"Writer: {post_writer}")
