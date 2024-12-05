@@ -27,10 +27,8 @@ def get_data(hd):
     for img in content.findAll('img'):
         srcset_attrs = ['data-srcset', 'srcset']
         for srcset_attr in srcset_attrs:
-
             srcset_value = img.get(srcset_attr)
             if srcset_value:
-
                 sources = srcset_value.split(',')
                 if sources and sources[-1] == '':
                     sources.pop()
@@ -38,10 +36,8 @@ def get_data(hd):
                     sources,
                     key=lambda s: int(s.strip().split(' ')[-1][:-1]), default=None
                 )
-
                 if max_source:
                     highest_width_url = max_source.strip().split(' ')[0]
-
                     if highest_width_url:
                         img_list.append(highest_width_url)
 
