@@ -32,7 +32,6 @@ def get_data(hd):
         if 'kakao' not in item['src']:
             img_list.append((item['src'].replace(
                 'article', 'original'), item['alt'].strip()))
-            # print(item['alt'].strip())
 
     site_req.session.close()
     print(f"Title: {post_title}")

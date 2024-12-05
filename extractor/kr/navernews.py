@@ -25,7 +25,6 @@ def get_data(hd):
 
     img_list = []
     for item in article.findAll('img'):
-        # print(item)
         img_list.append(item.get('data-src').split('?')[0])
 
     site_req.session.close()
