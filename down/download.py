@@ -127,29 +127,36 @@ class DownloadHandler():
             # print out information about the source and filename
             if kr.args.verbose:
                 self.logger.log_info(f"{url}")
-
-            # get url and separate the filename as a new variable
-            if option == "defined":
-                # each list has a url with its predefined filename
-                url, name = self._process_item(url)
-                name = self._encode_kr(name)
-                base, ext = self._get_filename(name)
-                filename = base
-            else:
-                # split the filename and extension from url
-                base, ext = self._get_filename(url)
-                # encode the filename to appropriate format
-                filename = self._encode_kr(base)
-
-            if option == "naverpost":
-                if filename in self.duplicate_counts:
-                    self.duplicate_counts[filename] += 1
-                    filename = f"{filename} ({self.duplicate_counts[filename]})"
-                else:
-                    self.duplicate_counts[filename] = 0
-            if option == "combine":
-                if len(medialist) > 1:
-                    filename = f'{filename} ({medialist.index(url)+1})'
+        
+            match option:
+                case "naverpost":
+                    if filename in self.duplicate_counts:
+                        self.duplicate_counts[filename] += 1
+                        filename = f"{filename} ({self.duplicate_counts[filename]})"
+                    else:
+                        self.duplicate_counts[filename] = 0
+                case "naverblog":
+                    if isinstance(url, tuple):
+                        url, filename = self._process_item(url)
+                    else:
+                        base, ext = self._get_filename(url)
+                        filename = self._encode_kr(base)
+                case "combine":
+                    if len(medialist) > 1:
+                        filename = f'{filename} ({medialist.index(url)+1})'
+                case "defined":
+                    # get url and separate the filename as a new variable
+                    # each list has a url with its predefined filename
+                    if isinstance(url, tuple):
+                        url, name = self._process_item(url)
+                        name = self._encode_kr(name)
+                        base, ext = self._get_filename(name)
+                        filename = base
+                    else:
+                        # split the filename and extension from url
+                        base, ext = self._get_filename(url)
+                        # encode the filename to appropriate format
+                        filename = self._encode_kr(base)
 
             # request
             certificate = self.certificate
