@@ -14,11 +14,8 @@ SITE_INFO = Site(hostname="blog.naver.com", name="Naver Blog")
 def get_data(hd):
     """Get data"""
     BASE = r"(?:https?://)?(?:m\.)?(blog\.naver\.com)"
-    pattern = BASE + r"(/PostView.)?(?:naver|nhn)\?blogId=(\w+)&logNo=(\d+)"
-    pattern_al = pattern + r"(\w+)/(\d+)/?$)"
-    pattern1 = BASE + r"(/PostList.)?(?:naver|nhn)\?blogId=(\w+)&(?:from=(\w+)&)?(categoryNo=(\d+))"
-    pattern2 = BASE + r"(\w+)/(\d+)"
-    # pattern3 = BASE + r"(/PostList.)?(?:naver|nhn)\?blogId=(\w+)&categoryNo=(\d+)&from=postList"
+    postview_pattern = BASE + r"(/PostView.)?(?:naver|nhn)\?blogId=(\w+)&logNo=(\d+)"
+    postlist_pattern = BASE + r"(/PostList.)?(?:naver|nhn)\?blogId=(\w+)&(?:from=(\w+)&)?(categoryNo=(\d+))"
 
     root = "https://blog.naver.com"
 
@@ -27,18 +24,9 @@ def get_data(hd):
 
     def naverblog_series(hd):
         """Get series"""
-        #https://blog.naver.com/PostList.naver?blogId=jypentertainment&widgetTypeCall=true&topReferer=https%3A%2F%2Fblog.naver.com%2FPostList.naver%3FblogId%3Djypentertainment%26categoryNo%3D9%26from%3DpostList&trackingCode=blog_etc&directAccess=true#
-        
         blog_id = hd.split('blogId=')[1].split('&')[0]
         category_no = hd.split('categoryNo=')[1].split('&')[0]
 
-        # list_url = "{}/PostList.(?:naver|nhn)?blogId=(\w+)&categoryNo=(\d+)"
-        # list_url = "{}/PostList.naver?blogId={}&categoryNo={}".format(root, blog_id, category_no)
-        # print(list_url)
-
-
-
-        #https://blog.naver.com/PostTitleListAsync.naver?blogId=starship_ent&viewdate=&currentPage=1&categoryNo=29&parentCategoryNo=&countPerPage=5
         series_url = "{}/PostTitleListAsync.naver".format(root)
         params = {
             'blogId': blog_id,
@@ -137,6 +125,13 @@ def get_data(hd):
             except json.JSONDecodeError as e:
                 print(f"Error decoding JSON: {e}")
 
+        # Get Image from header
+        pattern_h = re.compile(r'style="background-image:url\(([^)]+)\)')
+        matches = pattern_h.findall(site)
+        for match in matches:
+            src = str(match.split('?')[0].strip('\'"')).replace('postfiles', 'blogfiles')
+            img_list.append(src)
+
         site_req.session.close()
         print(f"Writer: {post_writer}")
         print(f"Series: {post_series}")
@@ -157,9 +152,9 @@ def get_data(hd):
         DirectoryHandler().handle_directory(payload)
 
 
-    if (re.search(pattern1, hd)):
+    if (re.search(postlist_pattern, hd)):
         print("Naver Blog Series")
         naverblog_series(hd)
-    elif (re.search(pattern, hd)):
+    elif (re.search(postview_pattern, hd)):
         print("Naver Blog Post")
         naverblog_post(hd)
