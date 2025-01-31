@@ -130,6 +130,8 @@ class DownloadHandler():
         
             match option:
                 case "naverpost":
+                    base, ext = self._get_filename(url)
+                    filename = self._encode_kr(base)
                     if filename in self.duplicate_counts:
                         self.duplicate_counts[filename] += 1
                         filename = f"{filename} ({self.duplicate_counts[filename]})"
