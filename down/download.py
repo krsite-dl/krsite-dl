@@ -149,6 +149,8 @@ class DownloadHandler():
                         else:
                             self.duplicate_counts[filename] = 0
                 case "combine":
+                    base, ext = self._get_filename(url)
+                    filename = self._encode_kr(base)
                     if len(medialist) > 1:
                         filename = f'{filename} ({medialist.index(url)+1})'
                 case "defined":
@@ -160,10 +162,13 @@ class DownloadHandler():
                         base, ext = self._get_filename(name)
                         filename = base
                     else:
-                        # split the filename and extension from url
                         base, ext = self._get_filename(url)
-                        # encode the filename to appropriate format
                         filename = self._encode_kr(base)
+                case _:
+                    # split the filename and extension from url
+                    base, ext = self._get_filename(url)
+                    # encode the filename to appropriate format
+                    filename = self._encode_kr(base)
 
             # request
             certificate = self.certificate
