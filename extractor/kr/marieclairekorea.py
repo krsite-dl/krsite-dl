@@ -1,6 +1,7 @@
 """Extractor for https://marieclairekorea.com/"""
 
 import datetime
+import re
 
 from pytz import timezone
 from common.common_modules import Requests, SiteParser
@@ -16,9 +17,8 @@ def get_data(hd):
     site_req = Requests()
     soup = site_parser._parse(site_req.session.get(hd).text)
 
-    post_title = soup.find('h1', class_='mck_seoTitle').text.strip()
-    post_date = soup.find('meta', property='article:published_time')[
-        'content'].strip()
+    post_title = soup.find('meta', property='og:title')['content'].strip()
+    post_date = soup.find('span', class_='updated').text.strip()
     post_date_short = post_date.replace('-', '')[2:8]
     post_date = datetime.datetime.strptime(post_date, '%Y-%m-%dT%H:%M:%S%z')
     tz = timezone('Asia/Seoul')
@@ -28,7 +28,7 @@ def get_data(hd):
     img_list = []
 
     for item in content.findAll('img'):
-        img_list.append(item.get('data-orig-src'))
+        img_list.append(re.sub(r'-(\d+x\d+)', '', item.get('data-orig-src')))
 
     site_req.session.close()
     print(f"Title: {post_title}")
