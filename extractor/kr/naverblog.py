@@ -14,7 +14,7 @@ SITE_INFO = Site(hostname="blog.naver.com", name="Naver Blog")
 def get_data(hd):
     """Get data"""
     BASE = r"(?:https?://)?(?:m\.)?(blog\.naver\.com)"
-    postview_pattern = BASE + r"(/PostView.)?(?:naver|nhn)\?blogId=(\w+)&logNo=(\d+)"
+    postview_pattern = BASE + r"(?:((/PostView.)?(?:naver|nhn)\?blogId=(\w+)&logNo=(\d+))|/(\w+)/(\d+)/?$)"
     postlist_pattern = BASE + r"(/PostList.)?(?:naver|nhn)\?blogId=(\w+)&(?:from=(\w+)&)?(categoryNo=(\d+))"
 
     root = "https://blog.naver.com"
