@@ -102,7 +102,6 @@ def get_data(hd):
             "meta property=\"og:title\" content=\"")[1].split("\"")[0].strip())
         post_date = html.unescape(re.search(
             r'<span class="[^"]*se_publishDate[^"]*">(.*?)</span>', site).group(1).strip())
-        print(post_date)
         if '시간' in post_date:
             import pytz
             kst = pytz.timezone('Asia/Seoul')
