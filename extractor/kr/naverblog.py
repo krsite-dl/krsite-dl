@@ -102,7 +102,20 @@ def get_data(hd):
             "meta property=\"og:title\" content=\"")[1].split("\"")[0].strip())
         post_date = html.unescape(re.search(
             r'<span class="[^"]*se_publishDate[^"]*">(.*?)</span>', site).group(1).strip())
-        post_date = datetime.datetime.strptime(post_date, '%Y. %m. %d. %H:%M')
+        print(post_date)
+        if '시간' in post_date:
+            import pytz
+            kst = pytz.timezone('Asia/Seoul')
+            hours = int(re.search(r'(\d+)', post_date).group(1))
+            post_date = datetime.datetime.now(kst) - datetime.timedelta(hours=hours)
+        elif '분' in post_date:
+            import pytz
+            kst = pytz.timezone('Asia/Seoul')
+            minutes = int(re.search(r'(\d+)', post_date).group(1))
+            post_date = datetime.datetime.now(kst) - datetime.timedelta(minutes=minutes)
+        else:
+            post_date = datetime.datetime.strptime(post_date, '%Y. %m. %d. %H:%M')
+        
         post_date_short = post_date.strftime('%y%m%d')
 
         img_list = []
