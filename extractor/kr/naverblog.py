@@ -24,8 +24,8 @@ def get_data(hd):
 
     def naverblog_series(hd):
         """Get series"""
-        blog_id = hd.split('blogId=')[1].split('&')[0]
-        category_no = hd.split('categoryNo=')[1].split('&')[0]
+        blog_id = hd.split('blogId=')[1].split('&')[0].strip('#')
+        category_no = hd.split('categoryNo=')[1].split('&')[0].strip('#')
 
         series_url = "{}/PostTitleListAsync.naver".format(root)
         params = {
@@ -38,27 +38,25 @@ def get_data(hd):
         }
 
         site_req = Requests()
-
         url_list = []
         while True:
             series = site_req.session.get(series_url, params=params).text.replace('\\', '')
-
             json_data = json.loads(series)
 
             for post in json_data['postList']:
                 log_no = post['logNo']
-
-                post_url = "{}/PostView.naver?blogId={}&logNo={}".format(root, blog_id, log_no)
+                post_url = "{}/PostView.naver?blogId={}&logNo={}".format(root, blog_id, log_no) 
+                if post_url in url_list:
+                    site_req.session.close()
+                    break   
+                print(post_url)
                 url_list.append(post_url)
-
-            
-            if (int(params['countPerPage']) * int(params['currentPage'])) >= int(json_data['totalCount']):
-                site_req.session.close()
-                break
-            params['currentPage'] += 1
+            else:     
+                params['currentPage'] += 1
+                continue
+            break
 
         print(f"Found {len(url_list)} post(s)")
-
         for i in url_list:
             naverblog_post(i)
         
