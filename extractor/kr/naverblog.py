@@ -48,8 +48,7 @@ def get_data(hd):
                 post_url = "{}/PostView.naver?blogId={}&logNo={}".format(root, blog_id, log_no) 
                 if post_url in url_list:
                     site_req.session.close()
-                    break   
-                print(post_url)
+                    break
                 url_list.append(post_url)
             else:     
                 params['currentPage'] += 1
