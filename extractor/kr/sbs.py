@@ -61,7 +61,7 @@ def get_data(hd):
                     for j in value:
                         code_temp.append(j.strip())
 
-        keyword = hd.split('search_keyword=')[1].split('&')[0]
+        keyword = hd.split('search_keyword=')[1].split('&')[0].strip('#0')
         keyword = encode._encode_kr(keyword)
         print(f"Search keyword: {keyword}")
 
