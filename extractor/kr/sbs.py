@@ -22,22 +22,10 @@ def get_data(hd):
         return str(current_milli_time)
         ############################
 
-    def get_board_list(hd):
-        """Get board list"""
+    def get_board_menu(vis_board_no, parent_name):
         site_req = Requests()
-        encode = Encode()
-
-        path_name = re.search(
-            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){0}/([^/?]+)', hd).group(3)
-        parent_name = re.search(
-            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){1}/([^/?]+)', hd).group(3)
-        type_name = re.search(
-            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){2}/([^/?]+)', hd).group(3)
-        vis_board_no = re.search(
-            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){3}/([^/?]+)', hd).group(3)
-    
-        menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/menu/"
-        menu_r = site_req.session.get(menu_api + parent_name).json()
+        menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/menu/{}".format(parent_name)
+        menu_r = site_req.session.get(menu_api).json()
         site_req.session.close()
         all_board = []
         def iterate_menu(menu):
@@ -60,12 +48,52 @@ def get_data(hd):
                 if key == vis_board_no:
                     for j in value:
                         code_temp.append(j.strip())
+        return code_temp
+    
+    def get_multiboard_menu(index, vis_board_no, parent_name):
+        site_req = Requests()
+        menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/multiboards/{}/{}?platform=pc".format(parent_name, vis_board_no)
+        menu_r = site_req.session.get(menu_api).json()
+        site_req.session.close()
+        all_board = []
+
+        for idx, menu in enumerate(menu_r['category']):
+            board_code = menu['board_code'].split(',')
+            all_board.append({str(idx): board_code})
+        
+        code_temp = []
+        for i in all_board:
+            for key, value in i.items():
+                if key == index:
+                    for j in value:
+                        code_temp.append(j.strip())
+        return code_temp
+
+    def get_board_list(hd):
+        """Get board list"""
+        site_req = Requests()
+        encode = Encode()
+
+        path_name = re.search(
+            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){0}/([^/?]+)', hd).group(3)
+        parent_name = re.search(
+            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){1}/([^/?]+)', hd).group(3)
+        type_name = re.search(
+            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){2}/([^/?]+)', hd).group(3)
+        vis_board_no = re.search(
+            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){3}/([^/?]+)', hd).group(3)
+
+        if type_name == 'multiboards':
+            index = re.search(r'#(\d+)$', hd).group(1)
+            code_temp = get_multiboard_menu(index, vis_board_no, parent_name)
+            board_list_api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/photo/main"
+        else:
+            code_temp = get_board_menu(vis_board_no, parent_name)
+            board_list_api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/lists"
 
         keyword = hd.split('search_keyword=')[1].split('&')[0].strip('#0')
         keyword = encode._encode_kr(keyword)
         print(f"Search keyword: {keyword}")
-
-        board_list_api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/lists"
 
         boards = set()
         code = ''
@@ -82,6 +110,8 @@ def get_data(hd):
                 'jwt-token': '',
                 '_': get_time()
             }
+        if type_name == 'multiboards':
+            params['menuid'] = vis_board_no
         
         while True:
             for i in code_temp:
@@ -98,11 +128,17 @@ def get_data(hd):
             json_data = json_data.split('boardListCallback_%s(' % code)[1]
             json_data = json_data.rstrip(');')
             json_data = json.loads(json_data)
-
+            
+            if 'list' not in json_data:
+                json_data = {'list': json_data}
             data = json_data['list']
             params['offset'] += 15
+            
             for i in data:
-                boards.add('https://programs.sbs.co.kr/{}/{}/{}/{}?cmd=view&board_no={}'.format(path_name, parent_name, type_name, vis_board_no, i['NO']))
+                if type_name == 'multiboards':
+                    boards.add('https://programs.sbs.co.kr/{}/{}/{}/{}?cmd=multi_list&board_code={}&board_no={}'.format(path_name, parent_name, type_name, vis_board_no, i['BOARD_CODE'], i['BOARD_NO']))
+                else:
+                    boards.add('https://programs.sbs.co.kr/{}/{}/{}/{}?cmd=view&board_no={}'.format(path_name, parent_name, type_name, vis_board_no, i['NO']))
             if len(data) < 16:
                 site_req.session.close()
                 break
@@ -172,27 +208,7 @@ def get_data(hd):
             vis_board_no = re.search(
                 r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){3}/([^/?]+)', hd).group(3)
         
-            all_board = []
-            def iterate_menu(menu):
-                if menu['board_code'] is not None:
-                    menu_id = menu['mnuid']
-                    board_code = menu['board_code'].split(',')
-                    all_board.append({menu_id: board_code})
-
-            for menu in menu_r['menus']:
-                iterate_menu(menu)
-                # Check if there are submenus
-                if menu['submenus']:
-                    for submenu in menu['submenus']:
-                        iterate_menu(submenu)
-
-            code_temp = []
-
-            for i in all_board:
-                for key, value in i.items():
-                    if key == vis_board_no:
-                        for j in value:
-                            code_temp.append(j.strip())
+            code_temp = get_board_menu(vis_board_no, parent_name)
 
             print(f"Board no: {board_no}")
 
