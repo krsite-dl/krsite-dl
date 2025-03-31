@@ -68,21 +68,100 @@ def get_data(hd):
                     for j in value:
                         code_temp.append(j.strip())
         return code_temp
+    
+    def get_photo_menu(vis_board_no, parent_name):
+        site_req = Requests()
+        menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/menu/{}".format(parent_name)
+        menu_r = site_req.session.get(menu_api).json()
+        site_req.session.close()
+        all_board = []
+        def iterate_menu(menu):
+            if 'photo' in menu:
+                program_id = menu['programid']
+                menu_id = menu['mnuid']
+                bundle_id = menu['photo']['bundle_id']
+                all_board.append({menu_id: [program_id, bundle_id]})
+                
+        for menu in menu_r['menus']:
+            iterate_menu(menu)
+            # Check if there are submenus
+            if menu['submenus']:
+                for submenu in menu['submenus']:
+                    iterate_menu(submenu)
+
+        code_temp = []
+        for i in all_board:
+            for key, value in i.items():
+                if key == vis_board_no:
+                    code_temp.append(value)
+        return code_temp
+
+    def extract_info(url):
+        path_name = re.search(
+            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){0}/([^/?]+)', url).group(3)
+        parent_name = re.search(
+            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){1}/([^/?]+)', url).group(3)
+        type_name = re.search(
+            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){2}/([^/?]+)', url).group(3)
+        vis_board_no = re.search(
+            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){3}/([^/?]+)', url).group(3)
+        return path_name, parent_name, type_name, vis_board_no
+
+    def get_photo_list(hd):
+        """Get photo list"""
+        site_req = Requests()
+        encode = Encode()
+        path_name, parent_name, type_name, vis_board_no = extract_info(hd)
+        code_temp = get_photo_menu(vis_board_no, parent_name)
+        board_list_api = f"https://static.apis.sbs.co.kr/photo-api/template/1.0/bundle/"
+
+        keyword = re.search(r'(?:search=)([^&#]+)', hd)
+        if keyword is not None:
+            keyword = keyword.group(1)
+            keyword = encode._encode_kr(keyword)
+            print(f"Search keyword: {keyword}")
+        
+        boards = set()
+        code = ''
+        data = []
+
+        params = {
+                'offset': 0,
+                'limit': 15,
+                'sort': 'new'
+            }
+        if keyword is not None:
+            params['searchkeyword'] = keyword
+        while True:
+            for i in code_temp:
+                code = i
+                program_id, bundle_id = code
+                board_list_api = "https://static.apis.sbs.co.kr/photo-api/template/1.0/bundle/{}/{}/pc".format(program_id, bundle_id)
+                r = site_req.session.get(board_list_api, params=params)
+                if 'Server Error' not in r.text:
+                    site_req.session.close()
+                    break
+            r = site_req.session.get(board_list_api, params=params)
+            json_data = r.text
+            json_data = json.loads(json_data)
+            data = json_data['list']
+            params['offset'] += 15
+            for i in data:
+                boards.add('https://programs.sbs.co.kr/{}/{}/{}/{}/{}?albumid={}'.format(path_name, parent_name, type_name, vis_board_no, code[1], i['_id']))
+            if len(data) < 15:
+                site_req.session.close()
+                break
+            continue
+        
+        print(f"Found {len(boards)} post(s)")
+        for i in boards:
+            get_board_post(i)
 
     def get_board_list(hd):
         """Get board list"""
         site_req = Requests()
         encode = Encode()
-
-        path_name = re.search(
-            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){0}/([^/?]+)', hd).group(3)
-        parent_name = re.search(
-            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){1}/([^/?]+)', hd).group(3)
-        type_name = re.search(
-            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){2}/([^/?]+)', hd).group(3)
-        vis_board_no = re.search(
-            r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){3}/([^/?]+)', hd).group(3)
-
+        path_name, parent_name, type_name, vis_board_no = extract_info(hd)
         if type_name == 'multiboards':
             index = re.search(r'#(\d+)$', hd).group(1)
             code_temp = get_multiboard_menu(index, vis_board_no, parent_name)
@@ -91,9 +170,11 @@ def get_data(hd):
             code_temp = get_board_menu(vis_board_no, parent_name)
             board_list_api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/lists"
 
-        keyword = hd.split('search_keyword=')[1].split('&')[0].strip('#0')
-        keyword = encode._encode_kr(keyword)
-        print(f"Search keyword: {keyword}")
+        keyword = re.search(r'(?:search_keyword=)([^&#]+)', hd)
+        if keyword is not None:
+            keyword = keyword.group(1)
+            keyword = encode._encode_kr(keyword)
+            print(f"Search keyword: {keyword}")
 
         boards = set()
         code = ''
@@ -106,13 +187,13 @@ def get_data(hd):
                 'action_type': 'callback',
                 'board_code': '',
                 'searchOption': 'title',
-                'searchKeyword': keyword,
                 'jwt-token': '',
                 '_': get_time()
             }
         if type_name == 'multiboards':
             params['menuid'] = vis_board_no
-        
+        if keyword is not None:
+            params['searchKeyword'] = keyword
         while True:
             for i in code_temp:
                 code = i
@@ -258,7 +339,7 @@ def get_data(hd):
             dir = [SITE_INFO.name, category, f"{post_date_short} {post_title}"]
 
             payload = DataPayload(
-                directory_format=dir,
+                directory_format=dir, 
                 media=img_list,
                 option=None,
                 custom_headers={'Referer': 'https://programs.sbs.co.kr'}
@@ -274,7 +355,9 @@ def get_data(hd):
 
 
 
-    if 'search_keyword' in hd:
+    if 'search_keyword=' in hd:
         get_board_list(hd)
+    elif 'search=' in hd and 'photo' in hd:
+        get_photo_list(hd)
     else:
         get_board_post(hd)
