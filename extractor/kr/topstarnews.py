@@ -2,7 +2,6 @@
 
 import datetime
 
-from rich import print
 from pytz import timezone
 from urllib.parse import urlparse, parse_qs, urlencode
 

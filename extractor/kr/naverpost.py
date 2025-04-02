@@ -5,8 +5,6 @@ import re
 import json
 import html
 
-from rich import print
-
 from common.common_modules import Requests, Encode
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler

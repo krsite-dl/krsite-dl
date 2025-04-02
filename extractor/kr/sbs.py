@@ -5,7 +5,6 @@ import time
 import json
 import re
 
-from rich import print
 from common.common_modules import Requests, Encode
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
