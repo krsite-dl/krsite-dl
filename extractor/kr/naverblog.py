@@ -58,18 +58,6 @@ def get_data(hd):
         print(f"Found {len(url_list)} post(s)")
         for i in url_list:
             naverblog_post(i)
-        
-
-    #https://blog.naver.com/PostList.naver?blogId=jypentertainment&categoryNo=9&from=postList
-    #https://blog.naver.com/PostView.naver?blogId=jypentertainment&logNo=223719801689&categoryNo=0&parentCategoryNo=0&viewDate=&currentPage=1&postListTopCurrentPage=&from=section
-    #https://blog.naver.com/jypentertainment/223719801689
-
-    """
-    No matter the urls are, the final url (which is used to extract the data) will always be the same.
-    1. https://blog.naver.com/PostView.naver?blogId=jypentertainment&logNo=223719801689&categoryNo=0&parentCategoryNo=0&viewDate=&currentPage=1&postListTopCurrentPage=&from=section (something like this)
-
-    So in that case we can just use the regex to extract the blogId and logNo fromt he url and then craft the final url.
-    """
 
     def naverblog_post(hd):
         p = re.search(r'(?:https?://)?(?:m\.)?(blog\.naver\.com)/(\w+)/(\d+)', hd)

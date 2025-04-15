@@ -3,7 +3,6 @@
 import datetime
 
 
-from rich import print
 from pytz import timezone
 from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload

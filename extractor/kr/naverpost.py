@@ -5,8 +5,6 @@ import re
 import json
 import html
 
-from rich import print
-
 from common.common_modules import Requests, Encode
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
@@ -272,21 +270,21 @@ def get_data(hd):
         DirectoryHandler().handle_directory(payload)
 
     if re.search(pattern, hd):
-        print("[bold green]Naver Post Main Page[/bold green]")
+        print("Naver Post Main Page")
         naverpost_main(hd)
 
     elif re.search(pattern2, hd):
-        print("[bold green]Naver Post Search Result[/bold green]")
+        print("Naver Post Search Result")
         naverpost_search(hd)
 
     elif re.search(pattern3, hd):
-        print("[bold green]Naver Post Series Page[/bold green]")
+        print("Naver Post Series Page")
         naverpost_series(hd)
 
     elif re.search(pattern4, hd):
-        print("[bold green]Naver Post Series List[/bold green]")
+        print("Naver Post Series List")
         naverpost_list(hd)
 
     elif re.search(pattern5, hd):
-        print("[bold green]Naver Post Page[/bold green]")
+        print("Naver Post Page")
         naverpost_post(hd)
