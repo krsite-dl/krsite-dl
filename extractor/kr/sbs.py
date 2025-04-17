@@ -109,8 +109,8 @@ def get_data(hd):
             r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){1}/([^/?]+)', hd).group(3)
         
         # Get all board information
-        menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/menu/"
-        menu_r = site_req.session.get(menu_api + parent_name).json()
+        menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/menu/{}".format(parent_name)
+        menu_r = site_req.session.get(menu_api).json()
         site_req.session.close()
         category = menu_r['program']['title']
 
@@ -307,7 +307,7 @@ def get_data(hd):
     
         for i in code_temp:
             code = i
-            api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/{board_no}"
+            api = "https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/{}".format(board_no)
 
             params = {
                 'callback': f'boardViewCallback_{code}',
