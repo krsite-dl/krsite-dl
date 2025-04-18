@@ -344,13 +344,14 @@ def get_data(hd):
         if 'spv.sbs.co.kr' in data['CONTENT']:
             h = data['CONTENT']
             for i in re.findall(r'https?://[^\s"<>]+', h):
-                img_list.add((i, re.search(r"image_id=([^&]+)", i).group(1)))
+                if 'image_id' in i:
+                    img_list.add((i, re.search(r"[?&]image_id=([^&]+)", i).group(1)))
 
         site_req.session.close()
         print(f"Title: {post_title}")
         print(f"Date: {post_date}")
         print(f"Found {len(img_list)} image(s)")
-
+        
         dir = [SITE_INFO.name, category, f"{post_date_short} {post_title}"]
 
         payload = DataPayload(
