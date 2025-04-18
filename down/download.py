@@ -165,10 +165,13 @@ class DownloadHandler():
                         base, ext = self._get_filename(url)
                         filename = self._encode_kr(base)
                 case _:
-                    # split the filename and extension from url
-                    base, ext = self._get_filename(url)
-                    # encode the filename to appropriate format
-                    filename = self._encode_kr(base)
+                    if isinstance(url, tuple):
+                        url, filename = self._process_item(url)
+                    else:
+                        # split the filename and extension from url
+                        base, ext = self._get_filename(url)
+                        # encode the filename to appropriate format
+                        filename = self._encode_kr(base)
 
             # request
             certificate = self.certificate
@@ -212,7 +215,7 @@ class DownloadHandler():
                     'image/webp': '.webp',
                 }
 
-            content_length = int(content_length)  # get the content length
+            total = int(content_length) if content_length is not None else None  # get the content length
 
             # if filename is provided on content_disposition, use it
             if content_disposition is not None:
@@ -238,12 +241,12 @@ class DownloadHandler():
             except FileNotFoundError:
                 current_size = 0
 
-            if current_size < content_length:
+            if total is None or current_size < total:
                 # download file
                 with open(file_part, 'wb') as f:
                     with Progress(refresh_per_second=1) as prog:
                         task = prog.add_task(
-                            "Downloading...", total=content_length)
+                            "Downloading...", total=total)
                         for chunk in response.iter_content(chunk_size=4194304):
                             current_size += len(chunk)
                             f.write(chunk)
