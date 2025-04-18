@@ -340,6 +340,11 @@ def get_data(hd):
                 img_list.add('http:' + str(i))
             else:
                 img_list.add(str(i))
+        
+        if 'spv.sbs.co.kr' in data['CONTENT']:
+            h = data['CONTENT']
+            for i in re.findall(r'https?://[^\s"<>]+', h):
+                img_list.add((i, re.search(r"image_id=([^&]+)", i).group(1)))
 
         site_req.session.close()
         print(f"Title: {post_title}")
