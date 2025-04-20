@@ -346,6 +346,8 @@ def get_data(hd):
             for i in re.findall(r'https?://[^\s"<>]+', h):
                 if 'image_id' in i:
                     img_list.add((i, re.search(r"[?&]image_id=([^&]+)", i).group(1)))
+                else:
+                    img_list.add(i)
 
         site_req.session.close()
         print(f"Title: {post_title}")
