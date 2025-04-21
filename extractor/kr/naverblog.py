@@ -1,15 +1,13 @@
 """Extractor for https://blog.naver.com"""
 
-import datetime
-import re
-import json
-import html
+import datetime, re, json, html
 
 from common.common_modules import Requests, Encode
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
 SITE_INFO = Site(hostname="blog.naver.com", name="Naver Blog")
+
 
 def get_data(hd):
     """Get data"""

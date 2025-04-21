@@ -1,6 +1,4 @@
-import krsite_dl as kr
-import os
-import re
+import krsite_dl as kr, os, re
 
 from down.download import DownloadHandler
 from common.data_structure import DownloadPayload

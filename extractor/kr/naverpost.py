@@ -1,9 +1,6 @@
 """Extractor for https://post.naver.com"""
 
-import datetime
-import re
-import json
-import html
+import datetime, re, json, html
 
 from common.common_modules import Requests, Encode
 from common.data_structure import Site, DataPayload
@@ -21,13 +18,15 @@ def get_data(hd):
     pattern4 = BASE + r"(/my/series/detail.)?(?:naver|nhn)"
     pattern5 = BASE + r"(/viewer/postView.)?(?:naver|nhn)"
 
+    root = 'https://post.naver.com'
+
     encode = Encode()
 
     def naverpost_main(hd):
         """Get data from main page"""
         member_no = hd.split('memberNo=')[1].split('&')[0]
 
-        main_api = 'https://post.naver.com/async/my.naver'
+        main_api = '{}/async/my.naver'.format(root)
         params = {
             'memberNo': member_no,
             'postListViewType': 0,
@@ -53,7 +52,7 @@ def get_data(hd):
             for i in html_cont.split('<a href="')[1:]:
                 p = i.split('"')[0]
                 if 'commentsView.naver' not in p and '#' not in p:
-                    post.add("https://post.naver.com" + p)
+                    post.add('{}{}'.format(root, p))
 
             params['fromNo'] = nfn_val
 
@@ -73,7 +72,7 @@ def get_data(hd):
 
         keyword = encode._encode_kr(keyword)
 
-        search_api = 'https://post.naver.com/search/authorPost/more.naver'
+        search_api = '{}/search/authorPost/more.naver'.format(root)
         params = {
             'keyword': keyword,
             'memberNo': member_no,
@@ -96,7 +95,7 @@ def get_data(hd):
             for i in html_cont.split('<a href="')[1:]:
                 p = re.sub(r'&searchRank=\d+', '', i.split('"')[0])
                 if 'detail.naver' not in p and 'commentsView.naver' not in p and '#' not in p:
-                    post.add("https://post.naver.com" + p)
+                    post.add('{}{}'.format(root, p))
 
             params['fromNo'] = nfn_val
 
@@ -113,7 +112,7 @@ def get_data(hd):
         """Get data from series page"""
         member_no = hd.split('memberNo=')[1].split('&')[0]
 
-        series_list_api = 'https://post.naver.com/async/series.naver'
+        series_list_api = '{}/async/series.naver'.format(root)
         params = {
             'memberNo': member_no,
             'postListViewType': 0,
@@ -135,7 +134,7 @@ def get_data(hd):
                 '\\t', '').replace('\\', '')
 
             for i in html_cont.split('<a href="')[1:]:
-                series.append("https://post.naver.com" + i.split('"')[0])
+                series.append('{}{}'.format(root, i.split('"')[0]))
 
             params['fromNo'] = nfn_val
 
@@ -154,7 +153,7 @@ def get_data(hd):
         member_no = hd.split('memberNo=')[1].split('&')[0]
         series_no = hd.split('seriesNo=')[1].split('&')[0]
 
-        post_list_api = 'https://post.naver.com/my/series/detail/more.nhn'
+        post_list_api = '{}/my/series/detail/more.nhn'.format(root)
         params = {
             'memberNo': member_no,
             'seriesNo': series_no,
@@ -177,7 +176,7 @@ def get_data(hd):
                 '\\t', '').replace('\\', '')
 
             for i in html_cont.split('<a href="')[1:]:
-                post.append("https://post.naver.com" + i.split('"')[0])
+                post.append('{}{}'.format(root, i.split('"')[0]))
 
             params['fromNo'] = nfn_val
 
@@ -264,7 +263,7 @@ def get_data(hd):
             directory_format=dir,
             media=img_list,
             option='naverpost',
-            custom_headers={'Referer': 'https://post.naver.com/'}
+            custom_headers={'Referer': '{}/'.format(root)}
         )
 
         DirectoryHandler().handle_directory(payload)

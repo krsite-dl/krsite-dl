@@ -1,9 +1,4 @@
-import requests
-import urllib3
-import os
-import re
-import time
-import email.utils
+import requests, urllib3, os, re, time, email.utils
 
 from datetime import timezone
 from rich.progress import Progress

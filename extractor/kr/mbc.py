@@ -1,7 +1,6 @@
 """Extractor for https://mbc.co.kr/"""
 
-import datetime
-import re
+import datetime, re
 
 from common.common_modules import Requests
 from common.data_structure import Site, DataPayload

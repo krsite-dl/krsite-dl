@@ -1,9 +1,6 @@
 """Extractor for https://programs.sbs.co.kr/"""
 
-import datetime
-import time
-import json
-import re
+import datetime, time, re, json
 
 from common.common_modules import Requests, Encode
 from common.data_structure import Site, DataPayload
@@ -21,6 +18,10 @@ def get_data(hd):
     p_photos_s = re.compile(r'^https:\/\/programs\.sbs\.co\.kr\/[^\/]+\/[^\/]+\/photos\/\d+\?[^#]*search=.*$')
     p_photo = re.compile(r'^https:\/\/programs\.sbs\.co\.kr\/[^\/]+\/[^\/]+\/photo\/\d+\/[a-f0-9]+\?(?=.*\balbumid=[a-f0-9]+\b)(?=.*\bphotoid=\d+\b).*')
 
+    root = 'https://programs.sbs.co.kr'
+    atic_root = 'https://static.apis.sbs.co.kr'
+    a_root = 'https://api.board.sbs.co.kr'
+
     def get_time():
         ########### TOKEN############
         current_milli_time = int(round(time.time() * 1000))
@@ -29,7 +30,7 @@ def get_data(hd):
 
     def get_board_menu(vis_board_no, parent_name):
         site_req = Requests()
-        menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/menu/{}".format(parent_name)
+        menu_api = "{}/program-api/1.0/menu/{}".format(atic_root, parent_name)
         menu_r = site_req.session.get(menu_api).json()
         site_req.session.close()
         all_board = []
@@ -57,7 +58,7 @@ def get_data(hd):
     
     def get_multiboard_menu(index, vis_board_no, parent_name):
         site_req = Requests()
-        menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/multiboards/{}/{}?platform=pc".format(parent_name, vis_board_no)
+        menu_api = "{}/program-api/1.0/multiboards/{}/{}?platform=pc".format(atic_root, parent_name, vis_board_no)
         menu_r = site_req.session.get(menu_api).json()
         site_req.session.close()
         all_board = []
@@ -76,7 +77,7 @@ def get_data(hd):
     
     def get_photo_menu(vis_board_no, parent_name):
         site_req = Requests()
-        menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/menu/{}".format(parent_name)
+        menu_api = "{}/program-api/1.0/menu/{}".format(atic_root, parent_name)
         menu_r = site_req.session.get(menu_api).json()
         site_req.session.close()
         all_board = []
@@ -109,11 +110,10 @@ def get_data(hd):
             r'(?:(https|http)://)?(programs\.sbs\.co\.kr)(?:/[^/]+){1}/([^/?]+)', hd).group(3)
         
         # Get all board information
-        menu_api = "https://static.apis.sbs.co.kr/program-api/1.0/menu/{}".format(parent_name)
+        menu_api = "{}/program-api/1.0/menu/{}".format(atic_root, parent_name)
         menu_r = site_req.session.get(menu_api).json()
         site_req.session.close()
         category = menu_r['program']['title']
-
         return category, menu_r, board_no, parent_name
 
     def extract_info(url):
@@ -133,7 +133,6 @@ def get_data(hd):
         encode = Encode()
         path_name, parent_name, type_name, vis_board_no = extract_info(hd)
         code_temp = get_photo_menu(vis_board_no, parent_name)
-        board_list_api = f"https://static.apis.sbs.co.kr/photo-api/template/1.0/bundle/"
 
         keyword = re.search(r'(?:search=)([^&#]+)', hd)
         if keyword is not None:
@@ -156,7 +155,7 @@ def get_data(hd):
             for i in code_temp:
                 code = i
                 program_id, bundle_id = code
-                board_list_api = "https://static.apis.sbs.co.kr/photo-api/template/1.0/bundle/{}/{}/pc".format(program_id, bundle_id)
+                board_list_api = "{}/photo-api/template/1.0/bundle/{}/{}/pc".format(atic_root, program_id, bundle_id)
                 r = site_req.session.get(board_list_api, params=params)
                 if 'Server Error' not in r.text:
                     site_req.session.close()
@@ -167,7 +166,7 @@ def get_data(hd):
             data = json_data['list']
             params['offset'] += 15
             for i in data:
-                boards.add('https://programs.sbs.co.kr/{}/{}/{}/{}/{}?albumid={}'.format(path_name, parent_name, type_name, vis_board_no, code[1], i['_id']))
+                boards.add('{}/{}/{}/{}/{}/{}?albumid={}'.format(root, path_name, parent_name, type_name, vis_board_no, code[1], i['_id']))
             if len(data) < 15:
                 site_req.session.close()
                 break
@@ -185,10 +184,10 @@ def get_data(hd):
         if type_name == 'multiboards':
             index = re.search(r'#(\d+)$', hd).group(1)
             code_temp = get_multiboard_menu(index, vis_board_no, parent_name)
-            board_list_api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/photo/main"
+            board_list_api = "{}/bbs/V2.0/basic/board/photo/main".format(a_root)
         else:
             code_temp = get_board_menu(vis_board_no, parent_name)
-            board_list_api = f"https://api.board.sbs.co.kr/bbs/V2.0/basic/board/lists"
+            board_list_api = "{}/bbs/V2.0/basic/board/lists".format(a_root)
 
         keyword = re.search(r'(?:search_keyword=)([^&#]+)', hd)
         if keyword is not None:
@@ -237,9 +236,9 @@ def get_data(hd):
             
             for i in data:
                 if type_name == 'multiboards':
-                    boards.add('https://programs.sbs.co.kr/{}/{}/{}/{}?cmd=multi_list&board_code={}&board_no={}'.format(path_name, parent_name, type_name, vis_board_no, i['BOARD_CODE'], i['BOARD_NO']))
+                    boards.add('{}/{}/{}/{}/{}?cmd=multi_list&board_code={}&board_no={}'.format(root, path_name, parent_name, type_name, vis_board_no, i['BOARD_CODE'], i['BOARD_NO']))
                 else:
-                    boards.add('https://programs.sbs.co.kr/{}/{}/{}/{}?cmd=view&board_no={}'.format(path_name, parent_name, type_name, vis_board_no, i['NO']))
+                    boards.add('{}/{}/{}/{}/{}?cmd=view&board_no={}'.format(root, path_name, parent_name, type_name, vis_board_no, i['NO']))
             if len(data) < 16:
                 site_req.session.close()
                 break
@@ -257,9 +256,7 @@ def get_data(hd):
         photo_album_id = hd.split('albumid=')[-1].split('&')[0]
         programid = menu_r['program']['programid']
 
-
-        photo_api = "https://static.apis.sbs.co.kr/photo-api/template/1.0/bundle/photo/{}/{}/{}/pc".format(programid, bundle_id, photo_album_id)
-
+        photo_api = "{}/photo-api/template/1.0/bundle/photo/{}/{}/{}/pc".format(atic_root, programid, bundle_id, photo_album_id)
         r = site_req.session.get(photo_api)
         json_data = r.json()
 
@@ -307,8 +304,7 @@ def get_data(hd):
     
         for i in code_temp:
             code = i
-            api = "https://api.board.sbs.co.kr/bbs/V2.0/basic/board/detail/{}".format(board_no)
-
+            api = "{}/bbs/V2.0/basic/board/detail/{}".format(a_root, board_no)
             params = {
                 'callback': f'boardViewCallback_{code}',
                 'action_type': 'callback',
@@ -316,9 +312,7 @@ def get_data(hd):
                 'jwt-token': '',
                 '_': get_time()
             }
-
             r = site_req.session.get(api, params=params)
-
             if 'err_code' not in r.text:
                 break
 
@@ -346,6 +340,8 @@ def get_data(hd):
             for i in re.findall(r'https?://[^\s"<>]+', h):
                 if 'image_id' in i:
                     img_list.add((i, re.search(r"[?&]image_id=([^&]+)", i).group(1)))
+                else:
+                    img_list.add(i)
 
         site_req.session.close()
         print(f"Title: {post_title}")
@@ -358,7 +354,7 @@ def get_data(hd):
             directory_format=dir, 
             media=img_list,
             option=None,
-            custom_headers={'Referer': 'https://programs.sbs.co.kr'}
+            custom_headers={'Referer': root}
         )
 
         DirectoryHandler().handle_directory(payload)

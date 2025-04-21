@@ -16,5 +16,5 @@ updates:
     labels:
       - "pip dependencies"
     reviewers:
-      - "zer0kn0wledge"
+      - "danrynr"
     open-pull-requests-limit: 10
