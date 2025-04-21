@@ -1,7 +1,6 @@
 """Extractor for https://vogue.co.kr"""
 
-import datetime
-import re
+import datetime, re
 
 from pytz import timezone
 from common.common_modules import Requests, SiteParser

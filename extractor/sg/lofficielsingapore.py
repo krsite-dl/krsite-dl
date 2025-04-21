@@ -1,7 +1,6 @@
 """Extractor for https://lofficielsingapore.com"""""
 
-import datetime
-import json
+import datetime, json
 
 from common.common_modules import Requests, SiteParser
 from common.data_structure import Site, DataPayload

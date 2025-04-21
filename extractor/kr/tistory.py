@@ -1,8 +1,6 @@
 """Extractor for https://tistory.com/"""
 
-import datetime
-import re
-import html
+import datetime, re, html
 
 from common.common_modules import Requests
 from common.data_structure import Site, DataPayload
