@@ -3,6 +3,7 @@
 import datetime, time, re, json
 
 from common.common_modules import Requests, Encode
+from common.misc import Misc
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -21,12 +22,6 @@ def get_data(hd):
     root = 'https://programs.sbs.co.kr'
     atic_root = 'https://static.apis.sbs.co.kr'
     a_root = 'https://api.board.sbs.co.kr'
-
-    def get_time():
-        ########### TOKEN############
-        current_milli_time = int(round(time.time() * 1000))
-        return str(current_milli_time)
-        ############################
 
     def get_board_menu(vis_board_no, parent_name):
         site_req = Requests()
@@ -207,7 +202,7 @@ def get_data(hd):
                 'board_code': '',
                 'searchOption': 'title',
                 'jwt-token': '',
-                '_': get_time()
+                '_': Misc().get_time()
             }
         if type_name == 'multiboards':
             params['menuid'] = vis_board_no
@@ -310,7 +305,7 @@ def get_data(hd):
                 'action_type': 'callback',
                 'board_code': code,
                 'jwt-token': '',
-                '_': get_time()
+                '_': Misc().get_time()
             }
             r = site_req.session.get(api, params=params)
             if 'err_code' not in r.text:
