@@ -25,25 +25,18 @@ class DownloadHandler():
         self.certificate = user.get_certificate()
         self.session = self._session()
 
-    # sanitize string to remove windows reserved characters
-
     def __sanitize_string(self, string):
         if not self.args.no_windows_filenames:
             string = re.sub(self.reserved_pattern, '', string)
         return string
 
-    # korean filename encoder
-
     def _encode_kr(self, img_name):
         decoded = unquote(img_name)
-
         if '%EC' in decoded or '%EB' in decoded:
             korean_filename = decoded.encode('utf-8')
         else:
             korean_filename = decoded.encode('euc-kr', errors='ignore')
-
         filename = self.__sanitize_string(korean_filename.decode('euc-kr'))
-
         return filename
 
     def _get_filename(self, item):
@@ -191,7 +184,6 @@ class DownloadHandler():
                         f"Server Error Code {response.status_code} - {response.reason}")
                     continue
 
-
             # get headers
             headers = response.headers
             content_type = headers.get('content-type')
@@ -208,6 +200,9 @@ class DownloadHandler():
                     'image/png': '.png',
                     'image/gif': '.gif',
                     'image/webp': '.webp',
+
+                    'video/mp4': '.mp4',
+                    'video/x-m4v': '.m4v',
                 }
 
             total = int(content_length) if content_length is not None else None  # get the content length
