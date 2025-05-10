@@ -3,6 +3,7 @@
 import datetime, re, json, html
 
 from common.common_modules import Requests, Encode
+from common.misc import Misc
 from common.data_structure import Site, DataPayload
 from down.directory import DirectoryHandler
 
@@ -74,16 +75,16 @@ def get_data(hd):
 
         site = html.unescape(site).replace('\n', '').replace('\t', '').replace('\\', '')
         
-        post_writer = html.unescape(site.split(
+        post_writer = (site.split(
             "meta property=\"naverblog:nickname\" content=\"")[1]
             .split("\"")[0]).strip()
-        post_series = html.unescape(re.sub(
+        post_series = (re.sub(
                 r'<a[^>]*>(.*?)</a>', lambda match: match.group(1), site.split(
                     '<div class="blog2_series">')[1]
                 .split('</div>')[0]).strip())
-        post_title = html.unescape(site.split(
+        post_title = (site.split(
             "meta property=\"og:title\" content=\"")[1].split("\"")[0].strip())
-        post_date = html.unescape(re.search(
+        post_date = (re.search(
             r'<span class="[^"]*se_publishDate[^"]*">(.*?)</span>', site).group(1).strip())
         if '시간' in post_date:
             import pytz
@@ -102,7 +103,7 @@ def get_data(hd):
 
         img_list = []
 
-        # Seems to be the only attribute
+        # Get Image from Post
         pattern = re.compile(r"data-linkdata='([^']+)'")
         matches = pattern.finditer(site)
         index = '001'
@@ -126,6 +127,32 @@ def get_data(hd):
         for match in matches:
             src = str(match.split('?')[0].strip('\'"')).replace('postfiles', 'blogfiles')
             img_list.append(src)
+
+        # Get Video from Post        
+        for match in re.compile(r"data-module='([^']+)'").finditer(site):
+            if 'v2_video' not in match.group(1):
+                continue
+            j = json.loads(match.group(1))
+            video_id = j['id']
+            media = j['data']
+            video_api = 'https://apis.naver.com/rmcnmv/rmcnmv/vod/play/v2.0/{}'.format(media['vid'])
+            params = {
+                'key': media['inkey'],
+                'sid': 2,
+                'pid': video_id,
+                'nonce': Misc().get_time(),
+                'devt': 'html5_pc',
+                'prv': 'N',
+                'aup': 'N',
+                'stpb': 'N',
+                'cpl': 'ko_KR',
+                'providerEnv': 'real',
+                'adt': 'glad',
+                'lc': 'ko_KR',
+            }
+            video_url = site_req.session.get(video_api, params=params).json()
+            video = max(video_url['videos']['list'], key=lambda x: x.get('size'), default=None)
+            img_list.append((video['source'], video_id))
 
         site_req.session.close()
         print(f"Writer: {post_writer}")
