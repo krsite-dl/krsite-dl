@@ -14,8 +14,8 @@ from urllib.parse import urlparse
 from utils.logger import Logger
 from lazy_import import imported_modules
 from utils.parser import parse_args, get_args
-from down.directory import DirectoryHandler
-from down.download import DownloadHandler
+from downloader.directory import DirectoryHandler
+from downloader.download import DownloadHandler
 
 def check_site(url):
     hostname = urlparse(url).hostname
