@@ -22,7 +22,7 @@ import requests
 
 
 from bs4 import BeautifulSoup
-from client.user import User
+from utils.user_agent import User
 from utils.logger import Logger
 
 
