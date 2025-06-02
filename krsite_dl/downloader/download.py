@@ -3,10 +3,10 @@ import requests, urllib3, os, re, time, email.utils
 from datetime import timezone
 from rich.progress import Progress
 from urllib.parse import unquote, urlparse
-from utils.user_agent import User
-from utils.url_selector import select_url
-from utils.logger import Logger
-from utils.parser import get_args
+from ..utils.user_agent import User
+from ..utils.url_selector import select_url
+from ..utils.logger import Logger
+from ..utils.parser import get_args
 
 
 class DownloadHandler():

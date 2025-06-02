@@ -9,9 +9,9 @@ This module is responsible for handling directory creation.
 import os
 import re
 
-from utils.data_structure import DownloadPayload
-from utils.logger import Logger
-from utils.parser import get_args
+from ..utils.data_structure import DownloadPayload
+from ..utils.logger import Logger
+from ..utils.parser import get_args
 
 
 class DirectoryHandler:
