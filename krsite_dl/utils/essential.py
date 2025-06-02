@@ -22,8 +22,8 @@ import requests
 
 
 from bs4 import BeautifulSoup
-from utils.user_agent import User
-from utils.logger import Logger
+from .user_agent import User
+from .logger import Logger
 
 
 class Requests:

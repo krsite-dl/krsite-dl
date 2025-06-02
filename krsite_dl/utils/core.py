@@ -1,28 +1,28 @@
-import datetime
 import re
 import json
 import html
 import time
+import datetime
 
 from urllib.parse import urlparse, urlunparse, urlencode, parse_qs
 
 from pytz import timezone
 
-from utils.essential import (
+from .essential import (
     Requests,
     SiteParser,
     Encode,
 )
 
-from utils.logger import (
+from .logger import (
     Logger,
 )
 
-from utils.misc import (
+from .misc import (
     Misc,
 )
 
-from utils.data_structure import (
+from .data_structure import (
     Site,
     DataPayload,
     DownloadPayload,

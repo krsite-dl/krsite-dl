@@ -13,9 +13,9 @@ It prompts the user to select which URLs they want to download from.
 
 import inquirer
 import sys
-import utils.logger as logger
+from .logger import Logger
 
-logger = logger.Logger('url_selector')
+logger = Logger('url_selector')
 
 def select_url(img_list):
     try:
