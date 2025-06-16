@@ -1,5 +1,6 @@
 import os
 import sys
+import shutil
 
 import PyInstaller.__main__
 
@@ -7,6 +8,7 @@ import PyInstaller.__main__
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 ENTRY_POINT = os.path.join(ROOT_DIR, 'krsite_dl', '__main__.py')
 HOOK_DIR = os.path.join(ROOT_DIR, 'krsite_dl', '__pyinstaller')
+APP_NAME = 'krsite-dl'
 # ICON_PATH = os.path.join(ROOT_DIR, 'assets', 'icon.ico')  # if exists
 
 def main():
@@ -17,9 +19,10 @@ def main():
     # Define the PyInstaller command
     PyInstaller.__main__.run([
         ENTRY_POINT,
-        '--name=krsite-dl',
-        '--onedir',
+        f'--name={APP_NAME}',
+        '--onefile',
         '--console',
+        '--noconfirm',
         # f'--icon={ICON_PATH}',
         '--upx-exclude=vcruntime140.dll,'
         '--clean',

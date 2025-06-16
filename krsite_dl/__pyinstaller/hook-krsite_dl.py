@@ -1,16 +1,3 @@
-# from PyInstaller.utils.hooks import collect_submodules
-
-# def get_hidden_imports():
-#     yield ('krsite_dl.utils')
-#     yield ('krsite_dl.extractor')
-
-#     for module in ('krsite_dl.extractor',):
-#         yield from collect_submodules(module)
-
-# hidden_imports = list(get_hidden_imports())
-
-# print(f"Hidden imports: {hidden_imports}")
-
 from PyInstaller.utils.hooks import collect_submodules, collect_data_files
 
 def get_hidden_imports():

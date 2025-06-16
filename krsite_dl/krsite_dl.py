@@ -9,35 +9,37 @@ This module is the main entry point for the application.
 """
 
 import sys
+import importlib
 
 from urllib.parse import urlparse
-from utils.logger import Logger
-from lazy_import import imported_modules
-from utils.parser import parse_args, get_args
-from downloader.directory import DirectoryHandler
-from downloader.download import DownloadHandler
+from .utils.logger import Logger
+from .utils.parser import parse_args, get_args
+from .extractor_registry import LAZY_EXTRACTOR_MAP
+from .downloader.directory import DirectoryHandler
+from .downloader.download import DownloadHandler
 
 def check_site(url):
     hostname = urlparse(url).hostname
+    logger = Logger('check_site')
 
-    sites_available = imported_modules
+    module_path_to_import = None
+    for site_key, module_path in LAZY_EXTRACTOR_MAP.items():
+        if site_key in hostname:
+            module_path_to_import = module_path
+            break # Found our match
 
-    for module_name, module in sites_available.items():
-        if hasattr(module, 'SITE_INFO'):
-            site_info = module.SITE_INFO
-            if isinstance(site_info.hostname, str):
-                if site_info.hostname in hostname:
-                    result = module.get_data(url)
-                    if result is not None:
-                        yield from result
-                    break
-                        
-            elif isinstance(site_info.hostname, list):
-                if any(item in hostname for item in site_info.hostname):
-                    result = module.get_data(url)
-                    if result is not None:
-                        yield from result
-                    break
+    if module_path_to_import:
+        try:
+            extractor_module = importlib.import_module(module_path_to_import)
+            result = extractor_module.get_data(url)
+            if result is not None:
+                yield from result  
+        except ImportError:
+            logger.log_error(f"Could not import module: {module_path_to_import}")
+        except Exception as e:
+            logger.log_error(f"An error occurred with module {module_path_to_import}: {e}")
+    else:
+        logger.log_warning(f"No extractor found for hostname: {hostname}")
 
 def main():
     """Main function"""
