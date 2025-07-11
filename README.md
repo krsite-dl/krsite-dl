@@ -20,7 +20,7 @@
 >
 > 1. Make sure you have `python3` at least version 3.7 installed and executeable in your system's PATH.
 >
-> 2. Clone this repository `git clone -b master git@github.com:krsite-dl/krsite-dl.git`
+> 2. Clone this repository `git clone -b master git@github.com:krsite-dl/krsite-dl.git` or download the latest release from [releases]()
 >
 > 3. Run `pip3 install -r requirements.txt` to install dependencies
 
@@ -60,37 +60,35 @@ User can add `krsite-dl.conf` file to set default download path. You can put the
 
 ### Basic Usage
 
-`python3 krsite_dl.py [-h] [-c CONFIG] [-a A] [-d DESTINATION] [-s] [-v] [--no-windows-filenames] [url ...]`
+`python3 -m krsite_dl [-h] [-c CONFIG] [-a A] [-d DESTINATION] [-s] [-v] [--no-windows-filenames] [url ...]`
 
-`python3 krsite-dl.py https://example.com/1/`
+`python3 -m krsite_dl https://example.com/1/`
 
-`python3 krsite-dl.py https://example.com/1/ https//example.com/2/`
+`python3 -m krsite_dl https://example.com/1/ https//example.com/2/`
 
 **Download by specifying the download path**
 
 Alternatively, you can specify the download path by default by using krsite-dl.config file.
 
-`python3 krsite-dl.py https://example.com -d ~/Pictures/`
+`python3 -m krsite_dl https://example.com -d ~/Pictures/`
 
 **Download by specifying the config path**
 
-`python3 krsite-dl.py -c ~/krsite-dl.conf https://example.com`
+`python3 -m krsite_dl -c ~/krsite-dl.conf https://example.com`
 
 **Downloading from multiple sites in a text file**
 
-`python3 krsite-dl.py -a ~/Pictures/list.txt -d ~/Pictures`
+`python3 -m krsite_dl -a ~/Pictures/list.txt -d ~/Pictures`
 
 ### Selecting an image to download
 
 **This will prompt you a list of images to download**
 
-`python3 krsite-dl.py https://example.com -s`
+`python3 -m krsite_dl https://example.com -s`
 
 ## Options
 
 ```
-usage: krsite_dl.py [-h] [-c CONFIG] [-a A] [-d DESTINATION] [-s] [-v] [--no-windows-filenames] [url ...]
-
 positional arguments:
   url                   valid news/blog url
 
