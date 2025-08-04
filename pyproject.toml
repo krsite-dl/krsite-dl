@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "krsite-dl"
+requires-python = ">= 3.7"
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["image", "video", "korean", "site"]
+classifiers = [
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Multimedia :: Video",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Utilities",
+]
+dynamic = ["version"]
+dependencies = [
+    "requests>=2.31.0",
+    "bs4>=0.0.2",
+    "pytz>=2023.1",
+    "rich>=13.7.1",
+    "fake-useragent>=1.5.1",
+    "pydantic>=2.6.4",
+    "typing_extensions>=4.10.0",
+    "inquirer>=3.2.4",
+]
+
+[project.urls]
+Repository = "https://github.com/krsite-dl/krsite-dl.git"
+
+[project.scripts]
+krsite-dl = "krsite_dl:main"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.sdist]
+include = ["/krsite_dl", "/pyproject.toml"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["krsite_dl"]
+
