@@ -9,7 +9,7 @@ jobs:
   create_tag:
     uses: ./.github/workflows/create-tag.yml
     permissions:
-      contents: read
+      contents: write
   release:
     needs: create_tag
     runs-on: ubuntu-latest
