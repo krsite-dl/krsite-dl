@@ -6,6 +6,7 @@ on:
       new_tag:
         description: "The newly created SemVer tag"
         value: ${{ jobs.tag.outputs.new_tag }}
+  workflow_dispatch:
 
 jobs:
   tag:
@@ -44,9 +45,15 @@ jobs:
             if [ -z "$commit_message" ]; then
               continue
             fi
+            echo "--- Processing Commit ---"
+            echo "Raw Commit Message:"
+            echo "$commit_message"
+            echo "-------------------------"
 
             # Get the first line (subject)
             first_line=$(echo "$commit_message" | head -n 1)
+            echo "First Line (Subject): $first_line"
+            echo "-------------------------"
 
             # Check for BREAKING CHANGE in the entire commit message (subject or body)
             if echo "$commit_message" | grep -q "BREAKING CHANGE"; then
