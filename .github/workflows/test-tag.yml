@@ -1,4 +1,4 @@
-name: Create Tag
+name: Create Tag TEST
 
 on:
   workflow_dispatch:
