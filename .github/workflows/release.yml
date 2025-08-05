@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - dev
+      - master
 
 jobs:
   create_tag:
@@ -34,7 +34,7 @@ jobs:
           pip install hatch hatch-vcs
 
       - name: Generate changelog
-        run: python devscripts/make_changelog.py --tag ${{ needs.create_tag.outputs.new_tag }}
+        run: python devscripts/make_changelog.py --tag ${{ needs.create_tag.outputs.new_tag }} --package-name krsite-dl
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
