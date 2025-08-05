@@ -3,3 +3,7 @@ __pycache__
 /dist
 *.spec
 .vscode
+venv
+build
+dist
+VERSION
