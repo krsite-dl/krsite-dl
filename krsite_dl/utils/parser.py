@@ -56,7 +56,7 @@ def parse_args():
 
     if _args.version:
         try:
-            print(version("krsite-dl"))
+            print(f"krsite-dl on {version("krsite-dl")}")
         except PackageNotFoundError:
             print("krsite-dl not installed")
         exit()
