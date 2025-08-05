@@ -22,66 +22,37 @@ jobs:
       - name: Create SemVer Tag
         id: create_tag
         run: |
-          # Get the latest tag, or set to 0.0.0 if no tags exist
-          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
-          echo "Latest tag is $latest_tag"
+          #!/bin/bash
+          # Get the latest tag, or set a default if no tags exist
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null)
 
-          # Get full commit messages since the last tag, separated by a null character
-          # Use %x00 for the null character separator
-          if [ "$latest_tag" = "0.0.0" ]; then
-            commit_messages=$(git log --pretty=format:'%B%x00')
+          if [ -z "$latest_tag" ]; then
+            echo "No tags found, starting with v0.1.0"
+            new_tag="v0.1.0"
           else
-            commit_messages=$(git log $latest_tag..HEAD --pretty=format:'%B%x00')
-          fi
+            echo "Latest tag is $latest_tag"
+            commits=$(git log ${latest_tag}..HEAD --oneline)
 
-          # Determine the type of version bump
-          bump="patch"
-          # Use a while loop to read null-delimited messages
-          while IFS= read -r -d '' message; do
-            echo "---"
-            echo "Analyzing commit: "
-            echo "$message"
-            echo "---"
-            if echo "$message" | grep -q "BREAKING CHANGE" || echo "$message" | grep -qE "^[a-z]+\(.*\)!:"; then
-              bump="major"
-              break # Major bump takes precedence, no need to check further
-            fi
-            if echo "$message" | grep -qE "^feat(\(.*\))?:"; then
-              # Only set to minor if it's not already major
-              if [ "$bump" != "major" ]; then
-                bump="minor"
-              fi
-            fi
-          done <<< "$commit_messages"
+            major=$(echo $latest_tag | cut -d. -f1 | tr -d 'v')
+            minor=$(echo $latest_tag | cut -d. -f2)
+            patch=$(echo $latest_tag | cut -d. -f3)
 
-          echo "Determined bump type is: $bump"
-
-          # Remove 'v' prefix if it exists and split into parts
-          version_no_v=${latest_tag#v}
-          IFS='.' read -ra version_parts <<< "$version_no_v"
-          major=${version_parts[0]}
-          minor=${version_parts[1]}
-          patch=${version_parts[2]}
-
-          # Increment the correct part
-          case "$bump" in
-            "major")
+            if echo "$commits" | grep -q -E "(BREAKING CHANGE)|(!)"; then
               major=$((major + 1))
               minor=0
               patch=0
-              ;;
-            "minor")
+            elif echo "$commits" | grep -q "(feat)"; then
               minor=$((minor + 1))
               patch=0
-              ;;
-            *)
+            elif echo "$commits" | grep -q "(fix)"; then
               patch=$((patch + 1))
-              ;;
-          esac
+            else
+              patch=$((patch + 1))
+            fi
+            new_tag="v${major}.${minor}.${patch}"
+          fi
 
-          # Add the new tag
-          new_tag="${major}.${minor}.${patch}"
-          echo "New tag will be: $new_tag"
+          echo "New tag: $new_tag"
           echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
 
       - name: Push new tag to repository
