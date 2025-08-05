@@ -1,4 +1,4 @@
-name: Create Reusable Tag
+name: Create Tag
 
 on:
   workflow_call:
