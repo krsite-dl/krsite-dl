@@ -4,6 +4,7 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/krsite-dl)](https://pypi.org/project/krsite-dl/)
 [![GitHub Release Date](https://img.shields.io/github/release-date/krsite-dl/krsite-dl)]()
 <br>
+[![Release branch (master)](https://github.com/krsite-dl/krsite-dl/actions/workflows/release.yml/badge.svg)](https://github.com/krsite-dl/krsite-dl/actions/workflows/release.yml)
 [![CodeQL](https://github.com/krsite-dl/krsite-dl/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/krsite-dl/krsite-dl) [![Dependency Review](https://github.com/krsite-dl/krsite-dl/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/krsite-dl/krsite-dl)
 [![License](https://img.shields.io/github/license/krsite-dl/krsite-dl)](https://github.com/krsite-dl/krsite-dl)
 

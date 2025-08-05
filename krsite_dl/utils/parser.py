@@ -12,7 +12,10 @@ import configparser
 import os
 import platform
 
+from importlib_metadata import version, PackageNotFoundError
+
 _args = None
+
 
 def parse_args():
     """
@@ -42,11 +45,21 @@ def parse_args():
     utility_group.add_argument("-v", "--verbose",
                                 action="store_true",
                                 help="Increase output verbosity")
+    utility_group.add_argument("--version",
+                                action="store_true",
+                                help="Print program version and exit")
     misc_group = parser.add_argument_group("misc")
     misc_group.add_argument("--no-windows-filenames",
                             action="store_true",
                             help="(default=False) krsite-dl will not sanitize filenames")
     _args = parser.parse_args()
+
+    if _args.version:
+        try:
+            print(version("krsite-dl"))
+        except PackageNotFoundError:
+            print("krsite-dl not installed")
+        exit()
 
     _conf_d = search_config()
     if _args.destination:
