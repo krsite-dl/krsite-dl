@@ -27,8 +27,8 @@ jobs:
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null)
 
           if [ -z "$latest_tag" ]; then
-            echo "No tags found, starting with v0.1.0"
-            new_tag="v0.1.0"
+            echo "No tags found, starting with 0.1.0"
+            new_tag="0.1.0"
           else
             echo "Latest tag is $latest_tag"
             commits=$(git log ${latest_tag}..HEAD --oneline)
@@ -49,7 +49,7 @@ jobs:
             else
               patch=$((patch + 1))
             fi
-            new_tag="v${major}.${minor}.${patch}"
+            new_tag="${major}.${minor}.${patch}"
           fi
 
           echo "New tag: $new_tag"
