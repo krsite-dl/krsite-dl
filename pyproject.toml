@@ -33,6 +33,7 @@ dependencies = [
     "pydantic>=2.6.4",
     "typing_extensions>=4.10.0",
     "inquirer>=3.2.4",
+    "importlib-metadata>=7.0.0"
 ]
 
 [project.urls]

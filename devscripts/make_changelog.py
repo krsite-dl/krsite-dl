@@ -77,6 +77,7 @@ def format_changelog(commits):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate a changelog for a git tag.')
     parser.add_argument('--tag', help='The tag to generate the changelog for. Defaults to the latest tag.')
+    parser.add_argument('--package-name', help='The name of the package for PyPI link.')
     args = parser.parse_args()
 
     if args.tag:
@@ -100,6 +101,9 @@ if __name__ == '__main__':
 
     with open('CHANGELOG.md', 'w', encoding='utf-8') as f:
         f.write(f"# Changelog for {current_tag}\n\n")
+        if args.package_name:
+            pypi_link = f"https://pypi.org/project/{args.package_name}/{current_tag}/"
+            f.write(f"[![PyPI - Version](https://img.shields.io/pypi/v/{args.package_name}?style=for-the-badge)]({pypi_link})\n\n")
         f.write(changelog_content)
 
     print("CHANGELOG.md generated successfully.")
