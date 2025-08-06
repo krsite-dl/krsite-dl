@@ -30,44 +30,58 @@ jobs:
           #!/bin/bash
           # This script now handles stable and pre-release versions.
           # It finds the latest stable tag to correctly calculate the next version.
-          latest_stable_tag=$(git tag --list '[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)
-
-          if [ -z "$latest_stable_tag" ]; then
-            echo "No stable tags found, starting with 0.1.0"
-            base_tag="0.1.0"
+          latest_tag=$(git tag --sort=-v:refname | head -n 1)
+          
+          if [[ "${{ inputs.release_type }}" == "prerelease" && "$latest_tag" == *-rc.* ]]; then
+            echo "Latest tag is a pre-release: $latest_tag"
+            
+            # Extract the base version and the rc number from the latest tag
+            base_version=$(echo $latest_tag | sed -E 's/-rc\.[0-9]+$//')
+            rc_number=$(echo $latest_tag | sed -E 's/.*-rc\.//')
+            
+            # Increment the rc number
+            new_rc_number=$((rc_number + 1))
+            new_tag="${base_version}-rc.${new_rc_number}"
           else
-            echo "Latest stable tag is $latest_stable_tag"
-            commits=$(git log ${latest_stable_tag}..HEAD --oneline)
+            latest_stable_tag=$(git tag --list '[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)
 
-            major=$(echo $latest_stable_tag | cut -d. -f1)
-            minor=$(echo $latest_stable_tag | cut -d. -f2)
-            patch=$(echo $latest_stable_tag | cut -d. -f3)
-
-            if echo "$commits" | grep -q -E "(BREAKING CHANGE)|(!)"; then
-              major=$((major + 1))
-              minor=0
-              patch=0
-            elif echo "$commits" | grep -q "(feat)"; then
-              minor=$((minor + 1))
-              patch=0
-            elif echo "$commits" | grep -q "(fix)"; then
-              patch=$((patch + 1))
+            if [ -z "$latest_stable_tag" ]; then
+              echo "No stable tags found, starting with 0.1.0"
+              base_tag="0.1.0"
             else
-              patch=$((patch + 1))
+              echo "Latest stable tag is $latest_stable_tag"
+              commits=$(git log ${latest_stable_tag}..HEAD --oneline)
+
+              major=$(echo $latest_stable_tag | cut -d. -f1)
+              minor=$(echo $latest_stable_tag | cut -d. -f2)
+              patch=$(echo $latest_stable_tag | cut -d. -f3)
+
+              if echo "$commits" | grep -q -E "(BREAKING CHANGE)|(!)"; then
+                major=$((major + 1))
+                minor=0
+                patch=0
+              elif echo "$commits" | grep -q "(feat)"; then
+                minor=$((minor + 1))
+                patch=0
+              elif echo "$commits" | grep -q "(fix)"; then
+                patch=$((patch + 1))
+              else
+                patch=$((patch + 1))
+              fi
+              base_tag="${major}.${minor}.${patch}"
             fi
-            base_tag="${major}.${minor}.${patch}"
-          fi
 
-          echo "Calculated base version: $base_tag"
+            echo "Calculated base version: $base_tag"
 
-          if [ "${{ inputs.release_type }}" == "prerelease" ]; then
-            echo "Creating a pre-release."
-            # Find the number of existing pre-releases for this base version
-            prerelease_count=$(git tag -l "${base_tag}-rc.*" | wc -l)
-            new_tag="${base_tag}-rc.${prerelease_count}"
-          else
-            echo "Creating a stable release."
-            new_tag="$base_tag"
+            if [ "${{ inputs.release_type }}" == "prerelease" ]; then
+              echo "Creating a pre-release."
+              # Find the number of existing pre-releases for this base version
+              prerelease_count=$(git tag -l "${base_tag}-rc.*" | wc -l)
+              new_tag="${base_tag}-rc.${prerelease_count}"
+            else
+              echo "Creating a stable release."
+              new_tag="$base_tag"
+            fi
           fi
 
           echo "New tag: $new_tag"
