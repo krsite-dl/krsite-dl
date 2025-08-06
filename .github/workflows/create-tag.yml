@@ -28,63 +28,89 @@ jobs:
         id: create_tag
         run: |
           #!/bin/bash
-          # This script now handles stable and pre-release versions.
-          # It finds the latest stable tag to correctly calculate the next version.
+          # Exit immediately if a command exits with a non-zero status.
+          set -e
+          # Be verbose and print commands
+          set -x
+
+          # It's crucial to fetch all tags from the remote repository.
+          # The checkout action might not bring all tags, especially in shallow clones.
+          echo "Fetching all tags from remote..."
+          git fetch --tags
+
+          # Find the latest tag of any type (stable or prerelease)
+          # This is used to determine if we are building off a prerelease.
           latest_tag=$(git tag --sort=-v:refname | head -n 1)
-          
-          if [[ "${{ inputs.release_type }}" == "prerelease" && "$latest_tag" == *-rc.* ]]; then
-            echo "Latest tag is a pre-release: $latest_tag"
-            
-            # Extract the base version and the rc number from the latest tag
-            base_version=$(echo $latest_tag | sed -E 's/-rc\.[0-9]+$//')
-            rc_number=$(echo $latest_tag | sed -E 's/.*-rc\.//')
-            
-            # Increment the rc number
-            new_rc_number=$((rc_number + 1))
-            new_tag="${base_version}-rc.${new_rc_number}"
+          echo "Latest tag (any type): $latest_tag"
+
+          # Find the latest STABLE tag (e.g., 1.2.3, not 1.2.3-rc.4)
+          # This is used as the baseline for calculating the next version from commits.
+          latest_stable_tag=$(git tag --list '[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)
+          echo "Latest stable tag: $latest_stable_tag"
+
+          # --- Calculate the next version based on commits since the last stable release ---
+          # This block runs regardless of the release type, as its result is needed
+          # if we are creating a new version line (e.g., stable -> new prerelease, or stable -> new stable).
+          if [ -z "$latest_stable_tag" ]; then
+            echo "No stable tags found. Defaulting to first version 0.1.0"
+            next_version_from_commits="0.1.0"
           else
-            latest_stable_tag=$(git tag --list '[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)
+            echo "Calculating next version based on commits since $latest_stable_tag"
+            commits=$(git log ${latest_stable_tag}..HEAD --oneline)
+            echo "Commits since last stable tag: $commits"
+            major=$(echo $latest_stable_tag | cut -d. -f1)
+            minor=$(echo $latest_stable_tag | cut -d. -f2)
+            patch=$(echo $latest_stable_tag | cut -d. -f3)
 
-            if [ -z "$latest_stable_tag" ]; then
-              echo "No stable tags found, starting with 0.1.0"
-              base_tag="0.1.0"
+            if echo "$commits" | grep -q -E "(BREAKING CHANGE)|(!)"; then
+              major=$((major + 1)); minor=0; patch=0;
+              echo "Found BREAKING CHANGE. New base version: ${major}.${minor}.${patch}"
+            elif echo "$commits" | grep -q "(feat)"; then
+              minor=$((minor + 1)); patch=0;
+              echo "Found new feature. New base version: ${major}.${minor}.${patch}"
+            elif echo "$commits" | grep -q "(fix)"; then
+              patch=$((patch + 1));
+              echo "Found a fix. New base version: ${major}.${minor}.${patch}"
             else
-              echo "Latest stable tag is $latest_stable_tag"
-              commits=$(git log ${latest_stable_tag}..HEAD --oneline)
-
-              major=$(echo $latest_stable_tag | cut -d. -f1)
-              minor=$(echo $latest_stable_tag | cut -d. -f2)
-              patch=$(echo $latest_stable_tag | cut -d. -f3)
-
-              if echo "$commits" | grep -q -E "(BREAKING CHANGE)|(!)"; then
-                major=$((major + 1))
-                minor=0
-                patch=0
-              elif echo "$commits" | grep -q "(feat)"; then
-                minor=$((minor + 1))
-                patch=0
-              elif echo "$commits" | grep -q "(fix)"; then
-                patch=$((patch + 1))
-              else
-                patch=$((patch + 1))
-              fi
-              base_tag="${major}.${minor}.${patch}"
+              patch=$((patch + 1));
+              echo "No specific commit type found. Bumping patch. New base version: ${major}.${minor}.${patch}"
             fi
+            next_version_from_commits="${major}.${minor}.${patch}"
+          fi
+          echo "Calculated next version from commits: $next_version_from_commits"
 
-            echo "Calculated base version: $base_tag"
 
-            if [ "${{ inputs.release_type }}" == "prerelease" ]; then
-              echo "Creating a pre-release."
-              # Find the number of existing pre-releases for this base version
-              prerelease_count=$(git tag -l "${base_tag}-rc.*" | wc -l)
-              new_tag="${base_tag}-rc.${prerelease_count}"
+          # --- Determine the new tag based on the requested release type ---
+          if [ "${{ inputs.release_type }}" == "prerelease" ]; then
+            echo "ACTION: Create a pre-release tag."
+            # Check if the very latest tag is a prerelease. The regex looks for '-rc.'
+            if echo "$latest_tag" | grep -q -- "-rc\."; then
+              echo "Latest tag is a prerelease ($latest_tag). Incrementing rc number."
+              base_version=$(echo $latest_tag | sed -E 's/-rc\.[0-9]+$//')
+              rc_number=$(echo $latest_tag | sed -E 's/.*-rc\.//')
+              new_rc_number=$((rc_number + 1))
+              new_tag="${base_version}-rc.${new_rc_number}"
             else
-              echo "Creating a stable release."
-              new_tag="$base_tag"
+              echo "Latest tag is stable ($latest_tag). Creating new prerelease from calculated version."
+              # The latest tag is stable, so we start a new prerelease line.
+              # The version is the one we calculated from commits, with -rc.0 appended.
+              new_tag="${next_version_from_commits}-rc.0"
+            fi
+          else # This is a 'release' type
+            echo "ACTION: Create a stable release tag."
+            # Check if the very latest tag is a prerelease.
+            if echo "$latest_tag" | grep -q -- "-rc\."; then
+              echo "Latest tag is a prerelease ($latest_tag). Promoting it to stable."
+              # The new stable tag is simply the base version of the prerelease.
+              new_tag=$(echo $latest_tag | sed -E 's/-rc\.[0-9]+$//')
+            else
+              echo "Latest tag is stable ($latest_tag). Creating new stable release from calculated version."
+              # The new stable tag is the version we calculated from commits.
+              new_tag=$next_version_from_commits
             fi
           fi
 
-          echo "New tag: $new_tag"
+          echo "Final new tag: $new_tag"
           echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
 
       - name: Push new tag to repository
