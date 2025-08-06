@@ -1,12 +1,15 @@
 [![Visitors](https://visitor-badge.laobi.icu/badge?page_id=krsite-dl.krsite-dl)](https://github.com/krsite-dl/krsite-dl)
 [![Stars](https://img.shields.io/github/stars/krsite-dl/krsite-dl)]()
 [![Forks](https://img.shields.io/github/forks/krsite-dl/krsite-dl)]()
-[![PyPI - Version](https://img.shields.io/pypi/v/krsite-dl)](https://pypi.org/project/krsite-dl/)
-[![GitHub Release Date](https://img.shields.io/github/release-date/krsite-dl/krsite-dl)]()
+[![PyPI - Version](https://img.shields.io/pypi/v/krsite-dl?label=PyPI)](https://pypi.org/project/krsite-dl/)
+[![GitHub Release Date](https://img.shields.io/github/release-date/krsite-dl/krsite-dl?label=Release%20Date)]()
+[![Static Badge](https://img.shields.io/badge/-Supported_Sites-brightgreen?link=https%3A%2F%2Fgithub.com%2Fkrsite-dl%2Fkrsite-dl%2Fblob%2Fmaster%2Fsupported.md)
+]()
 <br>
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/krsite-dl/krsite-dl/release.yml?label=CI)]()
 [![Release branch (master)](https://github.com/krsite-dl/krsite-dl/actions/workflows/release.yml/badge.svg)](https://github.com/krsite-dl/krsite-dl/actions/workflows/release.yml)
 [![CodeQL](https://github.com/krsite-dl/krsite-dl/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/krsite-dl/krsite-dl) [![Dependency Review](https://github.com/krsite-dl/krsite-dl/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/krsite-dl/krsite-dl)
-[![License](https://img.shields.io/github/license/krsite-dl/krsite-dl)](https://github.com/krsite-dl/krsite-dl)
+[![License](https://img.shields.io/github/license/krsite-dl/krsite-dl?label=License)](https://github.com/krsite-dl/krsite-dl)
 
 ## Table of Contents
 
