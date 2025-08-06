@@ -2,6 +2,11 @@ name: Create Reusable Tag
 
 on:
   workflow_call:
+    inputs:
+      release_type:
+        description: "The type of release to create (release or prerelease)"
+        required: true
+        type: string
     outputs:
       new_tag:
         description: "The newly created SemVer tag"
@@ -19,23 +24,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create SemVer Tag
+      - name: Create SemVer Tag based on release type
         id: create_tag
         run: |
           #!/bin/bash
-          # Get the latest tag, or set a default if no tags exist
-          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null)
+          # This script now handles stable and pre-release versions.
+          # It finds the latest stable tag to correctly calculate the next version.
+          latest_stable_tag=$(git tag --list '[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)
 
-          if [ -z "$latest_tag" ]; then
-            echo "No tags found, starting with 0.1.0"
-            new_tag="0.1.0"
+          if [ -z "$latest_stable_tag" ]; then
+            echo "No stable tags found, starting with 0.1.0"
+            base_tag="0.1.0"
           else
-            echo "Latest tag is $latest_tag"
-            commits=$(git log ${latest_tag}..HEAD --oneline)
+            echo "Latest stable tag is $latest_stable_tag"
+            commits=$(git log ${latest_stable_tag}..HEAD --oneline)
 
-            major=$(echo $latest_tag | cut -d. -f1 | tr -d 'v')
-            minor=$(echo $latest_tag | cut -d. -f2)
-            patch=$(echo $latest_tag | cut -d. -f3)
+            major=$(echo $latest_stable_tag | cut -d. -f1)
+            minor=$(echo $latest_stable_tag | cut -d. -f2)
+            patch=$(echo $latest_stable_tag | cut -d. -f3)
 
             if echo "$commits" | grep -q -E "(BREAKING CHANGE)|(!)"; then
               major=$((major + 1))
@@ -49,7 +55,19 @@ jobs:
             else
               patch=$((patch + 1))
             fi
-            new_tag="${major}.${minor}.${patch}"
+            base_tag="${major}.${minor}.${patch}"
+          fi
+
+          echo "Calculated base version: $base_tag"
+
+          if [ "${{ inputs.release_type }}" == "prerelease" ]; then
+            echo "Creating a pre-release."
+            # Find the number of existing pre-releases for this base version
+            prerelease_count=$(git tag -l "${base_tag}-rc.*" | wc -l)
+            new_tag="${base_tag}-rc.${prerelease_count}"
+          else
+            echo "Creating a stable release."
+            new_tag="$base_tag"
           fi
 
           echo "New tag: $new_tag"

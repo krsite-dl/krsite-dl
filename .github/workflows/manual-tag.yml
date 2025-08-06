@@ -1,0 +1,21 @@
+name: Manual Tagging
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'The type of release to create'
+        required: true
+        default: 'prerelease'
+        type: 'choice'
+        options:
+        - prerelease
+        - release
+
+jobs:
+  create_tag:
+    uses: ./.github/workflows/create-tag.yml
+    permissions:
+      contents: write
+    with:
+      release_type: ${{ github.event.inputs.release_type }}
