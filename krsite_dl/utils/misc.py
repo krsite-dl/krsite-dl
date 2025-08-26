@@ -15,11 +15,8 @@ import time
 
 class Misc:
     """Miscellaneous functions"""
-
-    def __init__(self):
-        pass
-
-    def get_time(self):
+    @staticmethod
+    def get_time():
         """Get current time for nonce"""
-        self.current_milli_time = int(round(time.time() * 1000))
-        return str(self.current_milli_time)
+        current_milli_time = int(round(time.time() * 1000))
+        return str(current_milli_time)

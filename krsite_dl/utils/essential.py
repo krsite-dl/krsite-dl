@@ -30,10 +30,8 @@ class Requests:
     """Send HTTP requests using requests module"""
 
     def __init__(self):
-        user = User()
-
-        self.user_agent = user.get_user_agent()
-        self.certificate = user.get_certificate()
+        self.user_agent = User.get_user_agent()
+        self.certificate = User.get_certificate()
         self.session = requests.Session()
         self.session.headers = requests.models.CaseInsensitiveDict(
             {'User-Agent': self.user_agent,
@@ -82,9 +80,6 @@ class SiteParser:
 
 class Encode:
     """Encode percent encoded string to utf-8"""
-
-    def __init__(self):
-        self.encode = None
-
-    def _encode_kr(self, string):
+    @staticmethod
+    def _encode_kr(string):
         return urlparse.unquote(string, encoding='utf-8')
