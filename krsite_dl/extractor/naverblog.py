@@ -149,7 +149,7 @@ def get_data(hd):
                 'key': media['inkey'],
                 'sid': 2,
                 'pid': video_id,
-                'nonce': Misc().get_time(),
+                'nonce': Misc.get_time(),
                 'devt': 'html5_pc',
                 'prv': 'N',
                 'aup': 'N',

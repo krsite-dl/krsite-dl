@@ -16,12 +16,10 @@ class DownloadHandler():
     RETRY_DELAY = 5  # seconds
 
     def __init__(self):
-        user = User()
-
         self.args = get_args()
         self.reserved_pattern = r'[\\/:*?"<>|]'
-        self.user_agent = user.get_user_agent()
-        self.certificate = user.get_certificate()
+        self.user_agent = User.get_user_agent()
+        self.certificate = User.get_certificate()
         self.session = self._session()
 
     def __sanitize_string(self, string):

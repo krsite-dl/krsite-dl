@@ -130,14 +130,13 @@ def get_data(hd):
     def get_photo_list(hd):
         """Get photo list"""
         site_req = Requests()
-        encode = Encode()
         path_name, parent_name, type_name, vis_board_no = extract_info(hd)
         code_temp = get_photo_menu(vis_board_no, parent_name)
 
         keyword = re.search(r'(?:search=)([^&#]+)', hd)
         if keyword is not None:
             keyword = keyword.group(1)
-            keyword = encode._encode_kr(keyword)
+            keyword = Encode._encode_kr(keyword)
             logger.log_info(f"Search keyword: {keyword}")
         
         boards = set()
@@ -179,7 +178,6 @@ def get_data(hd):
     def get_board_list(hd):
         """Get board list"""
         site_req = Requests()
-        encode = Encode()
         path_name, parent_name, type_name, vis_board_no = extract_info(hd)
         if type_name == 'multiboards':
             index = re.search(r'#(\d+)$', hd).group(1)
@@ -192,7 +190,7 @@ def get_data(hd):
         keyword = re.search(r'(?:search_keyword=)([^&#]+)', hd)
         if keyword is not None:
             keyword = keyword.group(1)
-            keyword = encode._encode_kr(keyword)
+            keyword = Encode._encode_kr(keyword)
             logger.log_info(f"Search keyword: {keyword}")
 
         boards = set()
@@ -207,7 +205,7 @@ def get_data(hd):
                 'board_code': '',
                 'searchOption': 'title',
                 'jwt-token': '',
-                '_': Misc().get_time()
+                '_': Misc.get_time()
             }
         if type_name == 'multiboards':
             params['menuid'] = vis_board_no
@@ -306,7 +304,7 @@ def get_data(hd):
                 'action_type': 'callback',
                 'board_code': code,
                 'jwt-token': '',
-                '_': Misc().get_time()
+                '_': Misc.get_time()
             }
             r = site_req.session.get(api, params=params)
             if 'err_code' not in r.text:
