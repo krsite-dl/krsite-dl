@@ -46,7 +46,7 @@ def get_data(hd):
         logger.log_info(f"Artist: {artist}")
         logger.log_info(f"Found {len(magazine_list)} magazine(s)")
         for i in magazine_list:
-            genie_magazine(i, artist)
+            yield from genie_magazine(i, artist)
 
     def genie_magazine(data, *args):
         """Get magazine data"""
