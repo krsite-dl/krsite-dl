@@ -25,16 +25,6 @@ LAZY_EXTRACTOR_MAP = {
     'mbc.co.kr': 'krsite_dl.extractor.mbc',
     'melon.com': 'krsite_dl.extractor.melon',
 
-    # JP
-    'mikantimes.com': 'krsite_dl.extractor.mikantimes',
-    'natalie.mu': 'krsite_dl.extractor.nataliemu',
-    'nonno.hpplus.jp': 'krsite_dl.extractor.nonno',
-    'spur.hpplus.jp': 'krsite_dl.extractor.spurjp',
-    'vivi.tv': 'krsite_dl.extractor.vivi',
-
-    # SG
-    'lofficielsingapore.com': 'krsite_dl.extractor.lofficielsingapore',
-
     # KR
     'cosmopolitan.co.kr': 'krsite_dl.extractor.cosmopolitan',
     'dazedkorea.com': 'krsite_dl.extractor.dazedkorea',
@@ -59,4 +49,14 @@ LAZY_EXTRACTOR_MAP = {
     'tvreport.co.kr': 'krsite_dl.extractor.tvreport',
     'vogue.co.kr': 'krsite_dl.extractor.vogue',
     'wkorea.com': 'krsite_dl.extractor.wkorea',
+
+    # JP
+    'mikantimes.com': 'krsite_dl.extractor.mikantimes',
+    'natalie.mu': 'krsite_dl.extractor.nataliemu',
+    'nonno.hpplus.jp': 'krsite_dl.extractor.nonno',
+    'spur.hpplus.jp': 'krsite_dl.extractor.spurjp',
+    'vivi.tv': 'krsite_dl.extractor.vivi',
+
+    # SG
+    'lofficielsingapore.com': 'krsite_dl.extractor.lofficielsingapore',
 }
