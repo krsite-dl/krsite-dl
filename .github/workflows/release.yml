@@ -1,16 +1,22 @@
-name: Release branch (master)
+
+name: Autotagging and Release Workflow (master)
 
 on:
   workflow_dispatch:
     inputs:
       release_type:
-        description: "The type of release to create"
+        description: "The type of release to create (release or prerelease)"
         required: true
         default: "prerelease"
         type: "choice"
         options:
           - prerelease
           - release
+      publish_to_pypi:
+        description: "Whether to publish the package to PyPI"
+        required: true
+        default: "true"
+        type: "boolean"
 
 jobs:
   create_tag:
@@ -19,12 +25,13 @@ jobs:
       contents: write
     with:
       release_type: ${{ github.event.inputs.release_type }}
-  release:
+
+  build:
+    name: Build and Generate Checksums
     needs: create_tag
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      id-token: write
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,32 +39,83 @@ jobs:
           ref: ${{ needs.create_tag.outputs.new_tag }}
           fetch-depth: 0
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: "3.10"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
 
-      # - name: Install hatch
-      #   run: |
-      #     python -m pip install --upgrade pip
-      #     pip install hatch hatch-vcs
+      - name: Install hatch
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch hatch-vcs
 
-      # - name: Generate changelog
-      #   run: python devscripts/make_changelog.py --tag ${{ needs.create_tag.outputs.new_tag }} --package-name krsite-dl
+      - name: Build sdist and wheel
+        run: hatch build
 
-      # - name: Create GitHub Release
-      #   uses: softprops/action-gh-release@v1
-      #   with:
-      #     tag_name: ${{ needs.create_tag.outputs.new_tag }}
-      #     body_path: CHANGELOG.md
-      #     prerelease: ${{ github.event.inputs.release_type == 'prerelease' }}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate SHA256 checksums
+        run: |
+          cd dist
+          sha256sum * > SHA256SUMS.txt
+          cd ..
 
-      # - name: Build package
-      #   run: hatch build
+      - name: Upload release assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets
+          path: dist/
 
-      # - name: Publish to PyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     id-token: ${{ secrets.GITHUB_TOKEN }}
+  publish_release:
+    name: Create GitHub Release
+    needs: [create_tag, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to create the release
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.create_tag.outputs.new_tag }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Download release assets
+        uses: actions/download-artifact@v4
+        with:
+          name: release-assets
+          path: dist/
+
+      - name: Generate changelog
+        run: python devscripts/make_changelog.py --tag ${{ needs.create_tag.outputs.new_tag }} --package-name krsite-dl
+
+      - name: Create GitHub Release and upload assets
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.create_tag.outputs.new_tag }}
+          body_path: CHANGELOG.md
+          files: dist/*
+          prerelease: ${{ github.event.inputs.release_type == 'prerelease' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  pypi_publish:
+    name: Publish to PyPI
+    needs: [create_tag, build]
+    if: github.event.inputs.publish_to_pypi == true
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for trusted publishing
+    steps:
+      - name: Download release assets
+        uses: actions/download-artifact@v4
+        with:
+          name: release-assets
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages_dir: dist/

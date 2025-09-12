@@ -26,8 +26,6 @@ def get_data(hd):
 
     root = 'https://post.naver.com'
 
-    encode = Encode()
-
     def naverpost_main(hd):
         """Get data from main page"""
         member_no = hd.split('memberNo=')[1].split('&')[0]
@@ -76,7 +74,7 @@ def get_data(hd):
         keyword = hd.split('keyword=')[1].split('&')[0]
         member_no = hd.split('memberNo=')[1].split('&')[0]
 
-        keyword = encode._encode_kr(keyword)
+        keyword = Encode._encode_kr(keyword)
 
         search_api = '{}/search/authorPost/more.naver'.format(root)
         params = {
