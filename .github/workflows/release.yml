@@ -104,7 +104,7 @@ jobs:
   pypi_publish:
     name: Publish to PyPI
     needs: [create_tag, build]
-    if: github.event.inputs.publish_to_pypi == true
+    if: github.event.inputs.publish_to_pypi == 'true'
     runs-on: ubuntu-latest
     permissions:
       id-token: write # Required for trusted publishing
