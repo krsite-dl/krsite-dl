@@ -77,7 +77,7 @@ def get_data(hd):
             'currentPage': 1,
             'categoryNo': category_no,
             'parentCategoryNo': '',
-            'countPerPage': '25'
+            'countPerPage': '30'
         }
 
         site_req = Requests()
