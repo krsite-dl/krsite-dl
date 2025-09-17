@@ -19,13 +19,51 @@ logger = Logger('extractor', SITE_INFO.name)
 def get_data(hd):
     """Get data"""
     BASE = r"(?:https?://)?(?:m\.)?(blog\.naver\.com)"
-    postview_pattern = BASE + r"(?:((/PostView.)?(?:naver|nhn)\?blogId=(\w+)&logNo=(\d+))|/(\w+)/(\d+)/?$)"
+    blog_pattern = BASE + r"(/\w+\/?$)"
+    postview_pattern = BASE + r"(?:((/PostView.)?(?:naver|nhn)\?blogId=(\w+)&logNo=(\d+).*)|/(\w+)/(\d+)(?:\?.*)?$)"
     postlist_pattern = BASE + r"(/PostList.)?(?:naver|nhn)\?blogId=(\w+)&(?:from=(\w+)&)?(categoryNo=(\d+))"
 
     root = "https://blog.naver.com"
+    root_m = "https://m.blog.naver.com"
 
     def naverblog_blog(hd):
-        pass
+        """Get entire blog"""
+        blog_id = re.match(blog_pattern, hd).group(2).strip('/')
+
+        blog_url = "{}/api/blogs/{}/post-list".format(root_m, blog_id)
+        params = {
+            'categoryNo': 0,
+            'itemCount': 24,
+            'page': 1,
+            'userId': blog_id,
+        }
+        headers = {
+            'Referer': '{}/{}?categoryNo=0&listStyle=post&tab=1'.format(root_m, blog_id),
+        }
+
+        site_req = Requests()
+        url_list = []
+        while True:
+            blog = site_req.session.get(blog_url, headers=headers, params=params).json()
+
+            for post in blog['result']['items']:
+                log_no = post['logNo']
+                post_url = "{}/PostView.naver?blogId={}&logNo={}".format(root, blog_id, log_no) 
+                if post_url in url_list:
+                    site_req.session.close()
+                    break
+                url_list.append(post_url)
+            else:     
+                if blog['result']['items'] == []:
+                    site_req.session.close()
+                    break
+                params['page'] += 1
+                continue
+            break
+
+        logger.log_info(f"Found {len(url_list)} post(s)")
+        for i in url_list:
+            yield from naverblog_post(i)
 
     def naverblog_series(hd):
         """Get series"""
@@ -39,7 +77,7 @@ def get_data(hd):
             'currentPage': 1,
             'categoryNo': category_no,
             'parentCategoryNo': '',
-            'countPerPage': '5'
+            'countPerPage': '25'
         }
 
         site_req = Requests()
@@ -179,7 +217,7 @@ def get_data(hd):
             directory_format=dir,
             media=img_list,
             option='naverblog',
-            custom_headers={'Referer': root}
+            custom_headers={'Referer': '{}'.format(root)}
         )
 
         yield payload
@@ -191,3 +229,6 @@ def get_data(hd):
     elif (re.search(postview_pattern, hd)):
         logger.log_info("Naver Blog Post")
         yield from naverblog_post(hd)
+    elif (re.search(blog_pattern, hd)):
+        logger.log_info("Naver Blog Main Page")
+        yield from naverblog_blog(hd)
