@@ -36,7 +36,10 @@ class DirectoryHandler:
 
     def _create_directory(self, directory_format):
         directory_format = [str(element) for element in directory_format]
-        dirs = os.path.join(self.args.destination, *directory_format)
+        dirs = os.path.abspath(os.path.join(self.args.destination, *directory_format))
+        if not dirs.startswith(os.path.abspath(self.args.destination)):
+            self.logger.log_error(f"Directory traversal detected: {dirs}")
+            raise ValueError("Invalid directory format")
         if not os.path.exists(dirs):
             self.logger.log_warning(f"Directory not exists")
             self.logger.log_info(f"Creating directory: {dirs}")
