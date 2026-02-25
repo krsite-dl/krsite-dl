@@ -66,7 +66,10 @@ class DownloadHandler():
         return selected
 
     def _file_exists(self, dirs, filename):
-        path = os.path.join(dirs, filename)
+        path = os.path.abspath(os.path.join(dirs, filename))
+        if not path.startswith(os.path.abspath(dirs)):
+            self.logger.log_error(f"Directory traversal detected: {path}")
+            raise ValueError("Invalid directory format")
         if os.path.exists(path):
             self.logger.log_warning(
                 f"File: {filename} already exists. Skipping...")
@@ -221,8 +224,12 @@ class DownloadHandler():
             self.successful_requests += 1
 
             self.logger.log_info(f"filename: {filename}{file_extension}")
-            file_part = os.path.join(dirs, f"{filename}{file_extension}.part")
-            file_real = os.path.join(dirs, f"{filename}{file_extension}")
+            file_part = os.path.abspath(os.path.join(dirs, f"{filename}{file_extension}.part"))
+            file_real = os.path.abspath(os.path.join(dirs, f"{filename}{file_extension}"))
+
+            if not file_part.startswith(os.path.abspath(dirs)) or not file_real.startswith(os.path.abspath(dirs)):
+                self.logger.log_error(f"Directory traversal detected: {file_part} or {file_real}")
+                raise ValueError("Invalid directory format")
             try:
                 current_size = os.path.getsize(file_part)
             except FileNotFoundError:
