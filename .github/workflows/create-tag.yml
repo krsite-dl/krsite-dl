@@ -33,117 +33,121 @@ jobs:
           # Be verbose and print commands for better debugging.
           set -x
 
-          # 1. Fetch all tags and get the latest one.
+          # 1. Fetch all tags.
           git fetch --tags
+          
+          # --- NEW ROBUST TAG DETECTION ---
+          # Get the absolute latest tag (might be an RC)
           latest_tag=$(git tag --sort=-v:refname | head -n 1)
+          
+          # Get the latest STABLE tag (no -rc)
+          latest_stable=$(git tag --sort=-v:refname | grep -v "\-rc" | head -n 1 || echo "")
 
-          # 2. Determine the base version and whether the latest tag is a prerelease.
+          echo "Detected latest tag: $latest_tag"
+          echo "Detected latest stable: $latest_stable"
+
+          # Determine which one to use as the base for version math.
+          # If 3.0.0 exists, we should usually base off 3.0.0 even if 3.0.0-rc.0 exists.
+          use_tag="$latest_tag"
+          if [ -n "$latest_stable" ]; then
+              # Strip 'v' for comparison
+              v_stable="${latest_stable#v}"
+              v_latest="${latest_tag#v}"
+              v_latest_base="${v_latest%-rc.*}"
+
+              # If the latest tag is just an RC for the current stable, use the stable.
+              # Example: latest=3.0.0-rc.0, stable=3.0.0 -> Use 3.0.0
+              if [ "$v_latest_base" == "$v_stable" ]; then
+                  use_tag="$latest_stable"
+              fi
+          fi
+          
+          # 2. Determine the base version and whether the used tag is a prerelease.
           base_version=""
           is_prerelease=false
           has_v_prefix=false
 
-          if [ -z "$latest_tag" ]; then
-            echo "No existing tags found. Base version will be 0.0.0."
-            base_version="0.0.0"
+          echo "Using tag $use_tag as the base for calculation."
+          
+          # Check for 'v' prefix
+          if [[ "$use_tag" =~ ^v ]]; then
+            has_v_prefix=true
+            clean_tag="${use_tag#v}"
           else
-            echo "Latest tag is $latest_tag"
-            
-            # Check for 'v' prefix
-            if [[ "$latest_tag" =~ ^v ]]; then
-              has_v_prefix=true
-              clean_tag="${latest_tag#v}"
-            else
-              clean_tag="$latest_tag"
-            fi
-
-            if echo "$clean_tag" | grep -q -- "-rc\."; then
-              is_prerelease=true
-              # Get version from prerelease tag e.g. 1.2.3-rc.4 -> 1.2.3
-              base_version=$(echo "$clean_tag" | sed -E 's/-rc\.[0-9]+$//')
-            else
-              # It's a stable tag
-              base_version="$clean_tag"
-            fi
+            clean_tag="$use_tag"
           fi
-          echo "Base version for calculation is $base_version. Latest tag was a prerelease: $is_prerelease. Has 'v' prefix: $has_v_prefix"
 
-          # 3. Get all commits since the latest tag was created.
+          if echo "$clean_tag" | grep -q -- "-rc\."; then
+            is_prerelease=true
+            base_version=$(echo "$clean_tag" | sed -E 's/-rc\.[0-9]+$//')
+          else
+            is_prerelease=false
+            base_version="$clean_tag"
+          fi
+          
+          # Final safety for empty base
+          base_version="${base_version:-0.0.0}"
+          echo "Base version for calculation is $base_version. Is prerelease: $is_prerelease."
+
+          # 3. Get all commits since the 'use_tag'
           commits=""
-          if [ -z "$latest_tag" ]; then
+          if [ -z "$use_tag" ]; then
             commits=$(git log --oneline)
           else
-            commits=$(git log "${latest_tag}"..HEAD --oneline)
+            commits=$(git log "${use_tag}"..HEAD --oneline)
           fi
 
-          # 4. Determine the type of version bump needed based on commit messages.
+          # 4. Determine bump type
           bump_type="none"
           if echo "$commits" | grep -q -E "(BREAKING CHANGE)|(!:)"; then
             bump_type="major"
-          elif echo "$commits" | grep -qE "[a-f0-9]+ feat(\(.*\))?:"; then
+          elif echo "$commits" | grep -q -E "[a-f0-9]+ feat(\(.*\))?:"; then
             bump_type="minor"
-          elif echo "$commits" | grep -qE "[a-f0-9]+ (fix|build|chore|ci|docs|perf|refactor|revert|style|test)(\(.*\))?:"; then
+          elif echo "$commits" | grep -q -E "[a-f0-9]+ (fix|build|chore|ci|docs|perf|refactor|revert|style|test)(\(.*\))?:"; then
             bump_type="patch"
           fi
-          echo "Determined bump type from commits: $bump_type"
+          echo "Determined bump type: $bump_type"
 
-          # 5. Calculate the next version string based on the bump type.
+          # 5. Calculate next version
           IFS='.' read -r major minor patch <<< "$base_version"
+          major=${major:-0}; minor=${minor:-0}; patch=${patch:-0}
 
           if [ "$bump_type" == "major" ]; then
             major=$((major + 1)); minor=0; patch=0;
           elif [ "$bump_type" == "minor" ]; then
             minor=$((minor + 1)); patch=0;
           elif [ "$bump_type" == "patch" ]; then
-            # Special case: If we are on an RC and have a patch bump,
-            # next_version should be the base_version itself (to promote to stable)
-            # UNLESS it's already a stable tag.
+            # Only increment patch if we are starting from a stable tag.
+            # If we are on an RC, the patch is already "contained" in the target version.
             if [ "$is_prerelease" = false ]; then
               patch=$((patch + 1))
             fi
           fi
           next_version="${major}.${minor}.${patch}"
-          echo "Next calculated version is $next_version"
 
-          # 6. Determine the final tag based on the user's requested release type.
+          # 6. Determine final tag
           RELEASE_TYPE="${RELEASE_TYPE:-release}"
           new_tag=""
           if [ "$RELEASE_TYPE" == "release" ]; then
-            # --- User wants a STABLE release ---
-            echo "ACTION: Selecting a stable release tag."
-            if $is_prerelease && [ "$bump_type" == "none" ]; then
-              # Rule 3: Promote a prerelease to stable if no new changes
-              new_tag=$base_version
-            else
-              # Rule 4: Bump to the next calculated version
-              new_tag=$next_version
-            fi
+            new_tag="$next_version"
           else
-            # --- User wants a PRERELEASE ---
-            echo "ACTION: Selecting a pre-release tag."
-            if $is_prerelease && [ "$bump_type" == "none" ]; then
-              # Rule 1: No new bumping commits, so just increment rc
-              rc_number=$(echo "$latest_tag" | sed -E 's/.*-rc\.//')
-              new_rc_number=$((rc_number + 1))
-              new_tag="${base_version}-rc.${new_rc_number}"
+            # For prerelease, check if we need to increment existing RC
+            if [ "$is_prerelease" = true ] && [ "$next_version" == "$base_version" ]; then
+                rc_number=$(echo "$use_tag" | sed -E 's/.*-rc\.//')
+                new_rc_number=$((rc_number + 1))
+                new_tag="${base_version}-rc.${new_rc_number}"
             else
-              # Rule 2: A version bump occurred, so start a new prerelease series.
-              new_tag="${next_version}-rc.0"
+                new_tag="${next_version}-rc.0"
             fi
           fi
 
-          # Final check for the very first tag where logic might result in 0.0.0
+          # 0.0.0 Safety
           if [ "$new_tag" == "0.0.0" ] || [ "$new_tag" == "0.0.0-rc.0" ]; then
-              if [ "$RELEASE_TYPE" == "release" ]; then
-                  new_tag="0.1.0"
-              else
-                  new_tag="0.1.0-rc.0"
-              fi
+              new_tag=$([ "$RELEASE_TYPE" == "release" ] && echo "0.1.0" || echo "0.1.0-rc.0")
           fi
 
-          # Re-add 'v' prefix if it was originally present
-          if [ "$has_v_prefix" = true ]; then
-            new_tag="v$new_tag"
-          fi
+          # Re-add prefix
+          [ "$has_v_prefix" = true ] && new_tag="v$new_tag"
 
           echo "Final selected tag: $new_tag"
           echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
