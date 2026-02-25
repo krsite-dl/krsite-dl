@@ -126,9 +126,9 @@ jobs:
           next_version="${major}.${minor}.${patch}"
 
           # 6. Determine final tag
-          RELEASE_TYPE="${RELEASE_TYPE:-release}"
+          release_type="${release_type:-release}"
           new_tag=""
-          if [ "$RELEASE_TYPE" == "release" ]; then
+          if [ "$release_type" == "release" ]; then
             new_tag="$next_version"
           else
             # For prerelease, check if we need to increment existing RC
@@ -143,7 +143,7 @@ jobs:
 
           # 0.0.0 Safety
           if [ "$new_tag" == "0.0.0" ] || [ "$new_tag" == "0.0.0-rc.0" ]; then
-              new_tag=$([ "$RELEASE_TYPE" == "release" ] && echo "0.1.0" || echo "0.1.0-rc.0")
+              new_tag=$([ "$release_type" == "release" ] && echo "0.1.0" || echo "0.1.0-rc.0")
           fi
 
           # Re-add prefix
